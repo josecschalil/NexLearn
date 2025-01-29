@@ -21,7 +21,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     axios
-      .get(`${apiUrl}api/courses/${courseId}`) 
+      .get(`${apiUrl}/api/courses/${courseId}`) 
       .then((response) => {
         // console.log("Course fetched:", response.data);
         setCourse(response.data);  

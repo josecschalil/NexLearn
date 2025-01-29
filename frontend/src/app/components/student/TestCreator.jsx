@@ -140,14 +140,14 @@ const SubjectSelector = ({
     const fetchSubjects = async () => {
       try {
         const response = await axios.get(
-          `${apiUrl}api/subjects/?course_id=${courseid}`
+          `${apiUrl}/api/subjects/?course_id=${courseid}`
         );
         const subjectsData = response.data;
 
         const updatedSubjectOptions = await Promise.all(
           subjectsData.map(async (subject) => {
             const chaptersResponse = await axios.get(
-              `${apiUrl}api/chapters/?subject=${subject.id}`
+              `${apiUrl}/api/chapters/?subject=${subject.id}`
             );
             return {
               ...subject,
@@ -342,7 +342,7 @@ const TestCreator = ({ id }) => {
         .map((chapterId) => `chapter_ids=${encodeURIComponent(chapterId)}`)
         .join("&");
 
-      const questionApiUrl = `${apiUrl}api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
+      const questionApiUrl = `${apiUrl}/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
       console.log( questionApiUrl)
       const questionResponse = await axios.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
@@ -365,7 +365,7 @@ const TestCreator = ({ id }) => {
 
       console.log(examPayload);
       const createExamResponse = await axios.post(
-        "http://127.0.0.1:8000/api/exams/",
+        `${apiUrl}/api/exams/`,
         examPayload,
         {
           headers: {
@@ -377,7 +377,7 @@ const TestCreator = ({ id }) => {
       const newExamId = createExamResponse.data.exam_id;
       console.log("New Exam Created:", newExamId);
       const linkRequests = questionIds.map((questionId) =>
-        axios.post("http://127.0.0.1:8000/api/examquestions/", {
+        axios.post(`${apiUrl}/api/examquestions/`, {
           exam: newExamId,
           question: questionId,
         })
@@ -402,7 +402,7 @@ const TestCreator = ({ id }) => {
 
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/exam-data/",
+          `${apiUrl}/api/exam-data/`,
           payload_exam_data
         );
         console.log("Test started successfully:", response.data);

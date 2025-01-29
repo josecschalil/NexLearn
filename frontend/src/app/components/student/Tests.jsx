@@ -9,7 +9,7 @@ const FeaturedTests = () => {
   useEffect(() => {
     const fetchfeaturedTests = async () => {
       const response = await fetch(
-        `${apiUrl}api/exams/?is_featured=true`
+        `${apiUrl}/api/exams/?is_featured=true`
       );
 
       if (response.ok) {
