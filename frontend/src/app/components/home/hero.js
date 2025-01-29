@@ -34,9 +34,9 @@ const Hero = () => {
       style={{ backgroundColor: "#EBFFF9" }}
       ref={heroRef}
     >
-      <img src="/elements.png" className="absolute z-0 h-[500px] -top-[200px] left-[00px]"></img>
-      <img src="/elements.png" className="absolute z-0 h-[500px] -bottom-[200px] right-[00px]"></img>
-      <div className="hero-overlay w-full h-[80vh] sm:h-[87vh] flex flex-col items-center justify-center text-center">
+      <img src="/elements.png" className="absolute z-0 h-[500px] opacity-30 lg:opacity-100 -top-[200px] left-[00px]"></img>
+      <img src="/elements.png" className="absolute z-0 h-[500px] opacity-30 lg:opacity-100 -bottom-[200px] right-[00px]"></img>
+      <div className="hero-overlay w-full h-[80vh] -mt-10 sm:mt-0  sm:h-[87vh] flex flex-col items-center justify-center text-center">
 
         <div style={{ backgroundColor: "#EBFFF9" }} className="flex items-center mb-6 z-10 relative  justify-between w-fit px-3 pr-2 py-2 border border-gray-600 rounded-full shadow-md hover:border-gray-900">
           <Link href="/signup" style={{ backgroundColor: "#EBFFF9" }} className=" flex  rounded-2xl justify-between items-center gap-2">
@@ -72,13 +72,13 @@ const Hero = () => {
         <div ref={buttonsRef} className="flex gap-6 px-6">
           <a
             href="/courses"
-            className="border font-inter font-bold border-black px-6 sm:px-8 py-[2px]  rounded-sm text-sm sm:text-lg hover:bg-gray-800 hover:text-white transition duration-300 ease-in-out"
+            className="border font-inter relative z-30 font-bold border-black px-6 sm:px-8 py-[2px]  rounded-sm text-sm sm:text-lg hover:bg-gray-800 hover:text-white transition duration-300 ease-in-out"
           >
             Courses
           </a>
           <a
             href="/signin"
-            className="bg-teal-700 font-bold relative z-10 font-inter hover:shadow-lg rounded-sm text-white px-6 sm:px-8 py-[5px] text-sm sm:text-lg transition duration-300 ease-in-out hover:bg-teal-800"
+            className="bg-teal-700 font-bold relative z-50 font-inter hover:shadow-lg rounded-sm text-white px-6 sm:px-8 py-[5px] text-sm sm:text-lg transition duration-300 ease-in-out hover:bg-teal-800"
           >
             Get Started
           </a>

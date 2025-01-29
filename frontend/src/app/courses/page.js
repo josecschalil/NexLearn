@@ -7,6 +7,7 @@ const CoursesPage = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      console.log(`${apiUrl}/api/courses`)
       const response = await fetch(`${apiUrl}/api/courses`);
       if (response.ok) {
         const data = await response.json();

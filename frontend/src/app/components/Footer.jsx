@@ -32,7 +32,7 @@ export default function Footer() {
 <div className="sm:w-[70%]  flex flex-col-reverse sm:flex-row gap-4 justify-between sm:justify-evenly -mt-1 ">
         <div>
         <h4 className="font-bold hidden sm:block  mb-2 text-lg">Links</h4>
-        <ul className="sm:space-y-2 gap-6 flex sm:block font-jakarta">
+        <ul className="sm:space-y-2 gap-3  sm:gap-6 flex sm:block font-jakarta">
             <li>Contact</li>
             <li>About Us</li>
             <li>Featured</li>
@@ -43,7 +43,7 @@ export default function Footer() {
         {/* Links Section */}
         <div className="">
           <h4 className="font-bold hidden sm:block mb-2 text-lg">Links</h4>
-          <ul className="sm:space-y-2 gap-6 flex sm:block">
+          <ul className="sm:space-y-2 gap-3 flex sm:block">
             <li>Home</li>
             <li>Profile</li>
             <li>Log Out</li>
