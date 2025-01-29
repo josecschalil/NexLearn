@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/productCard";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const response = await fetch("http://localhost:8000/api/courses");
+      const response = await fetch(`${apiUrl}/api/courses`);
       if (response.ok) {
         const data = await response.json();
         setCourses(data);
