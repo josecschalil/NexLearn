@@ -3,6 +3,9 @@ import axios from "axios";
 
 let isRefreshing = false;
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
 const useTokenRefresh = () => {
   const [isRefreshingState, setIsRefreshingState] = useState(false);
 
@@ -15,7 +18,7 @@ const useTokenRefresh = () => {
       const refresh = localStorage.getItem("refresh_token");
       if (!refresh) throw new Error("Refresh token not found");
 
-      const response = await axios.post("http://127.0.0.1:8000/auth/token/refresh/", {
+      const response = await axios.post(`${apiUrl}/auth/token/refresh/ `, {
         refresh,
       });
 

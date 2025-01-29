@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const FeaturedTests = () => {
   const [featuredTests, setfeaturedTests] = useState(null);
@@ -8,7 +9,7 @@ const FeaturedTests = () => {
   useEffect(() => {
     const fetchfeaturedTests = async () => {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/exams/?is_featured=true`
+        `${apiUrl}api/exams/?is_featured=true`
       );
 
       if (response.ok) {

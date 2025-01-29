@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import showPopup from '@/app/components/Toast';
 import axios from 'axios';
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -32,7 +33,7 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`http://localhost:8000/reset-password/${uidb64}/${token}/`, {
+      const response = await axios.post(`${apiUrl}/reset-password/${uidb64}/${token}/`, {
         // uidb64,
         // token,
         password,

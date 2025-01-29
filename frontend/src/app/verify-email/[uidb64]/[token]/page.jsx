@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import showPopup from '@/app/components/Toast';
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import axios from 'axios';
 
 const VerifyEmail = () => {
@@ -13,7 +14,7 @@ const VerifyEmail = () => {
   useEffect(() => {
     if (uidb64 && token) {
       axios
-        .get(`http://localhost:8000/verify-email/${uidb64}/${token}/`)
+        .get(`${apiUrl}/verify-email/${uidb64}/${token}/`)
         .then((response) => {
           showPopup('Your email has been successfully verified!')
           setMessage('Your email has been successfully verified!');

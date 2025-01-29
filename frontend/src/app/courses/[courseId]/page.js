@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const CoursePage = () => {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
@@ -26,7 +26,7 @@ const CoursePage = () => {
     const fetchCourse = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/courses/${courseId}`
+          `${apiUrl}/api/courses/${courseId}`
         );
         setCourse(response.data);
         setLoading(false);
@@ -42,7 +42,7 @@ const CoursePage = () => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`http://127.0.0.1:8000/api/userCourses/${userId}`)
+        .get(`${apiUrl}/api/userCourses/${userId}`)
         .then((response) => {
           console.log(response?.data.courses)
           const isEnrolled = response?.data.courses.some(

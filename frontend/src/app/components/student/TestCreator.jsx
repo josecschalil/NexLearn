@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const TimeSelector = ({ time, setTime }) => {
   const times = [
     { value: 10, icon: "⏱️", catchphrase: "Quick Burst!" },
@@ -138,14 +140,14 @@ const SubjectSelector = ({
     const fetchSubjects = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/subjects/?course_id=${courseid}`
+          `${apiUrl}api/subjects/?course_id=${courseid}`
         );
         const subjectsData = response.data;
 
         const updatedSubjectOptions = await Promise.all(
           subjectsData.map(async (subject) => {
             const chaptersResponse = await axios.get(
-              `http://127.0.0.1:8000/api/chapters/?subject=${subject.id}`
+              `${apiUrl}api/chapters/?subject=${subject.id}`
             );
             return {
               ...subject,
@@ -340,7 +342,7 @@ const TestCreator = ({ id }) => {
         .map((chapterId) => `chapter_ids=${encodeURIComponent(chapterId)}`)
         .join("&");
 
-      const questionApiUrl = `http://127.0.0.1:8000/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
+      const questionApiUrl = `${apiUrl}api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
       console.log( questionApiUrl)
       const questionResponse = await axios.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);

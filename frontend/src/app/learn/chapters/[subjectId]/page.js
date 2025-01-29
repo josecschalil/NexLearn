@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const SubjectPage = () => {
   const { subjectId } = useParams(); 
@@ -17,7 +18,7 @@ const SubjectPage = () => {
     const fetchChapters = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/chapters/subject/${subjectId}`
+          `${apiUrl}/api/chapters/subject/${subjectId}`
         );
 
         if (response.ok) {
@@ -62,7 +63,7 @@ const SubjectPage = () => {
           </h2>
           <div className="w-[95%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 ">
             {chapters.map((chapter, index) => (
-              <Link key={index} href={`http://localhost:3000/learn/contents/${chapter.id}`}>
+              <Link key={index} href={`${apiUrl}/learn/contents/${chapter.id}`}>
                 <div className="w-full hover:border-gray-400   flex  items-center justify-between pl-2 pr-4 py-3 border rounded-xl">
 
                   <div className="flex items-center space-x-4">

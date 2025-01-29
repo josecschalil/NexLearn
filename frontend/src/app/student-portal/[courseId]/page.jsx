@@ -6,6 +6,7 @@ import Exams from "@/app/components/student/exams";
 import StudyMaterials from "@/app/components/student/studym";
 import Link from "next/link";
 import TestCreator from "@/app/components/student/TestCreator";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const CoursePage = () => {
   const { courseId } = useParams();
@@ -20,7 +21,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/courses/${courseId}`) 
+      .get(`${apiUrl}api/courses/${courseId}`) 
       .then((response) => {
         // console.log("Course fetched:", response.data);
         setCourse(response.data);  

@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import RenderTextWithLatex from "@/app/components/RenderWithLatex";
 import axios from "axios";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { useRouter } from "next/navigation";
 const TestPage = () => {
   const router = useRouter();
@@ -25,14 +26,14 @@ const TestPage = () => {
   //   const fetchQuestions = async () => {
   //     try {
   //       const chapterResponse = await axios.get(
-  //         `http://127.0.0.1:8000/api/exams/${testId}`
+  //         `${apiUrl}/api/exams/${testId}`
   //       );
   //       if (chapterResponse.data) {
   //         console.log("Chapter ID:", chapterResponse.data.chapter);
   //         const chapterId = chapterResponse.data.chapter;
 
   //         const questionsResponse = await axios.get(
-  //           `http://127.0.0.1:8000/api/questions/chapter/${chapterId}`
+  //           `${apiUrl}/api/questions/chapter/${chapterId}`
   //         );
   //         if (questionsResponse.data) {
   //           console.log("Fetched Questions:", questionsResponse.data);
@@ -51,7 +52,7 @@ const TestPage = () => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/questions/exam-id/${testId}`
+          `${apiUrl}/api/questions/exam-id/${testId}`
         );
 
         if (response.data) {
@@ -70,7 +71,7 @@ const TestPage = () => {
     const fetchInstanceId = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
+          `${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (response.data) {
           console.log(`sss$`);
@@ -91,7 +92,7 @@ const TestPage = () => {
         if (!tableId) return;
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/exam-data/${tableId}`
+          `${apiUrl}/api/exam-data/${tableId}`
         );
         const data = response.data;
         console.log(data);
@@ -167,7 +168,7 @@ const TestPage = () => {
 
     try {
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/exam-data/${tableId}/`,
+        `${apiUrl}/api/exam-data/${tableId}/`,
         dataToSave
       );
       console.log("Data saved successfully:", response.data);

@@ -4,10 +4,11 @@ import Link from "next/link";
 const VideoHighlights = () => {
   const [Videos, setVideos] = useState(null);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   useEffect(() => {
     const fetchVideos = async () => {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/lecture-videos/?is_featured=true`
+      const response = await fetch(`${apiUrl}/api/lecture-videos/?is_featured=true`
       );
 
       if (response.ok) {

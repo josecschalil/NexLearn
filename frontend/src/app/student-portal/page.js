@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import axios from "axios";
 
 const CourseList = () => {
@@ -24,7 +25,7 @@ const CourseList = () => {
       // console.log("Fetching courses for user:", userId);
 
       axios
-        .get(`http://127.0.0.1:8000/api/userCourses/${userId}`)
+        .get(`${apiUrl}/api/userCourses/${userId}`)
         .then((response) => {
           // console.log("User courses data:", response.data);
 
@@ -33,7 +34,7 @@ const CourseList = () => {
 
           const coursePromises = courses.map((coursedata) => {
             return axios.get(
-              `http://127.0.0.1:8000/api/courses/${coursedata.course_id}`
+              `${apiUrl}/api/courses/${coursedata.course_id}`
             );
           });
 

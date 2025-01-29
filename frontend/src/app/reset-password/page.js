@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import showPopup from "../components/Toast";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function ResetRequest() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export default function ResetRequest() {
     setloading(true); 
 
     axios
-      .post("http://127.0.0.1:8000/reset-password/", {
+      .post(`${apiUrl}/reset-password/`, {
         email: email,
       })
       .then((res) => {

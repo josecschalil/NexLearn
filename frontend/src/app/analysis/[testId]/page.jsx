@@ -15,6 +15,8 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const AnalysisPage = () => {
@@ -34,8 +36,7 @@ const AnalysisPage = () => {
         }
 
         // Fetch Test Data
-        const testResponse = await axios.get(
-          `http://127.0.0.1:8000/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
+        const testResponse = await axios.get(`${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (testResponse.data && testResponse.data.length > 0) {
           setTestData(testResponse.data[0]);
@@ -44,8 +45,7 @@ const AnalysisPage = () => {
           return;
         }
 
-        const Response = await axios.get(
-          `http://127.0.0.1:8000/api/questions/exam-id/${testId}`
+        const Response = await axios.get(`${apiUrl}/api/questions/exam-id/${testId}`
         );
         if (Response.data) {
             setQuestions(Response.data);

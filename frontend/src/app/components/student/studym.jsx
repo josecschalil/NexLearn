@@ -1,13 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const StudyMaterials = () => {
   const [StudyMaterials, setStudyMaterials] = useState(null);
 
   useEffect(() => {
     const fetchStudyMaterials = async () => {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/lecture-notes/?is_featured=true`
+        `${apiUrl}/api/lecture-notes/?is_featured=true`
       );
 
       if (response.ok) {

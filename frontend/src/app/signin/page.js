@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import showPopup from "../components/Toast";
 import useAuthCheck from "@/hooks/useAuthCheck";  // Import your custom authentication hook
-
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const SignInPage = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuthCheck();
@@ -42,7 +42,7 @@ const SignInPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/auth/token/", {
+      const response = await axios.post(`${apiUrl}/auth/token/`, {
         email: formData.email,
         password: formData.password,
       });

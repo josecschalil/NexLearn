@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const Contents = () => {
   const [Videos, setVideos] = useState(null);
 
   useEffect(() => {
 
     const fetchVideos = async () => {
-      const response = await fetch(`http://127.0.0.1:8000/api/lecture-videos/?is_featured=true`);
+      const response = await fetch(`${apiUrl}/api/lecture-videos/?is_featured=true`);
       
       if (response.ok) {
         const data = await response.json();

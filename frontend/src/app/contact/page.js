@@ -13,6 +13,7 @@ const ContactUsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +27,7 @@ const ContactUsPage = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/contact-us/", {
+      const response = await fetch(`${apiUrl}/contact-us/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

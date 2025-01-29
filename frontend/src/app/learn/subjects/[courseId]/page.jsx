@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useParams } from "next/navigation";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const Contents = () => {
 
 
@@ -15,7 +16,7 @@ const Contents = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       const response = await fetch(
-        `http://localhost:8000/api/subjects/?course_id=${courseId}`
+        `${apiUrl}/api/subjects/?course_id=${courseId}`
       );
 
       if (response.ok) {
@@ -32,7 +33,7 @@ const Contents = () => {
   
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/courses/${courseId}`) 
+      .get(`${apiUrl}/api/courses/${courseId}`) 
       .then((response) => {
         console.log("Course fetched:", response.data);
         setCourse(response.data);  

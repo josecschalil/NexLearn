@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const VideosPage = () => {
   const { videoId } = useParams();
@@ -16,7 +17,7 @@ const VideosPage = () => {
     const fetchVideo = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/lecture-videos/${videoId}/`
+          `${apiUrl}/api/lecture-videos/${videoId}/`
         );
 
         if (response.ok) {

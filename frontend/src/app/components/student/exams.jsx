@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Modal from "./Modal";
-
-import axios from "axios";
 import InfoCard from "../Card";
 import Link from "next/link";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const Exams = ({ id, setIsTestCreatorOpen }) => {
 
   const userId = localStorage.getItem("user_id");

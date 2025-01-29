@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useEffect ,useState} from "react";
 import VideoCard2 from "@/app/components/videocard2";
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const ChapterPage = () => {
   const { chapterId } = useParams(); 
@@ -18,7 +19,7 @@ const ChapterPage = () => {
     const fetchChapterId = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/chapters/${chapterId}`
+          `${apiUrl}/api/chapters/${chapterId}`
         );
 
         if (response.ok) {
@@ -47,7 +48,7 @@ const ChapterPage = () => {
       const fetchContents = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8000/api/lecture-videos/?chapter_id=${chapterId}`
+            `${apiUrl}/api/lecture-videos/?chapter_id=${chapterId}`
           );
   
           if (response.ok) {

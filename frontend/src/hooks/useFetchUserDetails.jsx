@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import useTokenRefresh from "./useTokenRefresh";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const useFetchUserDetails = () => {
   const [userDetails, setUserDetails] = useState(null);
   const { refreshToken } = useTokenRefresh();
@@ -11,7 +13,7 @@ const useFetchUserDetails = () => {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("Access token not found");
 
-      const response = await axios.get("http://127.0.0.1:8000/api/user", {
+      const response = await axios.get(`${apiUrl}/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

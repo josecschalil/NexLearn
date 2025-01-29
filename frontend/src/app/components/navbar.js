@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
 import useAuthentication from "@/hooks/useAuthentication";
 
+
 const Navbar = () => {
   const pathname = usePathname();
   const [user_id, setUserId] = useState(null);
