@@ -93,9 +93,9 @@ export default function ResetRequest() {
 
 
         <p className="text-sm text-center text-gray-600 mt-3">
-          <a href="/signin" className="text-teal-600 font-medium hover:underline">
+          <Link href={ `/signin`} className="text-teal-600 font-medium hover:underline">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>
