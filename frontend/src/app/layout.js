@@ -1,10 +1,9 @@
 import Navbar from "./components/navbar";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "Jee Neet Pulse",
-  description: "institution for jee - neet entrance exams,",
+  description: "institution for JEE - NEET entrance exams,",
 };
 
 export default function RootLayout({ children }) {
