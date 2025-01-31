@@ -3,9 +3,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import showPopup from "../components/Toast";
+import { toast } from 'sonner';
 import useAuthCheck from "@/hooks/useAuthCheck";  // Import your custom authentication hook
+
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
 const SignInPage = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuthCheck();
@@ -31,6 +35,7 @@ const SignInPage = () => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -55,8 +60,9 @@ const SignInPage = () => {
       localStorage.setItem("refresh_token", refresh);
       localStorage.setItem("user_id", userId);
 
-      showPopup("User Logged In Successfully.");
+      toast.success("User logged in successfully.");
       router.push(`/student-portal`);
+
     } catch (err) {
       setError("Invalid email or password.");
     } finally {
@@ -106,10 +112,7 @@ const SignInPage = () => {
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input type="checkbox" className="h-4 w-4 text-teal-600 border-gray-300 rounded" />
-              <span className="ml-2 text-sm text-gray-700">Remember me</span>
-            </label>
+           
             <a href="/reset-password" className="text-sm text-teal-600 hover:underline">
               Forgot password?
             </a>
@@ -124,22 +127,7 @@ const SignInPage = () => {
           </button>
         </form>
 
-        <div className="flex items-center my-6">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="px-4 text-sm text-gray-500">or</span>
-          <div className="flex-grow border-t border-gray-300"></div>
-        </div>
-
-        <div className="flex flex-col space-y-3">
-          <button className="flex items-center justify-center px-4 py-2 border rounded-lg shadow-sm bg-white hover:bg-gray-100">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-              alt="Google Logo"
-              className="h-5 w-5 mr-2"
-            />
-            Sign in with Google
-          </button>
-        </div>
+  
 
         <p className="text-sm text-center text-gray-600 mt-6">
           Don’t have an account?{" "}

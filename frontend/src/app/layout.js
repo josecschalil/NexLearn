@@ -1,5 +1,6 @@
 import Navbar from "./components/navbar";
 import "./globals.css";
+import { Toaster } from 'sonner';
 
 export const metadata = {
   title: "Jee Neet Pulse",
@@ -12,7 +13,9 @@ export default function RootLayout({ children }) {
       <body className="m-0 p-0 font-instSansN overflow-x-hidden"  >
       
       <Navbar />
+      
       {children}
+      <Toaster /> 
       </body>
     </html>
   );

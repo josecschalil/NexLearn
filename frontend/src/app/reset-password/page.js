@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import showPopup from "../components/Toast";
+import { toast } from 'sonner';
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function ResetRequest() {
@@ -87,7 +87,7 @@ export default function ResetRequest() {
           </button>
           </form>
         ) : (
-          showPopup(message)
+          toast.success(message)
         )}
 
       

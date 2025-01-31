@@ -2,8 +2,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import showPopup from '@/app/components/Toast';
+import { toast } from 'sonner';
 import axios from 'axios';
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function ResetPassword() {
@@ -15,13 +16,9 @@ export default function ResetPassword() {
   const router = useRouter();
   const { uidb64, token } = useParams(); 
 
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (password.length < 8) {
       setMessage("Password must be at least 8 characters long.");
       return;
@@ -34,18 +31,16 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${apiUrl}/reset-password/${uidb64}/${token}/`, {
-        // uidb64,
-        // token,
+        const response = await axios.post(`${apiUrl}/reset-password/${uidb64}/${token}/`, {
         password,
         confirmPassword
       });
 
-      showPopup('Password has been reset successfully!');
+      toast.success('Password has been reset successfully!');
       setMessage('Password reset successfully!');
       router.push(`/signin`);
     } catch (error) {
-      showPopup('Failed to reset password.');
+      toast.error('Failed to reset password.');
       setMessage(error);
     } finally {
       setLoading(false);

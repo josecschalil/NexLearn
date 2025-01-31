@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import showPopup from '@/app/components/Toast';
+import { toast } from 'sonner';
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import axios from 'axios';
 
@@ -16,16 +16,15 @@ const VerifyEmail = () => {
       axios
         .get(`${apiUrl}/verify-email/${uidb64}/${token}/`)
         .then((response) => {
-          showPopup('Your email has been successfully verified!')
           setMessage('Your email has been successfully verified!');
+          toast.success(message);
           setLoading(false);
           router.push(`/signin`);
           
         })
         .catch((error) => {
-          showPopup('Error');
           setMessage('Invalid or expired token.');
-   
+          toast.error(message);
         });
     }
 
