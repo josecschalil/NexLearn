@@ -63,7 +63,7 @@ const SubjectPage = () => {
           </h2>
           <div className="w-[95%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 ">
             {chapters.map((chapter, index) => (
-              <Link key={index} href={`${apiUrl}/learn/contents/${chapter.id}`}>
+              <Link key={index} href={`/learn/contents/${chapter.id}`}>
                 <div className="w-full hover:border-gray-400   flex  items-center justify-between pl-2 pr-4 py-3 border rounded-xl">
 
                   <div className="flex items-center space-x-4">

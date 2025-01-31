@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useEffect ,useState} from "react";
 import VideoCard2 from "@/app/components/videocard2";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const ChapterPage = () => {
