@@ -1,0 +1,5 @@
+jeeneetpulse.com {
+    email jeeneetpulseofficial@gmail.com
+    reverse_proxy django_container:8000
+    encode zstd gzip
+}

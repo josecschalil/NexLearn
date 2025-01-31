@@ -16,18 +16,39 @@ services:
 
   django:
     build:
-      context: ./backend      # Build the Django app from the backend folder
+      context: ./backend  # Build the Django app from the backend folder
     container_name: django_container
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/app        # Mount the backend directory inside the container
+      - ./backend:/app  # Mount the backend directory inside the container
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://postgres:1234d@db:5432/jeeneetpulse
+      - DATABASE_URL=postgres://postgres:1234@db:5432/jeeneetpulse
       - DEBUG=1
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy_container
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile  # Your Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django
+    networks:
+      - backend
 
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  backend:
+    driver: bridge
