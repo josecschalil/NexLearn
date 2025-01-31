@@ -65,6 +65,17 @@ ROOT_URLCONF = 'backend.urls'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://jeeneetpulse.com',
+    'https://www.jeeneetpulse.com', 
+    'https://api.jeeneetpulse.com',  
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://jeeneetpulse.com',
+    'https://www.jeeneetpulse.com',
+    'https://api.jeeneetpulse.com',  
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
