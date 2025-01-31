@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthentication from "@/hooks/useAuthentication";
-import showPopup from "../components/Toast";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const SignUpPage = () => {
@@ -24,8 +24,7 @@ const SignUpPage = () => {
 
   useEffect(()=>{
       if(isAuthenticated){
-        console.log("ss")
-      showPopup("Already Signed In. Sign Out to Register")
+      toast.error("Already Signed In. Sign Out to Register")
       router.push(`/`);}
 
   },[isAuthenticated])
@@ -87,7 +86,7 @@ const SignUpPage = () => {
       setMessage(
         "User registered successfully! Please check your email to verify your account."
       );
-      showPopup(
+      toast.success(
         "An Email has been sent to your registered mail. Confirm to finish Sign-up."
       );
       router.push("/");

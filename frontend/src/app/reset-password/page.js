@@ -17,7 +17,7 @@ export default function ResetRequest() {
     setloading(true); 
 
     axios
-      .post(`${apiUrl}/reset-password/`, {
+      .post(`${apiUrl}reset-password/`, {
         email: email,
       })
       .then((res) => {

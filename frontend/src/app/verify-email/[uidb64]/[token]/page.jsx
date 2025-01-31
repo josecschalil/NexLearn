@@ -17,14 +17,14 @@ const VerifyEmail = () => {
         .get(`${apiUrl}/verify-email/${uidb64}/${token}/`)
         .then((response) => {
           setMessage('Your email has been successfully verified!');
-          toast.success(message);
+          toast.success('Your email has been successfully verified!');
           setLoading(false);
           router.push(`/signin`);
           
         })
         .catch((error) => {
           setMessage('Invalid or expired token.');
-          toast.error(message);
+          toast.error('Invalid or expired token.');
         });
     }
 
@@ -35,7 +35,7 @@ const VerifyEmail = () => {
  
 
   return (
-    <div className='m-auto bg-[#EBFFF9] h-screen'>
+    <div className='m-auto  h-screen'>
       <h1>Email Verification</h1>
       {loading ? (
         <p>Verifying...</p>

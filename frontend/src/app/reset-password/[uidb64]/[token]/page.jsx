@@ -31,7 +31,7 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-        const response = await axios.post(`${apiUrl}/reset-password/${uidb64}/${token}/`, {
+        const response = await axios.post(`${apiUrl}reset-password/${uidb64}/${token}/`, {
         password,
         confirmPassword
       });
