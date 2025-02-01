@@ -17,7 +17,7 @@ router.register(r'chapterquestions', ChapterQuestionViewSet) #its for manymany s
 
 urlpatterns = [
     path('chapters/', ChapterListView.as_view(), name='chapter-list'),
-    path('upload-questions/', BulkQuestionUploadView.as_view(), name='upload-questions'),
+    path('upload-questions-chapter/', BulkQuestionUploadView.as_view(), name='upload-questions'),
     path('chapters/bulk/', bulk_create_chapters, name='bulk-create-chapters'),  
     path('chapter-questions/', ChapterQuestionsView.as_view(), name='chapter-questions'),
 

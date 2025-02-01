@@ -29,7 +29,10 @@ class BulkQuestionUploadView(CreateAPIView):
         """Populate dropdown choices with available chapters"""
         context = super().get_serializer_context()
         context["chapters"] = Chapter.objects.values("id", "name")  # Pass chapters list
+
         return context
+
+
 class ChapterListView(ListAPIView):
     permission_classes = [AllowAny]
 
@@ -79,54 +82,6 @@ class ChapterQuestionsView(APIView):
 
         serializer = QuestionSerializer(selected_questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-
-class ChapterQuestionsView(APIView):
-    permission_classes = [AllowAny]
-    def get(self, request):
-        
-        chapter_ids = request.query_params.getlist('chapter_ids')
-        difficulty = request.query_params.get('difficulty')
-        total_questions = int(request.query_params.get('total_questions', 10))
-
-        if not chapter_ids or difficulty is None:
-            return Response(
-                {"error": "chapter_ids and difficulty are required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-
-        chapter_question_ids = ChapterQuestion.objects.filter(
-            chapter_id__in=chapter_ids
-        ).values_list('question_id', flat=True)
-
-        filtered_questions = Question.objects.filter(
-            id__in=chapter_question_ids,
-            level=difficulty
-        )
-
-        num_chapters = len(chapter_ids)
-        questions_per_chapter = max(1, total_questions // num_chapters)
-
-        selected_questions = []
-        for chapter_id in chapter_ids:
-         
-            chapter_questions = filtered_questions.filter(
-                id__in=ChapterQuestion.objects.filter(chapter_id=chapter_id).values_list('question_id', flat=True)
-            )
-
-            
-            random_chapter_questions = list(chapter_questions.order_by('?')[:questions_per_chapter])
-            selected_questions.extend(random_chapter_questions)
-
-    
-        selected_questions = selected_questions[:total_questions]
-
-        serializer = QuestionSerializer(selected_questions, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class SubjectViewSet(viewsets.ModelViewSet):
@@ -428,5 +383,6 @@ class ChapterQuestionViewSet(viewsets.ModelViewSet):
     queryset = ChapterQuestion.objects.all()
     serializer_class = ChapterQuestionSerializer
     permission_classes = [AllowAny]
+
 
 
