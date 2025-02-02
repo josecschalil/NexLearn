@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
+import api from "../../../services/api";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TestsPage = () => {
   const course_id=useParams();
@@ -17,7 +19,7 @@ const TestsPage = () => {
     const fetchExams = async () => {
       try {
         console.log(course_id.courseId);
-        const response = await axios.get(`${apiUrl}/api/exams/?course_id=${course_id.courseId}`);
+        const response = await api.get(`/api/exams/?course_id=${course_id.courseId}`);
         console.log(response.data);
         setExams(response.data);
         setLoading(false);
@@ -36,7 +38,7 @@ const TestsPage = () => {
 
       try {
         const metadataPromises = exams.map((exam) =>
-          axios.get(`${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${exam.exam_id}`)
+          api.get(`/api/exam-data/filter/?user=${userId}&exam_id=${exam.exam_id}`)
         );
 
         const metadataResponses = await Promise.all(metadataPromises);
@@ -84,7 +86,7 @@ const TestsPage = () => {
     };
 
     try {
-      const response = await axios.post(`${apiUrl}api/exam-data/`, payload);
+      const response = await api.post(`api/exam-data/`, payload);
       console.log("Test started successfully:", response.data);
     } catch (error) {
       console.error("Error starting the test:", error);

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { toast } from 'sonner';
 import useAuthCheck from "@/hooks/useAuthCheck";  // Import your custom authentication hook
 
-
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
@@ -47,7 +46,7 @@ const SignInPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${apiUrl}/auth/token/`, {
+      const response = await axios.post(`${apiUrl}auth/token/`, {
         email: formData.email,
         password: formData.password,
       });

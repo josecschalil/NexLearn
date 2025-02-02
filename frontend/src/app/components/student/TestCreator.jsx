@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import api from "../../services/api";
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const TimeSelector = ({ time, setTime }) => {
@@ -139,15 +139,15 @@ const SubjectSelector = ({
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/api/subjects/?course_id=${courseid}`
+        const response = await api.get(
+          `/api/subjects/?course_id=${courseid}`
         );
         const subjectsData = response.data;
 
         const updatedSubjectOptions = await Promise.all(
           subjectsData.map(async (subject) => {
-            const chaptersResponse = await axios.get(
-              `${apiUrl}/api/chapters/?subject=${subject.id}`
+            const chaptersResponse = await api.get(
+              `/api/chapters/?subject=${subject.id}`
             );
             return {
               ...subject,
@@ -342,9 +342,9 @@ const TestCreator = ({ id }) => {
         .map((chapterId) => `chapter_ids=${encodeURIComponent(chapterId)}`)
         .join("&");
 
-      const questionApiUrl = `${apiUrl}/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
+      const questionApiUrl = `/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
       console.log( questionApiUrl)
-      const questionResponse = await axios.get(questionApiUrl);
+      const questionResponse = await api.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
 
       console.log("Fetched Questions:", questionIds);
@@ -364,8 +364,8 @@ const TestCreator = ({ id }) => {
       };
 
       console.log(examPayload);
-      const createExamResponse = await axios.post(
-        `${apiUrl}/api/exams/`,
+      const createExamResponse = await api.post(
+        `/api/exams/`,
         examPayload,
         {
           headers: {
@@ -377,7 +377,7 @@ const TestCreator = ({ id }) => {
       const newExamId = createExamResponse.data.exam_id;
       console.log("New Exam Created:", newExamId);
       const linkRequests = questionIds.map((questionId) =>
-        axios.post(`${apiUrl}/api/examquestions/`, {
+        api.post(`/api/examquestions/`, {
           exam: newExamId,
           question: questionId,
         })
@@ -401,8 +401,8 @@ const TestCreator = ({ id }) => {
       };
 
       try {
-        const response = await axios.post(
-          `${apiUrl}/api/exam-data/`,
+        const response = await api.post(
+          `/api/exam-data/`,
           payload_exam_data
         );
         console.log("Test started successfully:", response.data);

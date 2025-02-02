@@ -34,10 +34,17 @@ api.interceptors.response.use(
 
 async function refreshAccessToken() {
   try {
+    console.log("Refreshing token with refresh token:", refreshToken); // Log refresh token
     const response = await axios.post(`${apiUrl}/api/token/refresh/`, { refresh: refreshToken });
+    console.log("Token refresh successful:", response.data); // Log response
     return response.data;
   } catch (error) {
     console.error("Error refreshing token:", error);
+    // Handle refresh failure (e.g., logout user)
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    // Redirect to login page
+    window.location.href = '/signin';
     return null;
   }
 }

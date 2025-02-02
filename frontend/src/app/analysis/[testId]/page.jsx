@@ -5,6 +5,7 @@ import RenderTextWithMathJax from "@/app/components/RenderWithMathJax";
 import RenderTextWithLatex from "@/app/components/RenderWithLatex";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
+import api from "../../services/api";
 import {
   Chart as ChartJS,
   BarElement,
@@ -36,7 +37,7 @@ const AnalysisPage = () => {
         }
 
         // Fetch Test Data
-        const testResponse = await axios.get(`${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
+        const testResponse = await api.get(`/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (testResponse.data && testResponse.data.length > 0) {
           setTestData(testResponse.data[0]);
@@ -45,7 +46,7 @@ const AnalysisPage = () => {
           return;
         }
 
-        const Response = await axios.get(`${apiUrl}/api/questions/exam-id/${testId}`
+        const Response = await api.get(`/api/questions/exam-id/${testId}`
         );
         if (Response.data) {
             setQuestions(Response.data);
