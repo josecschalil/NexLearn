@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import api from "../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const StudyMaterials = () => {
@@ -8,17 +9,14 @@ const StudyMaterials = () => {
 
   useEffect(() => {
     const fetchStudyMaterials = async () => {
-      const response = await fetch(
-        `${apiUrl}/api/lecture-notes/?is_featured=true`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setStudyMaterials(data);
-      } else {
-        console.error("Failed to fetch StudyMaterials");
+      try {
+        const response = await api.get(`/api/lecture-notes/?is_featured=true`);
+        setStudyMaterials(response.data);
+      } catch (error) {
+        console.error("Failed to fetch StudyMaterials:", error);
       }
     };
+    
 
     fetchStudyMaterials();
   }, []);

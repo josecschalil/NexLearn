@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import axios from "axios";
-
+import api from "../services/api";
 const CourseList = () => {
   const [coursesData, setCoursesData] = useState([]);
   const [progressArray, setProgressArray] = useState([]);
@@ -24,8 +24,8 @@ const CourseList = () => {
     if (userId) {
       // console.log("Fetching courses for user:", userId);
 
-      axios
-        .get(`${apiUrl}/api/userCourses/${userId}`)
+      api
+        .get(`/api/userCourses/${userId}`)
         .then((response) => {
           // console.log("User courses data:", response.data);
 
@@ -33,8 +33,8 @@ const CourseList = () => {
           // console.log("Courses found:", courses);
 
           const coursePromises = courses.map((coursedata) => {
-            return axios.get(
-              `${apiUrl}/api/courses/${coursedata.course_id}`
+            return api.get(
+              `/api/courses/${coursedata.course_id}`
             );
           });
 

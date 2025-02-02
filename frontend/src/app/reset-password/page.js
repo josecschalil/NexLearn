@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { toast } from 'sonner';
+import api from "../services/api";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function ResetRequest() {
@@ -16,8 +18,8 @@ export default function ResetRequest() {
 
     setloading(true); 
 
-    axios
-      .post(`${apiUrl}reset-password/`, {
+    api
+      .post(`reset-password/`, {
         email: email,
       })
       .then((res) => {

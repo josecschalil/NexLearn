@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import api from "../../../services/api";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const Contents = () => {
 
@@ -15,15 +16,17 @@ const Contents = () => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const response = await fetch(
-        `${apiUrl}/api/subjects/?course_id=${courseId}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setSubjects(data);
-      } else {
-        console.error("Failed to fetch subjects");
+      try {
+        const response = await api.get(`/api/subjects/?course_id=${courseId}`);
+    
+        // Check if the response was successful
+        if (response.status === 200) {
+          setSubjects(response.data); // Directly use response.data
+        } else {
+          console.error("Failed to fetch subjects:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
       }
     };
 
@@ -32,8 +35,8 @@ const Contents = () => {
 
   
   useEffect(() => {
-    axios
-      .get(`${apiUrl}/api/courses/${courseId}`) 
+    api
+      .get(`/api/courses/${courseId}`) 
       .then((response) => {
         console.log("Course fetched:", response.data);
         setCourse(response.data);  

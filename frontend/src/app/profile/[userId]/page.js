@@ -5,6 +5,7 @@ import Link from "next/link";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import useAuthentication from "@/hooks/useAuthentication";
 import axios from "axios";
+import api from "../../services/api";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -15,14 +16,14 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (userId) {
-      axios
-        .get(`${apiUrl}/api/userCourses/${userId}`)
+      api
+        .get(`/api/userCourses/${userId}`)
         .then((response) => {
           const courses = response.data.courses;
 
           const coursePromises = courses.map((coursedata) => {
-            return axios.get(
-              `${apiUrl}/api/courses/${coursedata.course_id}`
+            return api.get(
+              `/api/courses/${coursedata.course_id}`
             );
           });
 

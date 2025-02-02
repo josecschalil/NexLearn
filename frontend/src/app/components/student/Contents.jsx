@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import api from "../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -9,15 +10,14 @@ const Contents = () => {
   useEffect(() => {
 
     const fetchVideos = async () => {
-      const response = await fetch(`${apiUrl}/api/lecture-videos/?is_featured=true`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setVideos(data); 
-      } else {
-        console.error("Failed to fetch Videos");
+      try {
+        const response = await api.get(`/api/lecture-videos/?is_featured=true`);
+        setVideos(response.data); // Axios automatically parses JSON
+      } catch (error) {
+        console.error("Failed to fetch Videos:", error);
       }
     };
+    
 
     fetchVideos(); 
   } ,[]); 

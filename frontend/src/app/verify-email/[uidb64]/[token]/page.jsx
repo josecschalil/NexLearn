@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import axios from 'axios';
+import api from "../../../services/api";
 
 const VerifyEmail = () => {
   const router = useRouter();
@@ -13,8 +14,8 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (uidb64 && token) {
-      axios
-        .get(`${apiUrl}/verify-email/${uidb64}/${token}/`)
+      api
+        .get(`/verify-email/${uidb64}/${token}/`)
         .then((response) => {
           setMessage('Your email has been successfully verified!');
           toast.success('Your email has been successfully verified!');

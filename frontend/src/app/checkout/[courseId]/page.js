@@ -5,6 +5,7 @@ import Link from "next/link";
 import useAuthentication from "@/hooks/useAuthentication";
 import showPopup from "@/app/components/Toast";
 import axios from "axios";
+import api from "../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -29,8 +30,8 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (userId) {
-      axios
-        .get(`${apiUrl}/api/userCourses/${userId}`)
+      api
+        .get(`/api/userCourses/${userId}`)
         .then((response) => {
           console.log(response?.data.courses);
           const isEnrolled = response?.data.courses.some(
@@ -52,7 +53,7 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/courses/${courseId}`
+        const response = await api.get(`/api/courses/${courseId}`
         );
         setCourse(response.data);
         setLoading(false);
@@ -106,8 +107,8 @@ const CheckoutPage = () => {
       course: courseId,
     };
 
-    axios
-      .post(`${apiUrl}/api/userCourses/`, data)
+    api
+      .post(`/api/userCourses/`, data)
       .then((response) => {
         console.log("Course added to user successfully:", response.data);
       })

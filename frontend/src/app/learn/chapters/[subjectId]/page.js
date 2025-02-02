@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import api from "../../../services/api";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const SubjectPage = () => {
@@ -14,25 +15,19 @@ const SubjectPage = () => {
       console.error("subjectId is undefined!");
       return;
     }
-
     const fetchChapters = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/api/chapters/subject/${subjectId}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setChapters(data);
-        } else {
-          console.error("Failed to fetch chapters");
-        }
+        const response = await api.get(`/api/chapters/subject/${subjectId}`);
+    
+        // If the response is successful, use response.data directly
+        setChapters(response.data);
       } catch (error) {
         console.error("Error fetching chapters:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false); // Ensure loading is false once the operation finishes
       }
     };
+    
 
     fetchChapters();
   }, [subjectId]);

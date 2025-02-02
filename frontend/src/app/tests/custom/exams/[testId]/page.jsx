@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import RenderTextWithLatex from "@/app/components/RenderWithLatex";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import api from "../../../../services/api";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TestPage = () => {
   const router = useRouter();
@@ -51,8 +53,8 @@ const TestPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/api/questions/exam-id/${testId}`
+        const response = await api.get(
+          `/api/questions/exam-id/${testId}`
         );
 
         if (response.data) {
@@ -70,8 +72,8 @@ const TestPage = () => {
   useEffect(() => {
     const fetchInstanceId = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
+        const response = await api.get(
+          `/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (response.data) {
           const fetchedId = response?.data[0].id;
@@ -90,8 +92,8 @@ const TestPage = () => {
       try {
         if (!tableId) return;
 
-        const response = await axios.get(
-          `${apiUrl}/api/exam-data/${tableId}`
+        const response = await api.get(
+          `/api/exam-data/${tableId}`
         );
         const data = response.data;
         console.log(data);
@@ -166,8 +168,8 @@ const TestPage = () => {
     };
 
     try {
-      const response = await axios.patch(
-        `${apiUrl}/api/exam-data/${tableId}/`,
+      const response = await api.patch(
+        `/api/exam-data/${tableId}/`,
         dataToSave
       );
       console.log("Data saved successfully:", response.data);

@@ -92,10 +92,7 @@ class ExamQuestionSerializer(serializers.ModelSerializer):
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
-        fields = ['id', 'name']  # Customize fields as needed
-
-
-
+        fields =  '__all__'    # Customize fields as needed
 
 class BulkQuestionUploadSerializer(serializers.Serializer):
     chapter_id = serializers.ChoiceField(choices=[])  # Dropdown for selecting chapter

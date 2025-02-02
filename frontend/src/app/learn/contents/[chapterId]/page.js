@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useEffect ,useState} from "react";
 import VideoCard2 from "@/app/components/videocard2";
+import api from "../../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -19,22 +20,17 @@ const ChapterPage = () => {
 
     const fetchChapterId = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/api/chapters/${chapterId}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setChapter(data);
-        } else {
-          console.error("Failed to fetch chapter detail");
-        }
+        const response = await api.get(`/api/chapters/${chapterId}`);
+    
+        // Directly use response.data
+        setChapter(response.data);
       } catch (error) {
-        console.error("Error fetching :", error);
+        console.error("Error fetching chapter detail:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false); // Ensure loading is set to false once operation finishes
       }
     };
+    
 
     fetchChapterId();
   }, [chapterId]);
@@ -48,22 +44,17 @@ const ChapterPage = () => {
   
       const fetchContents = async () => {
         try {
-          const response = await fetch(
-            `${apiUrl}/api/lecture-videos/?chapter_id=${chapterId}`
-          );
-  
-          if (response.ok) {
-            const data = await response.json();
-            setContents(data);
-          } else {
-            console.error("Failed to fetch chapterssss");
-          }
+          const response = await api.get(`/api/lecture-videos/?chapter_id=${chapterId}`);
+      
+          // Directly use response.data
+          setContents(response.data);
         } catch (error) {
-          console.error("Error fetching chapters:", error);
+          console.error("Error fetching contents:", error);
         } finally {
-          setLoading(false); 
+          setLoading(false); // Ensure loading is set to false once operation finishes
         }
       };
+      
   
       fetchContents();
     }, [chapterId]);

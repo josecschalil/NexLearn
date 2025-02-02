@@ -5,6 +5,7 @@ import axios from "axios";
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 import Head from "next/head";
 import Link from "next/link";
+import api from "../../../services/api";
 
 
 
@@ -20,7 +21,7 @@ const TestsPage = () => {
     const fetchExams = async () => {
       try {
         console.log(course_id.courseId);
-        const response = await axios.get(`${apiUrl}/api/exams/?user_id=${userId}`);
+        const response = await api.get(`/api/exams/?user_id=${userId}`);
         console.log(response.data);
         setExams(response.data);
         setLoading(false);
@@ -39,7 +40,7 @@ const TestsPage = () => {
 
       try {
         const metadataPromises = exams.map((exam) =>
-          axios.get(`${apiUrl}/api/exam-data/filter/?user=${userId}&exam_id=${exam.exam_id}`)
+          api.get(`/api/exam-data/filter/?user=${userId}&exam_id=${exam.exam_id}`)
         );
 
         const metadataResponses = await Promise.all(metadataPromises);
