@@ -1,19 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/productCard";
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import api from "../services/api"; 
+
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
-      console.log(`${apiUrl}/api/courses`)
-      const response = await fetch(`${apiUrl}/api/courses`);
-      if (response.ok) {
-        const data = await response.json();
-        setCourses(data);
-      } else {
-        console.error("Failed to fetch courses");
+      try {
+        const response = await api.get("/api/courses"); 
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
       }
     };
 

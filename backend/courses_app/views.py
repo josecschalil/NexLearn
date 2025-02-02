@@ -21,9 +21,10 @@ from rest_framework.views import APIView
 from django.db.models import Count
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsAdminUser]
 
     def get_serializer_context(self):
         """Populate dropdown choices with available chapters"""
@@ -34,13 +35,13 @@ class BulkQuestionUploadView(CreateAPIView):
 
 
 class ChapterListView(ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
 
 class ChapterQuestionsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         
         chapter_ids = request.query_params.getlist('chapter_ids')
@@ -85,7 +86,7 @@ class ChapterQuestionsView(APIView):
 
 
 class SubjectViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -94,7 +95,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated,IsAdminUser])
 def bulk_create_chapters(request):
     if request.method == 'POST':
         serializer = ChapterSerializer(data=request.data, many=True)
@@ -104,6 +105,7 @@ def bulk_create_chapters(request):
             return Response(ChapterSerializer(chapters, many=True).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_chapters(request):
     chapters = Chapter.objects.all()
     serializer = ChapterSerializer(chapters, many=True)
@@ -115,7 +117,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
 
 class ChapterViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -131,7 +133,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
         return Response({"detail": "No chapters found for this subject."}, status=404)
 
 class LectureVideoViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = LectureVideo.objects.all()
     serializer_class = LectureVideoSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -140,7 +142,7 @@ class LectureVideoViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 class LectureNoteViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = LectureNote.objects.all()
     serializer_class = LectureNoteSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -149,7 +151,7 @@ class LectureNoteViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 class ExamViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -173,31 +175,42 @@ class ExamViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class QuestionViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+
+    def get_permissions(self):
+        """
+        Assign permissions dynamically:
+        - `list` and `retrieve`: Authenticated users (`IsAuthenticated`).
+        - `create`, `update`, `partial_update`, `destroy`: Admin users only (`IsAdminUser`).
+        """
+        if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
+            return [IsAuthenticated()]
+        return [IsAdminUser()]  # Restrict all modifications to admin users
+
     @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
     def get_questions_by_chapter(self, request, chapter_id=None):
+        """Retrieve questions by chapter ID"""
         questions = Question.objects.filter(chapters__chapter_id=chapter_id)
         if questions.exists():
             serializer = self.get_serializer(questions, many=True)
-            return Response(serializer.data, status=200)
-        return Response({"detail": "No questions found for this chapter."}, status=404)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"detail": "No questions found for this chapter."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=['get'], url_path='exam-id/(?P<exam_id>[^/.]+)')
-    def get_questions_by_exam_id(self, request, exam_id=None): #fixed this
+    def get_questions_by_exam_id(self, request, exam_id=None):
+        """Retrieve questions by exam ID"""
         questions = Question.objects.filter(exams__exam_id=exam_id)
         if questions.exists():
             serializer = self.get_serializer(questions, many=True)
-            return Response(serializer.data, status=200)
-        return Response({"detail": "No questions found for this exam."}, status=404)
-   
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"detail": "No questions found for this exam."}, status=status.HTTP_404_NOT_FOUND)
+
     @action(detail=True, methods=['put'], url_path='update')
     def update_question(self, request, pk=None):
-    
-        question = self.get_object() 
+        """Update an existing question (Admin Only)"""
+        question = self.get_object()
         serializer = self.get_serializer(question, data=request.data)
-        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -205,18 +218,19 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['patch'], url_path='partial-update')
     def partial_update_question(self, request, pk=None):
-        question = self.get_object()  # Retrieve the question instance based on the pk
+        """Partially update a question (Admin Only)"""
+        question = self.get_object()
         serializer = self.get_serializer(question, data=request.data, partial=True)
-        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
+
+        
 class CourseAddViewSet(viewsets.ModelViewSet):
     
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = UserCourseData.objects.all()
     serializer_class = UserCourseDataSerializer
 
@@ -314,7 +328,7 @@ class CourseAddViewSet(viewsets.ModelViewSet):
 
 class UserExamDataViewSet(viewsets.ModelViewSet):
     
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = UserExamData.objects.all()
     serializer_class = UserExamDataSerializer
     @action(detail=False, methods=['get'], url_path='filter')
@@ -372,17 +386,15 @@ class UserExamDataViewSet(viewsets.ModelViewSet):
 
 
 
-#new additions
-
 class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
     serializer_class = ExamQuestionSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class ChapterQuestionViewSet(viewsets.ModelViewSet):
     queryset = ChapterQuestion.objects.all()
     serializer_class = ChapterQuestionSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 
