@@ -86,7 +86,7 @@ class ChapterQuestionsView(APIView):
 
 
 class SubjectViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -151,7 +151,7 @@ class LectureNoteViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 class ExamViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -397,4 +397,35 @@ class ChapterQuestionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+
+
+
+from django.http import JsonResponse
+from django.views import View
+
+
+class CourseChapterFetcher:
+    def __init__(self, course_id):
+        self.course_id = course_id
+    
+    def get_chapter_ids(self):
+        # Get all subjects related to the course
+        subjects = Subject.objects.filter(course_id=self.course_id)
+        
+        # Get all chapter IDs for those subjects
+        chapter_ids = Chapter.objects.filter(subject__in=subjects).values_list('id', flat=True)
+        
+        return list(chapter_ids)
+
+
+class CourseChaptersView(View):
+    def get(self, request, course_id):
+        # Instantiate the CourseChapterFetcher with the provided course_id
+        fetcher = CourseChapterFetcher(course_id)
+        
+        # Get the list of chapter IDs
+        chapter_ids = fetcher.get_chapter_ids()
+        
+        # Return the chapter IDs as a JSON response
+        return JsonResponse({'chapter_ids': chapter_ids})
 
