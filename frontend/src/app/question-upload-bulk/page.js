@@ -14,7 +14,7 @@ const BulkQuestionUpload = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // Fetch courses
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -27,15 +27,15 @@ const BulkQuestionUpload = () => {
     fetchCourses();
   }, []);
 
-  // Fetch subjects when a course is selected
+
   useEffect(() => {
     const fetchSubjects = async () => {
       if (!selectedCourse) return;
       try {
         const response = await api.get(`/api/subjects/?course_id=${selectedCourse}`);
         setSubjects(response.data);
-        setSelectedSubject(""); // Reset selected subject
-        setChapters([]); // Reset chapters on course change
+        setSelectedSubject(""); 
+        setChapters([]); 
       } catch (err) {
         console.error("Failed to fetch subjects", err);
       }
@@ -43,14 +43,13 @@ const BulkQuestionUpload = () => {
     fetchSubjects();
   }, [selectedCourse]);
 
-  // Fetch chapters when a subject is selected
   useEffect(() => {
     const fetchChapters = async () => {
       if (!selectedSubject) return;
       try {
         const response = await api.get(`/api/chapters/subject/${selectedSubject}`);
         setChapters(response.data);
-        setSelectedChapter(""); // Reset selected chapter
+        setSelectedChapter(""); 
       } catch (err) {
         console.error("Failed to fetch chapters", err);
       }
@@ -58,10 +57,10 @@ const BulkQuestionUpload = () => {
     fetchChapters();
   }, [selectedSubject]);
 
-  // Handle form submission
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError(""); 
     setSuccess(false);
 
     try {
@@ -70,7 +69,7 @@ const BulkQuestionUpload = () => {
         questions_json: questionsJson,
       });
       setSuccess(true);
-      setQuestionsJson(""); // Clear input after success
+      setQuestionsJson(""); 
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.detail || "An error occurred.");
@@ -87,7 +86,7 @@ const BulkQuestionUpload = () => {
         <p className="text-sm text-center text-gray-500 mt-2">Upload bulk questions to the selected chapter.</p>
 
         <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
-          {/* Course Dropdown */}
+   
           <div>
             <label htmlFor="course" className="block text-sm font-medium text-gray-700">
               Course
@@ -108,7 +107,7 @@ const BulkQuestionUpload = () => {
             </select>
           </div>
 
-          {/* Subject Dropdown */}
+   
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
               Subject
@@ -130,7 +129,7 @@ const BulkQuestionUpload = () => {
             </select>
           </div>
 
-          {/* Chapter Dropdown */}
+        
           <div>
             <label htmlFor="chapter" className="block text-sm font-medium text-gray-700">
               Chapter
@@ -152,7 +151,7 @@ const BulkQuestionUpload = () => {
             </select>
           </div>
 
-          {/* Questions JSON Input */}
+   
           <div>
             <label htmlFor="questionsJson" className="block text-sm font-medium text-gray-700">
               Questions JSON
@@ -168,11 +167,11 @@ const BulkQuestionUpload = () => {
             />
           </div>
 
-          {/* Error and Success Messages */}
+       
           {error && <p className="text-sm text-red-600">{error}</p>}
           {success && <p className="text-sm text-green-600">Questions uploaded successfully!</p>}
 
-          {/* Submit Button */}
+        
           <button
             type="submit"
             className="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition duration-300"

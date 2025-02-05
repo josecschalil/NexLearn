@@ -8,11 +8,11 @@ const AdminExamPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [subjects, setSubjects] = useState([]);  // Store subjects for a selected course
-  const [chapters, setChapters] = useState([]);  // Store chapters for a selected subject
-  const [selectedCourse, setSelectedCourse] = useState("");  // Store the selected course
-  const [selectedSubject, setSelectedSubject] = useState(""); // Store the selected subject
-  const [selectedChapter, setSelectedChapter] = useState(""); // Store the selected chapter
+  const [subjects, setSubjects] = useState([]);  
+  const [chapters, setChapters] = useState([]);  
+  const [selectedCourse, setSelectedCourse] = useState("");  
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedChapter, setSelectedChapter] = useState(""); 
   const [selectedExamType, setSelectedExamType] = useState("fullcourse");
   const [editExamId, setEditExamId] = useState(null);
   const [newExam, setNewExam] = useState({
@@ -53,7 +53,7 @@ const AdminExamPage = () => {
   const fetchSubjects = async (courseId) => {
     try {
       const response = await api.get(`/api/subjects/?course_id=${courseId}`);
-      setSubjects(response.data);  // Set subjects for the selected course
+      setSubjects(response.data);  
     } catch (err) {
       console.error("Failed to fetch subjects");
     }
@@ -62,7 +62,7 @@ const AdminExamPage = () => {
   const fetchChapters = async (subjectId) => {
     try {
       const response = await api.get(`/api/chapters/subject/${subjectId}`);
-      setChapters(response.data);  // Set chapters for the selected subject
+      setChapters(response.data);  
     } catch (err) {
       console.error("Failed to fetch chapters");
     }
@@ -86,14 +86,14 @@ const AdminExamPage = () => {
       exam.is_fullCourseExam ? "fullcourse" : exam.is_fullSubjectExam ? "fullsubject" : "fullchapter"
     );
     setEditExamId(exam.exam_id);
-    setSelectedCourse(exam.course || ""); // Set the course if it's available
-    setSelectedSubject(exam.subject || ""); // Set the subject if it's available
-    setSelectedChapter(exam.chapter || ""); // Set the chapter if it's available
+    setSelectedCourse(exam.course || ""); 
+    setSelectedSubject(exam.subject || ""); 
+    setSelectedChapter(exam.chapter || ""); 
     if (exam.course) {
-      fetchSubjects(exam.course);  // Fetch subjects if course is selected
+      fetchSubjects(exam.course); 
     }
     if (exam.subject) {
-      fetchChapters(exam.subject);  // Fetch chapters if subject is selected
+      fetchChapters(exam.subject);  
     }
   };
 
@@ -107,9 +107,9 @@ const AdminExamPage = () => {
       is_fullChapterExam: selectedExamType === "fullchapter",
       is_customTest: false,
       user: null,
-      course: selectedExamType === "fullcourse" ? selectedCourse : null,  // Add course if fullcourse is selected
-      subject: selectedExamType === "fullsubject" ? selectedSubject : null, // Add subject if fullsubject is selected
-      chapter: selectedExamType === "fullchapter" ? selectedChapter : null, // Add chapter if fullchapter is selected
+      course: selectedExamType === "fullcourse" ? selectedCourse : null, 
+      subject: selectedExamType === "fullsubject" ? selectedSubject : null, 
+      chapter: selectedExamType === "fullchapter" ? selectedChapter : null, 
       questions: []
     };
 
@@ -130,9 +130,9 @@ const AdminExamPage = () => {
         chapter: ""
       });
       setEditExamId(null);
-      setSelectedCourse("");  // Reset selected course
-      setSelectedSubject("");  // Reset selected subject
-      setSelectedChapter("");  // Reset selected chapter
+      setSelectedCourse("");  
+      setSelectedSubject("");  
+      setSelectedChapter("");  
     } catch (err) {
       alert("Failed to create or update exam");
     }
@@ -182,13 +182,13 @@ const AdminExamPage = () => {
                   onChange={(e) => {
                     setSelectedExamType(e.target.value);
                     if (e.target.value !== "fullcourse") {
-                      setSelectedCourse("");  // Clear selected course when not fullcourse
+                      setSelectedCourse("");  
                     }
                     if (e.target.value !== "fullsubject") {
-                      setSelectedSubject("");  // Clear selected subject when not fullsubject
+                      setSelectedSubject("");  
                     }
                     if (e.target.value !== "fullchapter") {
-                      setSelectedChapter("");  // Clear selected chapter when not fullchapter
+                      setSelectedChapter("");  
                     }
                   }}
                   className="mr-2"
@@ -199,7 +199,6 @@ const AdminExamPage = () => {
           </div>
         </div>
 
-        {/* Dropdown to select course, only visible when fullcourse, fullsubject, or fullchapter is selected */}
         {(selectedExamType === "fullcourse" || selectedExamType === "fullsubject" || selectedExamType === "fullchapter") && (
           <div className="mb-2">
             <label className="font-semibold">Select Course:</label>
@@ -208,11 +207,11 @@ const AdminExamPage = () => {
               onChange={(e) => {
                 setSelectedCourse(e.target.value);
                 if (selectedExamType !== "fullchapter") {
-                  fetchSubjects(e.target.value); // Fetch subjects when a course is selected (except for fullchapter)
+                  fetchSubjects(e.target.value); 
                 }
                 if (selectedExamType === "fullchapter") {
-                  setSelectedSubject("");  // Clear subject for fullchapter selection
-                  setChapters([]); // Clear chapters for fullchapter selection
+                  setSelectedSubject("");  
+                  setChapters([]); 
                 }
               }}
               className="border p-2 w-full mb-2 rounded-md"
@@ -227,7 +226,7 @@ const AdminExamPage = () => {
           </div>
         )}
 
-        {/* Dropdown to select subject, only visible when fullsubject or fullchapter is selected */}
+       
         {(selectedExamType === "fullsubject" || selectedExamType === "fullchapter") && selectedCourse && (
           <div className="mb-2">
             <label className="font-semibold">Select Subject:</label>
@@ -236,7 +235,7 @@ const AdminExamPage = () => {
               onChange={(e) => {
                 setSelectedSubject(e.target.value);
                 if (selectedExamType === "fullchapter") {
-                  fetchChapters(e.target.value); // Fetch chapters for fullchapter exam type
+                  fetchChapters(e.target.value); 
                 }
               }}
               className="border p-2 w-full mb-2 rounded-md"
@@ -251,7 +250,6 @@ const AdminExamPage = () => {
           </div>
         )}
 
-        {/* Dropdown to select chapter, only visible when fullchapter is selected */}
         {selectedExamType === "fullchapter" && selectedSubject && (
           <div className="mb-2">
             <label className="font-semibold">Select Chapter:</label>
