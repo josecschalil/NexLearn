@@ -117,7 +117,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
 
 class ChapterViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -402,7 +402,7 @@ class ChapterQuestionViewSet(viewsets.ModelViewSet):
 
 from django.http import JsonResponse
 from django.views import View
-
+from .models import Course, Subject, Chapter
 
 class CourseChapterFetcher:
     def __init__(self, course_id):
