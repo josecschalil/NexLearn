@@ -294,7 +294,7 @@ const AdminExamPage = () => {
               <tr key={exam.exam_id} className="border-b">
                 <td className="p-4 text-left">{exam.exam_title}</td>
                 <td className="p-4 text-center">{exam.time} min</td>
-                <td className="p-4 text-center">{exam.difficulty}</td>
+                <td className="p-4 text-center">{exam.diffculty}</td>
                 <td className="p-4 text-center">
                   {exam.is_fullCourseExam
                     ? "Full Course"
