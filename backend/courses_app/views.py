@@ -22,14 +22,16 @@ from django.db.models import Count
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.http import JsonResponse
+from django.views import View
+
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
     permission_classes = [IsAuthenticated,IsAdminUser]
 
     def get_serializer_context(self):
-        """Populate dropdown choices with available chapters"""
         context = super().get_serializer_context()
-        context["chapters"] = Chapter.objects.values("id", "name")  # Pass chapters list
+        context["chapters"] = Chapter.objects.values("id", "name") 
 
         return context
 
@@ -395,14 +397,6 @@ class ChapterQuestionViewSet(viewsets.ModelViewSet):
     queryset = ChapterQuestion.objects.all()
     serializer_class = ChapterQuestionSerializer
     permission_classes = [IsAuthenticated]
-
-
-
-
-
-from django.http import JsonResponse
-from django.views import View
-from .models import Course, Subject, Chapter
 
 class CourseChapterFetcher:
     def __init__(self, course_id):
