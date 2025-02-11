@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import api from "../services/api";
-
+import { useParams, useRouter } from "next/navigation";
 const AdminExamPage = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
   const [courses, setCourses] = useState([]);
   const [subjects, setSubjects] = useState([]);  
   const [chapters, setChapters] = useState([]);  
@@ -68,6 +69,11 @@ const AdminExamPage = () => {
     }
   };
 
+  const handleFeed =async (examId) => {
+
+    router.push(`/exam-question-connect/${examId}`);
+   
+  };
   const handleDelete = async (examId) => {
     const confirmed = window.confirm("Are you sure you want to delete this exam?");
     if (confirmed) {
@@ -303,6 +309,12 @@ const AdminExamPage = () => {
                     : "Full Chapter"}
                 </td>
                 <td className="p-4 text-center">
+                <button
+                    onClick={() => handleFeed(exam.exam_id)}
+                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                  >
+                    Feed
+                  </button>
                   <button
                     onClick={() => handleEdit(exam)}
                     className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"

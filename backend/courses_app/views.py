@@ -7,7 +7,7 @@ from .serializers import (
     CourseSerializer, SubjectSerializer,ChapterSerializer,
     LectureVideoSerializer, ExamSerializer, QuestionSerializer,
     UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,
-    LectureNoteSerializer )
+    LectureNoteSerializer,BulkExamQuestionSerializer )
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action,api_view,permission_classes
 from rest_framework.response import Response
@@ -21,13 +21,13 @@ from rest_framework.views import APIView
 from django.db.models import Count
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser
 from django.http import JsonResponse
 from django.views import View
 
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
-    permission_classes = [IsAuthenticated,IsAdminUser]
+    permission_classes = [AllowAny,IsAdminUser]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -37,18 +37,19 @@ class BulkQuestionUploadView(CreateAPIView):
 
 
 class ChapterListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
 
+
 class ChapterQuestionsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
     def get(self, request):
-        
         chapter_ids = request.query_params.getlist('chapter_ids')
         difficulty = request.query_params.get('difficulty')
-        total_questions = int(request.query_params.get('total_questions', 10))
+        total_questions = request.query_params.get('total_questions')
 
         if not chapter_ids or difficulty is None:
             return Response(
@@ -56,37 +57,48 @@ class ChapterQuestionsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Fetch questions grouped by chapter
+        chapter_question_map = {
+            chapter_id: list(Question.objects.filter(
+                id__in=ChapterQuestion.objects.filter(chapter_id=chapter_id).values_list('question_id', flat=True),
+                level=difficulty
+            ))
+            for chapter_id in chapter_ids
+        }
 
-        chapter_question_ids = ChapterQuestion.objects.filter(
-            chapter_id__in=chapter_ids
-        ).values_list('question_id', flat=True)
+        # Flatten list of all available questions
+        all_available_questions = [q for qs in chapter_question_map.values() for q in qs]
 
-        filtered_questions = Question.objects.filter(
-            id__in=chapter_question_ids,
-            level=difficulty
-        )
+        # If no total_questions is provided, return all questions
+        if total_questions is None:
+            selected_questions = all_available_questions
+        else:
+            total_questions = int(total_questions)
+            selected_questions = []
+            remaining_questions = total_questions
 
-        num_chapters = len(chapter_ids)
-        questions_per_chapter = max(1, total_questions // num_chapters)
+            # Calculate even distribution
+            num_chapters = len([ch for ch, qs in chapter_question_map.items() if qs])  # Count chapters with questions
+            base_questions_per_chapter = total_questions // num_chapters if num_chapters > 0 else 0
 
-        selected_questions = []
-        for chapter_id in chapter_ids:
-         
-            chapter_questions = filtered_questions.filter(
-                id__in=ChapterQuestion.objects.filter(chapter_id=chapter_id).values_list('question_id', flat=True)
-            )
+            # Step 1: Try to evenly distribute questions from each chapter
+            for chapter_id, questions in chapter_question_map.items():
+                if questions:
+                    random.shuffle(questions)  # Shuffle to get random distribution
+                    selected = questions[:base_questions_per_chapter]
+                    selected_questions.extend(selected)
+                    remaining_questions -= len(selected)
 
-            
-            random_chapter_questions = list(chapter_questions.order_by('?')[:questions_per_chapter])
-            selected_questions.extend(random_chapter_questions)
-
-    
-        selected_questions = selected_questions[:total_questions]
+            # Step 2: Fill remaining slots with leftover questions
+            if remaining_questions > 0:
+                remaining_pool = [q for qs in chapter_question_map.values() for q in qs if q not in selected_questions]
+                random.shuffle(remaining_pool)
+                selected_questions.extend(remaining_pool[:remaining_questions])
 
         serializer = QuestionSerializer(selected_questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+  
 class SubjectViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Subject.objects.all()
@@ -97,7 +109,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated,IsAdminUser])
+@permission_classes([AllowAny,IsAdminUser])
 def bulk_create_chapters(request):
     if request.method == 'POST':
         serializer = ChapterSerializer(data=request.data, many=True)
@@ -107,7 +119,7 @@ def bulk_create_chapters(request):
             return Response(ChapterSerializer(chapters, many=True).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_all_chapters(request):
     chapters = Chapter.objects.all()
     serializer = ChapterSerializer(chapters, many=True)
@@ -135,7 +147,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
         return Response({"detail": "No chapters found for this subject."}, status=404)
 
 class LectureVideoViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = LectureVideo.objects.all()
     serializer_class = LectureVideoSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -144,7 +156,7 @@ class LectureVideoViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'type']
 
 class LectureNoteViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = LectureNote.objects.all()
     serializer_class = LectureNoteSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -175,6 +187,7 @@ class ExamViewSet(viewsets.ModelViewSet):
             return Response({"detail": "No exams found for this chapter."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
@@ -183,11 +196,11 @@ class QuestionViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """
         Assign permissions dynamically:
-        - `list` and `retrieve`: Authenticated users (`IsAuthenticated`).
+        - `list` and `retrieve`: Authenticated users (`AllowAny`).
         - `create`, `update`, `partial_update`, `destroy`: Admin users only (`IsAdminUser`).
         """
         if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
-            return [IsAuthenticated()]
+            return [AllowAny()]
         return [IsAdminUser()]  # Restrict all modifications to admin users
 
     @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
@@ -232,7 +245,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         
 class CourseAddViewSet(viewsets.ModelViewSet):
     
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = UserCourseData.objects.all()
     serializer_class = UserCourseDataSerializer
 
@@ -330,7 +343,7 @@ class CourseAddViewSet(viewsets.ModelViewSet):
 
 class UserExamDataViewSet(viewsets.ModelViewSet):
     
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = UserExamData.objects.all()
     serializer_class = UserExamDataSerializer
     @action(detail=False, methods=['get'], url_path='filter')
@@ -384,29 +397,58 @@ class UserExamDataViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)  
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    from .serializers import ExamQuestionSerializer
-
-
+    
 
 class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
     serializer_class = ExamQuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    @action(detail=False, methods=['post'], url_path='bulk-upload')
+    def bulk_upload(self, request):
+        """
+        Bulk upload ExamQuestion entries while ensuring duplicates are ignored.
+        """
+        serializer = BulkExamQuestionSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            inserted_count = 0
+            duplicates_ignored = 0
+
+            for item in validated_data:
+                exam = item["exam"]
+                question = item["question"]
+
+                try:
+                    # Try inserting new ExamQuestion entry
+                    ExamQuestion.objects.create(exam=exam, question=question)
+                    inserted_count += 1
+                except IntegrityError:
+                    # If duplicate, ignore it and count it
+                    duplicates_ignored += 1
+
+            return Response({
+                "message": "Bulk upload processed",
+                "inserted_count": inserted_count,
+                "duplicates_ignored": duplicates_ignored
+            }, status=status.HTTP_201_CREATED if inserted_count > 0 else status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
 
 class ChapterQuestionViewSet(viewsets.ModelViewSet):
     queryset = ChapterQuestion.objects.all()
     serializer_class = ChapterQuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class CourseChapterFetcher:
     def __init__(self, course_id):
         self.course_id = course_id
     
-    def get_chapter_ids(self):
-        # Get all subjects related to the course
+    def get_chapter_ids(self):   
         subjects = Subject.objects.filter(course_id=self.course_id)
-        
-        # Get all chapter IDs for those subjects
         chapter_ids = Chapter.objects.filter(subject__in=subjects).values_list('id', flat=True)
         
         return list(chapter_ids)
@@ -414,12 +456,21 @@ class CourseChapterFetcher:
 
 class CourseChaptersView(View):
     def get(self, request, course_id):
-        # Instantiate the CourseChapterFetcher with the provided course_id
         fetcher = CourseChapterFetcher(course_id)
-        
-        # Get the list of chapter IDs
         chapter_ids = fetcher.get_chapter_ids()
-        
-        # Return the chapter IDs as a JSON response
         return JsonResponse({'chapter_ids': chapter_ids})
 
+def get_questions(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        chapter_ids = data.get("chapter_ids", [])
+        
+        if not chapter_ids:
+            return JsonResponse({"questions": []})
+
+        # Fetch questions linked to these chapters
+        question_ids = ChapterQuestion.objects.filter(chapter_id__in=chapter_ids).values_list("question_id", flat=True)
+
+        return JsonResponse({"questions": list(question_ids)})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

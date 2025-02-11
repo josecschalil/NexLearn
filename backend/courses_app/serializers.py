@@ -6,6 +6,17 @@ from .models import (
 
 import json
 
+
+class BulkExamQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExamQuestion
+        fields = ['exam', 'question']
+
+    def create(self, validated_data):
+       
+        return ExamQuestion.objects.create(**validated_data)
+
+
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
