@@ -403,7 +403,12 @@ class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
     serializer_class = ExamQuestionSerializer
     permission_classes = [AllowAny]
-
+    def get_queryset(self):
+        exam_id = self.request.query_params.get("exam")  # Get exam ID from query
+        if exam_id:
+            return self.queryset.filter(exam_id=exam_id)  # Filter by exam ID
+        return self.queryset
+        
     @action(detail=False, methods=['post'], url_path='bulk-upload')
     def bulk_upload(self, request):
         """
@@ -453,12 +458,26 @@ class CourseChapterFetcher:
         
         return list(chapter_ids)
 
-
 class CourseChaptersView(View):
     def get(self, request, course_id):
         fetcher = CourseChapterFetcher(course_id)
         chapter_ids = fetcher.get_chapter_ids()
         return JsonResponse({'chapter_ids': chapter_ids})
+
+
+class SubjectChapterFetcher:
+    def __init__(self, subject_id):
+        self.subject_id = subject_id
+    
+    def get_chapter_ids(self):   
+        return list(Chapter.objects.filter(subject_id=self.subject_id).values_list('id', flat=True))
+
+class SubjectChaptersView(View):
+    def get(self, request, subject_id):
+        fetcher = SubjectChapterFetcher(subject_id)
+        chapter_ids = fetcher.get_chapter_ids()
+        return JsonResponse({'chapter_ids': chapter_ids})
+
 
 def get_questions(request):
     if request.method == "POST":

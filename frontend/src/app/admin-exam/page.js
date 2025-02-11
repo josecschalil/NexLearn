@@ -194,6 +194,7 @@ const AdminExamPage = () => {
                       setSelectedSubject("");  
                     }
                     if (e.target.value !== "fullchapter") {
+                      setSelectedSubject("");
                       setSelectedChapter("");  
                     }
                   }}

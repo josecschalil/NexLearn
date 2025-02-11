@@ -25,45 +25,78 @@ const ExamQuestionsPage = () => {
                 const examResponse = await api.get(`/api/exams/${examId}`);
                 setExamData(examResponse.data);
 
-                if (examResponse.data.is_fullCourseExam) {
-                    const courseId = examResponse.data.course;
-                    const chaptersResponse = await api.get(`/api/course/${courseId}/chapters/`);
-                    const chapterIds = chaptersResponse.data.chapter_ids || [];
-                
+                if (examResponse.data.is_fullCourseExam || examResponse.data.is_fullSubjectExam || examResponse.data.is_fullChapterExam) {
+                    let chapterIds = [];
+                    let chapterNameMap = {};
                     let fetchedChapterQuestions = {};
                     let fetchedSelectedQuestions = {};
-                    let chapterNameMap = {};
                 
-                    // Fetch chapter names one by one
-                    for (const chapterId of chapterIds) {
-                        try {
-                            const chapterDetailResponse = await api.get(`/api/chapters/${chapterId}/`);
-                            chapterNameMap[chapterId] = chapterDetailResponse.data.name;
-                        } catch (error) {
-                            console.error(`Error fetching name for chapter ${chapterId}:`, error);
-                            chapterNameMap[chapterId] = `Chapter ${chapterId}`; // Fallback name
+                    try {
+                        if (examResponse.data.is_fullCourseExam) {
+                            const courseId = examResponse.data.course;
+                            const chaptersResponse = await api.get(`/api/course/${courseId}/chapters/`);
+                            chapterIds = chaptersResponse.data.chapter_ids || [];
+                        } else if (examResponse.data.is_fullSubjectExam) {
+                            const subjectId = examResponse.data.subject;
+                            const chaptersResponse = await api.get(`/api/subject/${subjectId}/chapters/`);
+                            chapterIds = chaptersResponse.data.chapter_ids || [];
                         }
+                        else if (examResponse.data.is_fullChapterExam) {
+                            
+                            chapterIds = [examResponse.data.chapter];
+                        }
+                    } catch (error) {
+                        console.error("Error fetching chapter IDs:", error);
                     }
                 
-                    // Fetch questions for each chapter
-                    for (const chapterId of chapterIds) {
-                        try {
-                            const questionsResponse = await api.get(
-                                `/api/chapter-questions/?chapter_ids=${chapterId}&difficulty=1`
-                            );
-                            if (questionsResponse.data.length > 0) {
-                                fetchedChapterQuestions[chapterId] = questionsResponse.data;
-                                fetchedSelectedQuestions[chapterId] = [];
+                    // Fetch chapter names concurrently for better performance
+                    try {
+                        const chapterNameRequests = chapterIds.map(async (chapterId) => {
+                            try {
+                                const chapterDetailResponse = await api.get(`/api/chapters/${chapterId}/`);
+                                return { [chapterId]: chapterDetailResponse.data.name };
+                            } catch (error) {
+                                console.error(`Error fetching name for chapter ${chapterId}:`, error);
+                                return { [chapterId]: `Chapter ${chapterId}` }; // Fallback name
                             }
-                        } catch (error) {
-                            console.error(`Error fetching questions for chapter ${chapterId}:`, error);
-                        }
+                        });
+                
+                        const chapterNameResults = await Promise.all(chapterNameRequests);
+                        chapterNameResults.forEach((result) => {
+                            Object.assign(chapterNameMap, result);
+                        });
+                    } catch (error) {
+                        console.error("Error fetching chapter names:", error);
+                    }
+                
+                    // Fetch questions for each chapter concurrently
+                    try {
+                        const questionRequests = chapterIds.map(async (chapterId) => {
+                            try {
+                                const questionsResponse = await api.get(`/api/chapter-questions/?chapter_ids=${chapterId}&difficulty=1`);
+                                if (questionsResponse.data.length > 0) {
+                                    return { [chapterId]: questionsResponse.data };
+                                }
+                            } catch (error) {
+                                console.error(`Error fetching questions for chapter ${chapterId}:`, error);
+                            }
+                            return { [chapterId]: [] };
+                        });
+                
+                        const questionResults = await Promise.all(questionRequests);
+                        questionResults.forEach((result) => {
+                            Object.assign(fetchedChapterQuestions, result);
+                            fetchedSelectedQuestions[Object.keys(result)[0]] = [];
+                        });
+                    } catch (error) {
+                        console.error("Error fetching chapter questions:", error);
                     }
                 
                     setChapterQuestions(fetchedChapterQuestions);
                     setSelectedQuestions(fetchedSelectedQuestions);
-                    setChapterNames(chapterNameMap);  // Store the mapping of chapterId → chapterName
+                    setChapterNames(chapterNameMap);
                 }
+                
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
