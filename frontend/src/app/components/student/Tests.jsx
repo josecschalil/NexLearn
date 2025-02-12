@@ -1,24 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import api from "../../services/api";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const emojis = ["📖", "📝", "🎯", "📚", "✏️", "🏆", "💡", "🔬", "📊", "🔎"]; // Random emojis
 
 const FeaturedTests = () => {
-  const [featuredTests, setfeaturedTests] = useState(null);
+  const [featuredTests, setFeaturedTests] = useState(null);
 
   useEffect(() => {
-    const fetchfeaturedTests = async () => {
+    const fetchFeaturedTests = async () => {
       try {
         const response = await api.get(`/api/exams/?is_featured=true`);
-        setfeaturedTests(response.data); // Correct way to access data in Axios
+        setFeaturedTests(response.data);
       } catch (error) {
-        console.error("Failed to fetch featuredTests:", error);
+        console.error("Failed to fetch featured tests:", error);
       }
     };
-    
-    fetchfeaturedTests();
+
+    fetchFeaturedTests();
   }, []);
 
   return (
@@ -31,22 +30,25 @@ const FeaturedTests = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
           {featuredTests?.map((test, index) => (
-              <Link  key={index}
-              className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden " href={`/tests/proctored/exams/${test.exam_id}`}>
-             
-           
-              <div className="p-4">
-                <h4 className=" font-instSansB text-gray-900 truncate">
+            <Link
+              key={index}
+              className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center"
+              href={`/tests/proctored/exams/${test.exam_id}`}
+            >
+              <div className=" ml-3 flex items-center justify-center text-2xl">
+                {emojis[index % emojis.length]}
+              </div>
+
+              <div className="p-4 flex-1">
+                <h4 className="font-instSansB text-gray-900 truncate">
                   {test.exam_title}
                 </h4>
-
-                <p className="text-sm text-gray-700  font-istok mt-1">{test.time/60} hours | Level {test.diffculty}</p>
+                <p className="text-sm text-gray-700 font-istok mt-1">
+                  {test.time / 60} hours | Level {test.difficulty}
+                </p>
               </div>
-              <div className="w-full bg-black flex text-white  font-istok  justify-end px-4 py-2 ">
-               
-                  Take Test!
-            
-            </div>
+
+         
             </Link>
           ))}
         </div>

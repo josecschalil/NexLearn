@@ -63,13 +63,11 @@ const CourseList = () => {
     return (
       <div>
         {userId ? (
-          <div className="min-h-screen bg-gray-50 md:py-8 font-jakarta md:px-6">
-            <div className="max-w-5xl min-h-screen mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-700 font-instSansB">
-                  My Courses
-                </h2>
-              </div>
+          <div className="min-h-screen md:py-8 font-jakarta md:px-6">
+          <div className="max-w-5xl mx-auto  bg-white py-8 rounded-xl p-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">My Courses</h2>
+          <div className="hidden md:block w-full h-[1px] bg-gray-300 mb-8"></div>
+      
   
               {coursesData.length === 0 ? (
                 <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center justify-center text-center">
@@ -126,7 +124,7 @@ const CourseList = () => {
             </div>
           </div>
         ) : (
-          <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center font-instSansB  justify-center text-center">
+          <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center justify-center text-center">
             <img className="h-32 mb-4" src="/reading.png" alt="Reading" />
             <p>Please log in to access tests and classes.</p>
           </div>
