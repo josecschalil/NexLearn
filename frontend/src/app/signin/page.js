@@ -23,7 +23,7 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      showPopup("You are already signed in.");
+      toast.error("You are already signed in.");
       router.push(`/`);
     }
   }, [isAuthenticated, router]);

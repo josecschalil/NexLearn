@@ -9,29 +9,52 @@ const PrepareSection = () => {
           <h1 className="text-3xl  text-center md:text-left font-instSansB leading-tight text-black">
             Prepare for your tests and entrance with us.
           </h1>
-          <p className="text-gray-700 text-center md:text-left font  mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eleifend sed aenean eu odio
-            non, sit eu. Ut tristique massa leo interdum venenatis amet feugiat netus.
+          <p className="text-gray-700 text-center md:text-left font mt-4">
+            Explore our Featured Section for free study materials, including
+            test papers, questions, and video lessons.
           </p>
         </div>
         {/* Right Content */}
         <div className="grid grid-cols-2 gap-4">
           {[
-            { title: "Courses", icon: "📄", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", link:"/courses" },
-            { title: " Questions", icon: "❓", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", link:"/questions" },
-            { title: "Test Series", icon: "📄", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", link:"/tests" },
-            { title: "Playlists", icon: "🎵", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", link:"/videos" },
+            {
+              title: "Courses",
+              icon: "🎓",
+              desc: "Structured lessons covering concepts and shortcuts.",
+              link: "/courses",
+            },
+            {
+              title: "Questions",
+              icon: "💡",
+              desc: "Practice questions to boost accuracy and confidence.",
+              link: "/questions",
+            },
+            {
+              title: "Test Series",
+              icon: "📝",
+              desc: "Full-length and topic-wise tests with detailed analysis.",
+              link: "/featured",
+            },
+            {
+              title: "Playlists",
+              icon: "📚",
+              desc: "Curated videos for quick learning and strategies.",
+              link: "/featured",
+            },
           ].map((item, idx) => (
-           <Link key={idx} href={item.link}> <div
-              
-              className=" flex items-center gap-2 text-md bg-white px-1  lg:px-4 bg-opacity-65 shadow-md rounded-lg py-4 text-gray-900 hover:scale-105 transition-all duration-300"
-            >
-              <span className="text-xl sm:text-3xl pl-2 sm:pl-0">{item.icon}</span>
-              <div>
-                <h3 className="font-bold  sm:px-1">{item.title}</h3>
-                <p className="text-sm text-gray-600 ml-1 mt-1 hidden sm:block">{item.desc}</p>
+            <Link key={idx} href={item.link}>
+              {" "}
+              <div className=" flex items-center gap-2 text-md bg-white px-1 font-jakarta md:font-inter lg:px-4 bg-opacity-65 shadow-md rounded-lg py-4 text-gray-900 hover:scale-105 transition-all duration-300">
+                <span className="text-xl sm:text-3xl pl-2 sm:pl-0">
+                  {item.icon}
+                </span>
+                <div>
+                  <h3 className="font-bold  sm:px-1">{item.title}</h3>
+                  <p className="text-sm text-gray-600 ml-1 mt-1 hidden sm:block">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-            </div>
             </Link>
           ))}
         </div>

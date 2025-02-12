@@ -18,7 +18,7 @@ const VideoCard = ({ title, faculty, time, link, url }) => {
 
         <div className="flex flex-col items-center mt-3 gap-1 font-jakarta   ">
           <p className="text-center text-sm md:text-md ">{title}</p>
-          <div className="flex  px-4 py-1 mt-1 rounded-full text-xs   text-gray-800  bg-gray-300 bg-opacity-25">
+          {/* <div className="flex  px-4 py-1 mt-1 rounded-full text-xs   text-gray-800  bg-gray-300 bg-opacity-25">
             <p className=" ">
               {faculty}
             </p>
@@ -26,7 +26,7 @@ const VideoCard = ({ title, faculty, time, link, url }) => {
             <p className="">
               {time}
             </p>
-          </div>
+          </div> */}
         </div>
       </Link>
     </div>
