@@ -403,12 +403,22 @@ class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
     serializer_class = ExamQuestionSerializer
     permission_classes = [AllowAny]
+
     def get_queryset(self):
         exam_id = self.request.query_params.get("exam")  # Get exam ID from query
         if exam_id:
             return self.queryset.filter(exam_id=exam_id)  # Filter by exam ID
         return self.queryset
-        
+
+    @action(detail=False, methods=["delete"], url_path="(?P<exam_id>[0-9a-fA-F-]+)/(?P<question_id>[0-9a-fA-F-]+)")
+    def delete_exam_question(self, request, exam_id=None, question_id=None):
+        try:
+            exam_question = ExamQuestion.objects.get(exam_id=exam_id, question_id=question_id)
+            exam_question.delete()
+            return Response({"message": "Question removed from exam"}, status=status.HTTP_204_NO_CONTENT)
+        except ExamQuestion.DoesNotExist:
+            return Response({"error": "Question not found in exam"}, status=status.HTTP_404_NOT_FOUND)
+
     @action(detail=False, methods=['post'], url_path='bulk-upload')
     def bulk_upload(self, request):
         """
