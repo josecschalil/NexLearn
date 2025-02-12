@@ -126,7 +126,7 @@ const CourseList = () => {
             </div>
           </div>
         ) : (
-          <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center justify-center text-center">
+          <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center font-instSansB  justify-center text-center">
             <img className="h-32 mb-4" src="/reading.png" alt="Reading" />
             <p>Please log in to access tests and classes.</p>
           </div>

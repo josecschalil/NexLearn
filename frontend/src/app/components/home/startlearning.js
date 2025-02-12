@@ -9,14 +9,14 @@ const StartLearning = () => {
         <div className="mt-6 flex justify-center lg:justify-start space-x-4">
           <a
             href="/courses"
-            className="bg-teal-700 font-bold relative z-10 font-inter hover:shadow-lg rounded-sm text-white px-6 sm:px-8 py-2 text-sm  transition duration-300 ease-in-out hover:bg-teal-800"
+            className="bg-teal-700  font-bold relative z-10 font-inter hover:shadow-lg rounded-sm text-white px-6  py-2 text-sm  transition duration-300 ease-in-out hover:bg-teal-800"
           >
             View Our Plans
           </a>
 
           <a
             href="/signup"
-            className="border font-inter font-bold border-black px-6 sm:px-8 py-2  rounded-sm text-sm  hover:bg-gray-800 hover:text-white transition duration-300 ease-in-out "
+            className="border font-inter font-bold border-black px-6  py-2  rounded-sm text-sm  hover:bg-gray-800 hover:text-white transition duration-300 ease-in-out "
           >
             Start Learning
           </a>
