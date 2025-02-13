@@ -126,7 +126,7 @@ const ContactUsPage = () => {
 
           <div className="hidden md:block relative md:w-[50%] pr-6">
             <img
-              src="/1 (2).avif"
+              src="/1 (2).webp"
               alt="Contact Us"
               className="object-cover object-right h-full w-full rounded-2xl"
             />

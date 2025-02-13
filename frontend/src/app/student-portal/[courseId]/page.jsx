@@ -82,7 +82,7 @@ const CoursePage = () => {
     
     </div>
     {isTestCreatorOpen && (
-        <div className=" fixed inset-0 px-4 bg-black bg-opacity-30  z-20 flex justify-center items-center">
+        <div className=" fixed  inset-0 px-4 bg-black bg-opacity-30  z-20 flex justify-center items-center">
 
 <style jsx>{`
   .custom-scroll::-webkit-scrollbar {
@@ -94,7 +94,7 @@ const CoursePage = () => {
   }
 `}</style>
 
-          <div className=" relative my-4 mb-8  bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
+          <div className=" relative my-4 mb-8  top-[3.2vh] md:top-0  bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
               <div className="font-istok font-extrabold text-2xl text-gray-800 px-6">
                 Creating Custom Test

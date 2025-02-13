@@ -68,7 +68,7 @@ const CourseList = () => {
                 My Courses
               </h2>
               <div className="hidden md:block h-[1px] bg-gray-300 mb-8"></div>
-              <div className="grid grid-cols-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {coursesData.length === 0 ? (
                   <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center justify-center text-center">
                     <img
@@ -81,21 +81,17 @@ const CourseList = () => {
                 ) : (
                   coursesData.map((course, index) => (
                     <Link key={index} href={`/student-portal/${course.id}`}>
-                      <div className="flex flex-col items-center justify-between p-4 border hover:border-gray-500 hover:shadow transition-all duration-100 rounded-2xl mb-4">
-                        <div className="relative">
-                          <img
-                            className=" w-full rounded-2xl   object-cover "
-                            src={course.img}
-                            alt={course.title}
-                          />
-                          {course.discount && (
-                            <div className="absolute top-2 right-2 bg-teal-500 text-white text-[10px] px-2 py-[2px] rounded-sm">
-                              {course.discount}% OFF
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-4">
-                          <div className="h-10 w-10 bg-blue-100 flex items-center mr-3 justify-center rounded-full">
+                      <div className="border border-white transition-all duration-300 hover:border-gray-400 rounded-2xl ">
+                      <div className="relative">
+                        <img
+                          className=" w-full rounded-2xl  aspect-video  object-cover "
+                          src={course.img}
+                          alt={course.title}
+                        />
+                      </div>
+                      <div className="flex pt-6 -mt-6 flex-col items-center justify-between shadow transition-all duration-100 rounded-2xl">
+                        <div className="flex items-center mr-auto font-inter p-3">
+                          <div className="h-10 w-10  flex items-center mr-3 justify-center rounded-full">
                             <span
                               role="img"
                               aria-label="course-icon"
@@ -105,10 +101,10 @@ const CourseList = () => {
                             </span>
                           </div>
                           <div>
-                            <h3 className="text-lg font-bold text-gray-800">
+                            <h3 className="text-sm xs:text-lg font-bold text-gray-800">
                               {course.title}
                             </h3>
-                            <p className="text-sm text-gray-500 mt-1 hidden sm:block">
+                            <p className="text-[11px] xs:text-sm text-gray-500 mt-1 ">
                               {course.chapters} Chapters •{" "}
                               {(+course.classes || 0) +
                                 (+course.tests || 0) +
@@ -117,7 +113,7 @@ const CourseList = () => {
                             </p>
                           </div>
                         </div>
-
+                      </div>
                       </div>
                     </Link>
                   ))

@@ -232,6 +232,8 @@ const ChapterSelector = ({
 };
 
 const ModalTimeQuestions = ({
+  examname,
+  setExamName, 
   onNext,
   setNumQuestions,
   setTime,
@@ -240,33 +242,40 @@ const ModalTimeQuestions = ({
   time,
   difficulty,
 }) => {
-  const isNextEnabled = time && numQuestions && difficulty;
+
+  const isNextEnabled = examname?.trim() !== "" && time && numQuestions && difficulty;
 
   return (
-    <div className="px-2 modal w-fit rounded-lg  text-gray-800 mx-auto font-istok font-bold ">
+    <div className="px-2 modal w-fit rounded-lg text-gray-800 mx-auto font-istok font-bold">
+      <div className="mb-4">
+        <label className="text-lg text-left block mb-2">Exam Name:</label>
+        <input
+          type="text"
+          value={examname}
+          onChange={(e) => {
+            console.log("New Exam Name:", e.target.value); // Debugging
+            setExamName(e.target.value);
+          }}
+          placeholder=""
+          className="w-full border-b border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
+        />
+      </div>
+
       <h2 className="text-lg text-left mb-4">Set Duration</h2>
       <TimeSelector time={time} setTime={setTime} />
 
       <h2 className="text-lg text-left mb-4">Set Number of Questions</h2>
-      <QuestionSelector
-        numQuestions={numQuestions}
-        setNumQuestions={setNumQuestions}
-      />
+      <QuestionSelector numQuestions={numQuestions} setNumQuestions={setNumQuestions} />
 
       <h2 className="text-lg text-left mb-4">Set Difficulty</h2>
-      <DifficultySelector
-        difficulty={difficulty}
-        setDifficulty={setDifficulty}
-      />
+      <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
 
-      <div className="text-left mt-6 ">
+      <div className="text-left mt-6">
         <button
           disabled={!isNextEnabled}
           onClick={onNext}
           className={`px-4 py-1 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-full tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300${
-            isNextEnabled
-              ? "hover:border-gray-500"
-              : "text-gray-500 cursor-not-allowed"
+            isNextEnabled ? "hover:border-gray-500" : "text-gray-500 cursor-not-allowed"
           }`}
         >
           Next
@@ -275,6 +284,7 @@ const ModalTimeQuestions = ({
     </div>
   );
 };
+
 
 const ModalSubjects = ({
   onNext,
@@ -328,13 +338,14 @@ const TestCreator = ({ id }) => {
   const [showModal, setShowModal] = useState(1);
   const [numQuestions, setNumQuestions] = useState(null);
   const [time, setTime] = useState(null);
-  const [difficulty, setDifficulty] = useState(null); // New state for difficulty
+  const [difficulty, setDifficulty] = useState(null); 
   const [subjects, setSubjects] = useState([]);
+  const [examname, setExamName] = useState("");
+
   const [selectedChapters, setSelectedChapters] = useState([]);
 
   const handleNext = () => setShowModal((prev) => prev + 1);
   const handleBack = () => setShowModal((prev) => prev - 1);
-  const handleClose = () => setShowModal(0);
 
   const handleSubmit = async () => {
     if (!numQuestions || !difficulty || selectedChapters.length === 0) {
@@ -348,14 +359,14 @@ const TestCreator = ({ id }) => {
         .join("&");
 
       const questionApiUrl = `/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
-      console.log(questionApiUrl);
+      //console.log(questionApiUrl);
       const questionResponse = await api.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
 
-      console.log("Fetched Questions:", questionIds);
+      //console.log("Fetched Questions:", questionIds);
 
       const examPayload = {
-        exam_title: "customtest",
+        exam_title: examname,
         time: time,
         user: userId,
         difficulty: difficulty,
@@ -368,7 +379,7 @@ const TestCreator = ({ id }) => {
         chapter: null,
       };
 
-      console.log(examPayload);
+      //console.log(examPayload);
       const createExamResponse = await api.post(`/api/exams/`, examPayload, {
         headers: {
           "Content-Type": "application/json",
@@ -376,7 +387,7 @@ const TestCreator = ({ id }) => {
       });
 
       const newExamId = createExamResponse.data.exam_id;
-      console.log("New Exam Created:", newExamId);
+      //console.log("New Exam Created:", newExamId);
       const linkRequests = questionIds.map((questionId) =>
         api.post(`/api/examquestions/`, {
           exam: newExamId,
@@ -385,7 +396,7 @@ const TestCreator = ({ id }) => {
       );
 
       await Promise.all(linkRequests);
-      console.log("All questions linked to exam successfully");
+      //console.log("All questions linked to exam successfully");
 
       const payload_exam_data = {
         exam_id: newExamId,
@@ -413,7 +424,6 @@ const TestCreator = ({ id }) => {
       console.error("Error during exam creation process:", error);
     }
 
-    setShowModal(0);
   };
 
   return (
@@ -423,6 +433,7 @@ const TestCreator = ({ id }) => {
           <ModalTimeQuestions
             onNext={handleNext}
             setNumQuestions={setNumQuestions}
+            setExamName={setExamName}
             setTime={setTime}
             setDifficulty={setDifficulty}
             numQuestions={numQuestions}
