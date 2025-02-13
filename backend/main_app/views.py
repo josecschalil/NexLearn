@@ -75,45 +75,57 @@ class ContactUsView(APIView):
 
 token_generator = PasswordResetTokenGenerator()
 
-
 class ResetPasswordView(APIView):
+    """Handles password reset requests."""
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """Handle POST request for password reset."""
         email = request.data.get('email')
+
         try:
-            # Check if a user exists with the given email
             user = CustomUser.objects.get(email=email)
+            self.send_reset_email(user, request)
 
-            # Generate a secure token and UID
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = token_generator.make_token(user)
-
-            reset_link = f"http://localhost:3000/reset-password/{uidb64}/{token}/"
-            subject = "Reset Your Password"
-            message = f"""
-            Hello {user.name},
-
-            Click the link below to reset your password:
-            {reset_link}
-
-            If you didn't request this, you can safely ignore this email.
-
-            Thanks,
-            Your Team
-            """
-            send_mail(
-                subject,
-                message,
-                'no-reply@yourdomain.com',
-                [email],
-                fail_silently=False,
+            return Response(
+                {'message': 'Password reset email sent successfully!'},
+                status=status.HTTP_200_OK
+            )
+        except CustomUser.DoesNotExist:
+            return Response(
+                {'message': 'No user found with this email address!'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
-            return Response({'message': 'Password reset email sent successfully!'}, status=status.HTTP_200_OK)
-        except CustomUser.DoesNotExist:
-            return Response({'message': 'No user found with this email address!'}, status=status.HTTP_404_NOT_FOUND)
+    def send_reset_email(self, user, request):
+        """Send password reset email to the user."""
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
 
+        current_site = get_current_site(request)
+        relative_link = reverse(
+            'password-reset-confirm', kwargs={'uidb64': uid, 'token': token}
+        )
+        full_url = f'https://{current_site.domain}{relative_link}'
+        # full_url = f'http://localhost:3000{relative_link}'  # For local testing
+
+        print("Relative Link:", relative_link)
+        print("Full URL:", full_url)
+
+        email_subject = "Reset Your Password"
+        email_message = render_to_string(
+            'emails/reset_password_email.html',
+            {'user': user, 'reset_url': full_url}
+        )
+
+        send_mail(
+            email_subject,
+            email_message,
+            'jeeneetpulseofficial@gmail.com',
+            [user.email],
+            fail_silently=False,
+            html_message=email_message
+        )
 
 class ResetPasswordConfirmView(APIView):
     permission_classes = [AllowAny]
@@ -186,7 +198,7 @@ class SignupView(APIView):
         send_mail(
             email_subject,
             email_message,
-            'no-reply@yourdomain.com',
+            'jeeneetpulseofficial@gmail.com',
             [user.email],
             fail_silently=False,
             html_message=email_message
