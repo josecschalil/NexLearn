@@ -1,20 +1,25 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Profile
 
-# Custom form for user creation in Django admin
-class CustomUserCreationForm(forms.ModelForm):
+
+# Custom user creation form
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'name', 'password1', 'password2')
+        fields = ('email', 'name', 'password')
 
-# Custom form for user change in Django admin
-class CustomUserChangeForm(forms.ModelForm):
+
+# Custom user change form
+class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
 
+
+# Custom user admin
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     add_form = CustomUserCreationForm
@@ -25,7 +30,6 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email', 'name')
     ordering = ('email',)
 
-    # Override fieldsets to exclude username
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('name',)}),
@@ -36,22 +40,17 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'password1', 'password2', 'is_staff', 'is_active')}
-         ),
+            'fields': ('email', 'name', 'password')}
+        ),
     )
 
-    def get_fieldsets(self, request, obj=None):
-        """ Override fieldsets to ensure username isn't expected. """
-        return self.fieldsets
 
-    def get_form(self, request, obj=None, **kwargs):
-        """ Override get_form to prevent username-related issues. """
-        kwargs['form'] = self.form if obj else self.add_form
-        return super().get_form(request, obj, **kwargs)
+# Register the custom user model with the admin
+admin.site.register(CustomUser, CustomUserAdmin)
 
+
+# Profile admin
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'bio')
     search_fields = ('user__email', 'bio')
-
-admin.site.register(CustomUser, CustomUserAdmin)
