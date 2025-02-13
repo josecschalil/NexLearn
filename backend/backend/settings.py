@@ -4,7 +4,6 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -16,8 +15,6 @@ ALLOWED_HOSTS = ['api.jeeneetpulse.com', 'jeeneetpulse.com']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',

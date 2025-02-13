@@ -172,8 +172,8 @@ class SignupView(APIView):
         current_site = get_current_site(request)
         relative_link = reverse(
             'verify-email', kwargs={'uidb64': uid, 'token': token})
-        # full_url = f'http://{current_site.domain}{relative_link}'
-        full_url = f'http://localhost:3000{relative_link}'
+        full_url = f'https://{current_site.domain}{relative_link}'
+        #full_url = f'http://localhost:3000{relative_link}'
         print("Relative Link:", relative_link)
         print("Full URL:", full_url)
 
