@@ -1,21 +1,24 @@
-
-
 from pathlib import Path
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Security Settings
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-SECRET_KEY = 'django-insecure-igt2(drbd-j!9174r@skyw1p%&f53i3q5dhlpp7o$!(4t$7ko0'
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['api.jeeneetpulse.com', 'jeeneetpulse.com']
-
+# Media & Static Files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL = 'static/'
 
+# Installed Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,15 +35,13 @@ INSTALLED_APPS = [
     'channels',
     'courses_app',
     'django_filters',
-   
-
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-   
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -49,22 +50,19 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'backend.urls'
+WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
+
 
 CORS_ALLOW_ALL_ORIGINS = True
-
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'https://jeeneetpulse.com',
-    'https://www.jeeneetpulse.com', 
-    'https://api.jeeneetpulse.com',  
-]
 
-CORS_ALLOWED_ORIGINS = [
-    'https://jeeneetpulse.com',
-    'https://www.jeeneetpulse.com',
-    'https://api.jeeneetpulse.com',  
-]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 
+
+
+# Authentication & Permissions
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -88,10 +86,12 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
+# Email Configuration
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / "templates"],  # Ensure this directory exists
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,32 +103,15 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'backend.wsgi.application'
-
-
-ASGI_APPLICATION = 'backend.asgi.application'
-
-
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('127.0.0.1', 6379)],  # Use Redis' default port
-#         },
-#     },
-# }
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# Database Configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jeeneetpulse',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -163,32 +146,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'main_app.CustomUser'
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_HOST_USER='websitenotificationsender@gmail.com'
-EMAIL_HOST_PASSWORD='cnbhnghsdfuqccez'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
-
+# Site & Djoser Settings
 SITE_ID = 1
-
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset_password_confirm/{uid}/{token}/',
     'SEND_ACTIVATION_EMAIL': False,
@@ -199,10 +166,16 @@ DJOSER = {
     },
 }
 
-CSP_DEFAULT_SRC = ("'self'",)  # Only allow resources from the same origin
-CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com")  # Allow fonts from Google Fonts
-CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")  # Allow inline styles and Google Fonts
-CSP_IMG_SRC = ("'self'",)  # Allow images from the same origin
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Ensure correct content types are served
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'") 
+# Content Security Policy (CSP) Settings
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com")
+CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
 CSP_REPORT_URI = '/csp-violation-report-endpoint/'
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'main_app.CustomUser'
