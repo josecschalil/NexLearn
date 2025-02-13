@@ -102,7 +102,8 @@ const Exams = ({ id, setIsTestCreatorOpen }) => {
   // };
 
   return (
-    <div className="relative">
+    <div className="relative ">
+
       <div className="flex  transition-all rounded-2xl hover:shadow hover:border-gray-500 duration-100  items-center justify-between p-4 border border-gray-300  mb-4">
         <div className="flex items-center space-x-4">
           <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
@@ -128,15 +129,17 @@ const Exams = ({ id, setIsTestCreatorOpen }) => {
           >
             Create
           </button>
-          <Link href={`/tests/custom/${userId}`}>
-          <button
-            className="px-6 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
-          >
-            View
-          </button>
-          </Link>
+
         </div>
       </div>
+
+      <InfoCard
+        title="Previous Tests & History"
+        description="Resume or analyse previously written tests and strategise."
+        icon="📈"
+        buttonText="View"
+        link={`/tests/custom/${userId}`}
+      />
 
 
       <InfoCard

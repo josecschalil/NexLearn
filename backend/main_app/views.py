@@ -75,21 +75,21 @@ class ContactUsView(APIView):
 
 token_generator = PasswordResetTokenGenerator()
 
-
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         email = request.data.get('email')
         try:
-            # Check if a user exists with the given email
             user = CustomUser.objects.get(email=email)
 
             # Generate a secure token and UID
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = token_generator.make_token(user)
+            token = default_token_generator.make_token(user)
 
-            reset_link = f"http://localhost:3000/reset-password/{uidb64}/{token}/"
+            # Use frontend URL for reset link
+            reset_link = f"https://jeeneetpulse.com/reset-password/{uidb64}/{token}/"
+
             subject = "Reset Your Password"
             message = f"""
             Hello {user.name},
@@ -100,12 +100,12 @@ class ResetPasswordView(APIView):
             If you didn't request this, you can safely ignore this email.
 
             Thanks,
-            Your Team
+            JEE NEET Pulse Team
             """
             send_mail(
                 subject,
                 message,
-                'no-reply@yourdomain.com',
+                'jeeneetpulseofficial@gmail.com',
                 [email],
                 fail_silently=False,
             )
@@ -125,27 +125,25 @@ class ResetPasswordConfirmView(APIView):
             user = CustomUser.objects.get(pk=uid)
 
             # Verify the token
-            if not token_generator.check_token(user, token):
+            if not default_token_generator.check_token(user, token):
                 return Response({'message': 'Invalid or expired token!'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Get and validate the new password
             new_password = request.data.get('password')
-            confirm_password = request.data.get('password')
+            confirm_password = request.data.get('confirm_password')  # Fix: Ensure correct variable
 
             if len(new_password) < 8:
                 return Response({'message': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
             if new_password != confirm_password:
                 return Response({'message': 'Passwords do not match!'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Update the user's password
+            # Update the user's password securely
             user.password = make_password(new_password)
             user.save()
 
             return Response({'message': 'Password reset successfully!'}, status=status.HTTP_200_OK)
         except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
-
-
 class SignupView(APIView):
     """Handles user registration."""
     permission_classes = [AllowAny]
@@ -172,8 +170,8 @@ class SignupView(APIView):
         current_site = get_current_site(request)
         relative_link = reverse(
             'verify-email', kwargs={'uidb64': uid, 'token': token})
-        # full_url = f'http://{current_site.domain}{relative_link}'
-        full_url = f'http://localhost:3000{relative_link}'
+        full_url = f'https://{current_site.domain}{relative_link}'
+        #full_url = f'http://localhost:3000{relative_link}'
         print("Relative Link:", relative_link)
         print("Full URL:", full_url)
 
@@ -186,7 +184,7 @@ class SignupView(APIView):
         send_mail(
             email_subject,
             email_message,
-            'no-reply@yourdomain.com',
+            'jeeneetpulseofficial@gmail.com',
             [user.email],
             fail_silently=False,
             html_message=email_message

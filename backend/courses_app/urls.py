@@ -16,7 +16,7 @@ router.register(r'examquestions', ExamQuestionViewSet) #its for viewing manymany
 router.register(r'chapterquestions', ChapterQuestionViewSet) #its for manymany seeing b/w chapter and questions.
 
 urlpatterns = [
-    path('chapters/', ChapterListView.as_view(), name='chapter-list'),
+    # path('chapters/', ChapterListView.as_view(), name='chapter-list'),
     path('upload-questions-chapter/', BulkQuestionUploadView.as_view(), name='upload-questions'),
     path('chapters/bulk/', bulk_create_chapters, name='bulk-create-chapters'),  
     path('chapter-questions/', ChapterQuestionsView.as_view(), name='chapter-questions'),

@@ -135,7 +135,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['subject']  
+    filterset_fields = ['subject_id']  
     search_fields = ['name', 'type']
     ordering_fields = ['name', 'type']
     @action(detail=False, methods=['get'], url_path='subject/(?P<subject_id>[^/.]+)')
