@@ -33,7 +33,7 @@ const AdminExamPage = () => {
 
   const fetchExams = async () => {
     try {
-      const response = await api.get("/api/exams/");
+      const response = await api.get("/api/exams/?is_customTest=false");
       setExams(response.data);
     } catch (err) {
       setError("Failed to fetch exams");
@@ -145,7 +145,7 @@ const AdminExamPage = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 min-h-screen font-inter">
       <h1 className="text-4xl font-bold mb-6 text-teal-800 text-center">Admin - Manage Exams</h1>
 
       <div className="bg-white p-6 shadow-md rounded-lg mb-6">

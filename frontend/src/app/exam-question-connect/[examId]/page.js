@@ -161,7 +161,7 @@ const ExamQuestionsPage = () => {
     
 
     return (
-        <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-xl flex">
+        <div className="max-w-6xl mx-auto font-inter p-6 bg-white shadow-lg rounded-xl flex">
             <div className="w-1/4 p-4 border-r">
                 <h2 className="text-lg font-semibold mb-4">Chapters</h2>
                 {chapters.map((chapter) => (

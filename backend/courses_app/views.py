@@ -169,7 +169,7 @@ class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['course_id','subject_id','chapter_id','user_id','is_featured']  
+    filterset_fields = ['course_id','subject_id','chapter_id','user_id','is_featured','is_customTest']  
     search_fields = ['name', 'type']
     ordering_fields = ['name', 'type']
 
