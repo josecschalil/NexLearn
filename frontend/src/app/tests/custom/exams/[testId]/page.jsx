@@ -1,18 +1,23 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import RenderTextWithLatex from "@/app/components/RenderWithLatex";
-import axios from "axios";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { useRouter } from "next/navigation";
 import api from "../../../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TestPage = () => {
+
+
+
   const router = useRouter();
   const { testId } = useParams();
   const userId = localStorage.getItem("user_id");
-  const [language, setLanguage] = useState("en"); // Default to English
+  const [isopen, setisopen] = useState(null);
+  const [language, setLanguage] = useState("en");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [visited, setVisited] = useState(new Set());
@@ -22,6 +27,7 @@ const TestPage = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [tableId, setTableId] = useState(null);
+  const [examdetails, setexamdetails] = useState(null);
   const [Questions, setQuestions] = useState(null);
 
   // useEffect(() => {
@@ -50,12 +56,48 @@ const TestPage = () => {
   //   fetchQuestions();
   //}, [testId]);
 
+
+
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (isopen) {
+      gsap.to(dropdownRef.current, {
+        height: "auto",
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    } else {
+      gsap.to(dropdownRef.current, {
+        height: 0,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.in",
+      });
+    }
+  }, [isopen]);
+
+  useEffect(() => {
+    const fetchexamDetails = async () => {
+      try {
+        const response = await api.get(`/api/exams/${testId}`);
+        const data = response.data;
+        console.log(data);
+        setexamdetails(data);
+      } catch (error) {
+        console.error("Error fetching exam data:", error);
+      }
+    };
+
+    fetchexamDetails();
+  }, [testId]);
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await api.get(
-          `/api/questions/exam-id/${testId}`
-        );
+        const response = await api.get(`/api/questions/exam-id/${testId}`);
 
         if (response.data) {
           console.log("Fetched Questions:", response.data);
@@ -92,9 +134,7 @@ const TestPage = () => {
       try {
         if (!tableId) return;
 
-        const response = await api.get(
-          `/api/exam-data/${tableId}`
-        );
+        const response = await api.get(`/api/exam-data/${tableId}`);
         const data = response.data;
         console.log(data);
 
@@ -127,7 +167,7 @@ const TestPage = () => {
     answers,
     visited,
     markedForReview,
-
+    // timeRemaining,
     isTimerRunning,
     testId,
     isInitialized,
@@ -200,7 +240,7 @@ const TestPage = () => {
     };
 
     return (
-      <div  className="mx-4 px-4 py-2 text-black bg-gray-100 shadow w-20 h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300">
+      <div className="mx-4 px-4 py-2 text-black bg-gray-100 shadow w-20 h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300">
         {formatTime(timeRemaining)}
       </div>
     );
@@ -257,31 +297,64 @@ const TestPage = () => {
   // Rendering
   return (
     <div className="h-screen">
-      <header className="items-center font-instSansB flex justify-between text-2xl h-[10%] px-4">
-        <div className="flex justify-start items-center">
+      <header className="md:items-center font-instSansB flex flex-col md:flex-row justify-between text-2xl md:h-[10%] px-4">
+        <div className=" hidden md:flex justify-start items-center">
           <button
-           className="px-4 py-1 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-            onClick={AttemptLater}
+            className={`mx-4  relative w-20 h-[37px] rounded-full border text-[16px] border-gray-700 flex items-center transition-all duration-300 ${
+              language === "en" ? "bg-black" : "bg-teal-800"
+            }`}
+            onClick={toggleLanguage}
           >
-            Attempt Later
+            <span
+              className={`absolute left-[6px] top-[5px] w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 transform ${
+                language === "en" ? "translate-x-10" : "translate-x-0"
+              }`}
+            ></span>
+            <span
+              className={`absolute left-4 text-white font-bold transition-all duration-300 ${
+                language === "en" ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              EN
+            </span>
+            <span
+              className={`absolute right-4 text-white font-bold transition-all duration-300 ${
+                language === "en" ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              HI
+            </span>
           </button>
         </div>
 
-        <div className="flex justify-center items-center font-extrabold">
-          <span>JEE Advanced AITS {testId}</span>
-        </div>
-
-        <div className="flex justify-end items-center text-sm ">
-          <div className="flex justify-end items-center text-sm">
-            <TimerComponent timeRemaining={timeRemaining} />
-            <button
-        className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-              onClick={handleSubmit}
+        <div className="flex  items-center border-b mt-2 md:mt-0 -mx-6 px-7 mb-4 md:pb-0 md:mb-0 md:border-none">
+          <div className="flex justify-start   md:justify-center py-3  md:items-center font-extrabold">
+            <span className="">{examdetails?.exam_title} </span>
+            <span
+              onClick={() => setisopen(!isopen)}
+              className={` transform transition-all duration-300 items-center flex ml-2 md:hidden cursor-pointer ${
+                isopen ? "rotate-180" : ""
+              }`}
             >
-              Submit
-            </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                className="transition-transform duration-300"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
+          </div>
+          <div className="ml-auto">
             <button
-              className={`mx-4 relative w-20 h-[37px] rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
+              className={` md:hidden mx-auto relative w-20 h-[37px] text-sm rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
                 language === "en" ? "bg-black" : "bg-teal-800"
               }`}
               onClick={toggleLanguage}
@@ -292,14 +365,14 @@ const TestPage = () => {
                 }`}
               ></span>
               <span
-                className={`absolute left-3 text-white font-bold transition-all duration-300 ${
+                className={`absolute left-4 text-white font-bold transition-all duration-300 ${
                   language === "en" ? "opacity-100" : "opacity-0"
                 }`}
               >
                 EN
               </span>
               <span
-                className={`absolute right-3 text-white font-bold transition-all duration-300 ${
+                className={`absolute right-4 text-white font-bold transition-all duration-300 ${
                   language === "en" ? "opacity-0" : "opacity-100"
                 }`}
               >
@@ -308,9 +381,85 @@ const TestPage = () => {
             </button>
           </div>
         </div>
+
+        <div className="flex justify-center  md:mb-0 md:justify-end items-center text-md ">
+          <div className="flex justify-start items-center">
+            <button
+              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              onClick={AttemptLater}
+            >
+              Attempt Later
+            </button>
+          </div>
+          <div className="flex justify-end items-center text-md">
+            <TimerComponent timeRemaining={timeRemaining} />
+            <button
+              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
       </header>
 
-      <div className="flex justify-between bg-white border-t flex-col md:flex-row h-[90%] ">
+      <div
+        ref={dropdownRef}
+        className="md:hidden pb-4 px-6 border-l   md:w-[30vw] overflow-hidden opacity-0"
+      >
+        <div className="bg-white rounded-md mt-5">
+          <h3 className="text border-b py-2 mb-2">Legend</h3>
+          <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex items-center">
+              <div className="w-5 h-5 bg-gray-300 rounded mr-2"></div>
+              <span>Not Visited</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-5 h-5 bg-red-300 rounded mr-2"></div>
+              <span>Visited</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-5 h-5 bg-emerald-500 rounded mr-2"></div>
+              <span>Answered</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-5 h-5 bg-violet-300 rounded mr-2"></div>
+              <span>Marked for Review</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-5 h-5 bg-purple-700 rounded mr-2"></div>
+              <span>Answered & Marked for Review</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Questions Section */}
+        <div className="bg-white rounded-md mb-5 mt-4">
+          <div className="border-b mb-4 py-2">Questions</div>
+          <div className="flex flex-wrap gap-3">
+            {Questions?.map((question, overallIndex) => {
+              const index = Questions.indexOf(question);
+              let bgColor = "bg-gray-300"; // Default: Not Visited
+              if (visited.has(index)) bgColor = "bg-orange-300"; // Visited
+              if (answers[index]) bgColor = "bg-emerald-500"; // Answered
+              if (markedForReview.has(index)) bgColor = "bg-violet-300"; // Marked for Review
+              if (markedForReview.has(index) && answers[index]) bgColor = "bg-violet-500"; // Both
+
+              return (
+                <button
+                  key={index}
+                  className={`w-10 h-10 rounded-xl text-white font-instSansB font-semibold ${bgColor}`}
+                  onClick={() => goToQuestion(index)}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-between mt-0 bg-white border-t flex-col md:flex-row h-[90%] ">
         <div className="md:w-[70vw] flex flex-col">
           <div className="p-6 bg-white rounded-xl font-jakarta">
             <p className="text-lg mb-4">
@@ -333,7 +482,7 @@ const TestPage = () => {
               />
             )}
 
-            <div className="grid grid-cols-2 gap-3 w-[80%] mt-8">
+            <div className="grid grid-cols-2 gap-3 md:w-[80%] mt-8">
               {["A", "B", "C", "D"].map((optionKey, index) => {
                 const optionText =
                   language === "en"
@@ -382,7 +531,7 @@ const TestPage = () => {
           </div>
 
           <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
-            <div className="my-5 flex font-instSansB mx-auto gap-5 items-center ">
+            <div className="my-5 grid grid-cols-3 lg:flex font-instSansB mx-auto gap-5 items-center ">
               <button
                 onClick={saveandNext}
                 className="px-4 py-2 h-fit text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
@@ -392,7 +541,7 @@ const TestPage = () => {
 
               <button
                 onClick={clearAnswer}
-                className="px-4 py-2 h-fit  text-white bg-red-500 hover:border-black   border  rounded-2xl    active:border-[2px] transition-all duration-300"
+                className="px-4 py-2 h-full  text-white bg-red-500 hover:border-black   border  rounded-2xl    active:border-[2px] transition-all duration-300"
               >
                 Clear
               </button>
@@ -400,7 +549,7 @@ const TestPage = () => {
                 onClick={markForReview}
                 className="px-4 py-2 h-fit  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
               >
-                Mark for Review and Next
+                Mark and Next
               </button>
 
               <button
@@ -421,7 +570,7 @@ const TestPage = () => {
           </div>
         </div>
 
-        <div className="p-4 px-6 border-l md:w-[30vw]">
+        <div className="hidden md:block p-4 px-6 border-l md:w-[30vw]">
           <div className="bg-white rounded-md mb-5">
             <h3 className="text border-b py-2 mb-2">Legend</h3>
             <div className="flex flex-wrap gap-4 pt-2">
