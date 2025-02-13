@@ -60,31 +60,6 @@ const TestPage = () => {
     fetchexamDetails();
   }, [testId]);
 
-  // useEffect(() => {
-  //   const fetchQuestions = async () => {
-  //     try {
-  //       const chapterResponse = await axios.get(
-  //         `${apiUrl}/api/exams/${testId}`
-  //       );
-  //       if (chapterResponse.data) {
-  //         console.log("Chapter ID:", chapterResponse.data.chapter);
-  //         const chapterId = chapterResponse.data.chapter;
-
-  //         const questionsResponse = await axios.get(
-  //           `${apiUrl}/api/questions/chapter/${chapterId}`
-  //         );
-  //         if (questionsResponse.data) {
-  //           console.log("Fetched Questions:", questionsResponse.data);
-  //           setQuestions(questionsResponse.data);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchQuestions();
-  //}, [testId]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -329,7 +304,7 @@ const TestPage = () => {
           <span className="">{examdetails?.exam_title} </span>
           <span
             onClick={() => setisopen(!isopen)}
-            className={` transform transition-all duration-300 items-center flex ml-2 md:hidden cursor-pointer ${
+            className={` transform transition-all duration-300 items-center flex mx-2 md:hidden cursor-pointer ${
               isopen ? "rotate-180" : ""
             }`}
           >
