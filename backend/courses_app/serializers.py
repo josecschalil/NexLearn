@@ -4,6 +4,19 @@ from .models import (
     Exam, Question,UserCourseData,UserExamData,
     ExamQuestion,ChapterQuestion,LectureNote )
 
+import json
+
+
+class BulkExamQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExamQuestion
+        fields = ['exam', 'question']
+
+    def create(self, validated_data):
+       
+        return ExamQuestion.objects.create(**validated_data)
+
+
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -90,21 +103,7 @@ class ExamQuestionSerializer(serializers.ModelSerializer):
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
-        fields = ['id', 'name']  # Customize fields as needed
-
-class BulkQuestionUploadSerializer(serializers.Serializer):
-    chapter_id = serializers.UUIDField()
-    questions = QuestionSerializer(many=True)
-
-    def create(self, validated_data):
-        chapter = Chapter.objects.get(id=validated_data['chapter_id'])
-        questions_data = validated_data['questions']
-        
-        for question_data in questions_data:
-            question = Question.objects.create(**question_data)
-            question.chapters.add(chapter)
-
-        return validated_data
+        fields =  '__all__'    # Customize fields as needed
 
 class BulkQuestionUploadSerializer(serializers.Serializer):
     chapter_id = serializers.ChoiceField(choices=[])  # Dropdown for selecting chapter
@@ -117,7 +116,7 @@ class BulkQuestionUploadSerializer(serializers.Serializer):
 
     def validate_questions_json(self, value):
         """Ensure the provided JSON is valid"""
-        import json
+      
         try:
             data = json.loads(value)
             if not isinstance(data, list):
@@ -130,8 +129,15 @@ class BulkQuestionUploadSerializer(serializers.Serializer):
         chapter = Chapter.objects.get(id=validated_data['chapter_id'])
         questions_data = validated_data['questions_json']
         
+        created_questions = []
         for question_data in questions_data:
-            question = Question.objects.create(**question_data)
-            question.chapters.add(chapter)
+            question, created = Question.objects.get_or_create(**question_data)
+            created_questions.append(question)
+
+        # Link all created questions to the selected chapter
+        ChapterQuestion.objects.bulk_create(
+            [ChapterQuestion(chapter=chapter, question=question) for question in created_questions],
+            ignore_conflicts=True  # Avoid duplicate entries
+        )
 
         return validated_data

@@ -4,9 +4,11 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
 import useAuthentication from "@/hooks/useAuthentication";
-
+import Router from "next/navigation";
 
 const Navbar = () => {
+
+
   const pathname = usePathname();
   const [user_id, setUserId] = useState(null);
   const { isAuthenticated, userDetails } = useAuthentication();
@@ -71,8 +73,6 @@ const Navbar = () => {
     }
   }, [menuOpen]);
 
-
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUserId = localStorage.getItem("user_id");
@@ -84,6 +84,7 @@ const Navbar = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_id");
+    
   };
 
   const isTestPage = pathname.startsWith("/tests/custom/exams/");
@@ -189,15 +190,15 @@ const Navbar = () => {
                           <Link href={`/profile/${user_id}`}>Profile</Link>
                         </li>
                         <Link href={`/`}>
-                        <button
-                          onClick={() => {
-                            handleLogout();
-                          }}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          SIGN OUT
-                        </button>
-                      </Link>
+                          <button
+                            onClick={() => {
+                              handleLogout();
+                            }}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            SIGN OUT
+                          </button>
+                        </Link>
                       </ul>
                     </div>
                   )}
@@ -234,13 +235,18 @@ const Navbar = () => {
                 <a href="/contact">Contact</a>
               </li>
               <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
-                <a href="/signin">Sign In</a>
+                {!isAuthenticated ? (
+                  <a href="/signin">SIGN IN</a>
+                ) : (
+                  <a href="/"><button onClick={handleLogout}>SIGN OUT</button></a>
+                )}
               </li>
+
               <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
                 <a href="/signup">Register</a>
               </li>
               <li className="pb-2 mb-4">
-                <a href="/profile">Profile</a>
+                <a href={`/profile/${user_id}`}>Profile</a>
               </li>
             </ul>
           </div>

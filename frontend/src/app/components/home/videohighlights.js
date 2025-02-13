@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import VideoCard from "../videocard";
 import Link from "next/link";
+import api from "../../services/api"; 
+
 const VideoHighlights = () => {
   const [Videos, setVideos] = useState(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   useEffect(() => {
     const fetchVideos = async () => {
-      const response = await fetch(`${apiUrl}/api/lecture-videos/?is_featured=true`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setVideos(data.slice(0, 3));
-      } else {
-        console.error("Failed to fetch Videos");
+      try {
+        const response = await api.get("/api/lecture-videos/?is_featured=true"); 
+        setVideos(response.data.slice(0, 3));
+      } catch (error) {
+        console.error("Failed to fetch Videos:", error);
       }
     };
 
@@ -39,10 +36,7 @@ const VideoHighlights = () => {
         </p>
         <div className="flex items-center mt-1 justify-between w-fit px-3 pr-2 py-2 border border-gray-600 rounded-full shadow-md hover:border-gray-900">
           <Link href="/featured" className="flex justify-between items-center gap-2">
-            <p className="text-sm font-interi font-medium ">
-              see more
-            </p>
-
+            <p className="text-sm font-interi font-medium ">see more</p>
             <div className="flex items-center justify-center w-6 h-6 bg-teal-900 rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,16 +46,12 @@ const VideoHighlights = () => {
                 stroke="white"
                 className="w-4 h-4"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </Link>
         </div>
-        <div className="mt-8 grid grid-cols-1  range1:px-16  sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
+        <div className="mt-8 grid grid-cols-1 range1:px-16 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
           {Videos?.map((video, index) => (
             <div key={index}>
               <VideoCard
@@ -78,4 +68,5 @@ const VideoHighlights = () => {
     </section>
   );
 };
+
 export default VideoHighlights;

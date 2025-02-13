@@ -43,13 +43,13 @@ class ContactUsView(APIView):
             send_mail(
                 subject="Thank You for Contacting Us!",
                 message=f"Hi {first_name},\n\nThank you for reaching out to us. We have received your message and will get back to you shortly.\n\nBest regards,\nThe Team",
-                from_email="jeeneetpulseofficial@gmail.com",
+                from_email="no-reply@yourdomain.com",
                 recipient_list=[email],
                 fail_silently=False,
             )
 
             # Send the form details to the admin
-            admin_email = "jeeneetpulseofficial@gmail.com"
+            admin_email = "josecschalil@gmail.com"
             admin_subject = "New Contact Us Form Submission"
             admin_message = (
                 f"New contact form submission:\n\n"
@@ -62,7 +62,7 @@ class ContactUsView(APIView):
             send_mail(
                 subject=admin_subject,
                 message=admin_message,
-                from_email="jeeneetpulseofficial@gmail.com",
+                from_email="no-reply@yourdomain.com",
                 recipient_list=[admin_email],
                 fail_silently=False,
             )
@@ -88,17 +88,14 @@ class ResetPasswordView(APIView):
             # Generate a secure token and UID
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = token_generator.make_token(user)
-            current_site = get_current_site(request)
 
-            relative_link = reverse('reset-password', kwargs={'uidb64': uidb64, 'token': token})
-            full_url = f'http://{current_site.domain}{relative_link}'
-            
+            reset_link = f"http://localhost:3000/reset-password/{uidb64}/{token}/"
             subject = "Reset Your Password"
             message = f"""
             Hello {user.name},
 
             Click the link below to reset your password:
-            {full_url}
+            {reset_link}
 
             If you didn't request this, you can safely ignore this email.
 
@@ -108,7 +105,7 @@ class ResetPasswordView(APIView):
             send_mail(
                 subject,
                 message,
-                'jeeneetpulseofficial@gmail.com',
+                'no-reply@yourdomain.com',
                 [email],
                 fail_silently=False,
             )
@@ -175,7 +172,8 @@ class SignupView(APIView):
         current_site = get_current_site(request)
         relative_link = reverse(
             'verify-email', kwargs={'uidb64': uid, 'token': token})
-        full_url = f'{current_site.domain}{relative_link}'
+        # full_url = f'http://{current_site.domain}{relative_link}'
+        full_url = f'http://localhost:3000{relative_link}'
         print("Relative Link:", relative_link)
         print("Full URL:", full_url)
 

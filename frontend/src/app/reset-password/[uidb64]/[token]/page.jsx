@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import axios from 'axios';
+import api from "../../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -31,7 +32,7 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-        const response = await axios.post(`${apiUrl}reset-password/${uidb64}/${token}/`, {
+        const response = await api.post(`reset-password/${uidb64}/${token}/`, {
         password,
         confirmPassword
       });

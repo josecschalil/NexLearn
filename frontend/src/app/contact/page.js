@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-
+import api from "../services/api";
 const ContactUsPage = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,21 +25,15 @@ const ContactUsPage = () => {
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
-
+  
     try {
-      const response = await fetch(`${apiUrl}/contact-us/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
+      const response = await api.post(`/contact-us/`, formData); // Changed to api.post()
+  
+      if (response.status === 200) { // Check if the status code is 200
         setSuccessMessage("Thank you for contacting us! We will get back to you shortly.");
         setFormData({ firstName: "", lastName: "", phone: "", email: "", message: "" }); // Reset form
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         setError(errorData.error || "Something went wrong. Please try again.");
       }
     } catch (err) {
@@ -48,7 +42,7 @@ const ContactUsPage = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="md:min-h-screen md:bg-gray-50 md:py-8 font-jakarta md:px-6">
       <div className="max-w-5xl mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
@@ -132,7 +126,7 @@ const ContactUsPage = () => {
 
           <div className="hidden md:block relative md:w-[50%] pr-6">
             <img
-              src="/1 (2).avif"
+              src="/1 (2).webp"
               alt="Contact Us"
               className="object-cover object-right h-full w-full rounded-2xl"
             />

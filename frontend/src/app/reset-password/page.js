@@ -1,45 +1,38 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
+import { useRouter } from "next/navigation"; // Corrected import
 import Link from "next/link";
 import { toast } from 'sonner';
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import api from "../services/api";
 
 export default function ResetRequest() {
+  const router = useRouter(); // Initialize useRouter
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState(""); 
-  const [isSubmitted, setIsSubmitted] = useState(false); 
-  const [loading, setloading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    setloading(true); 
-
-    axios
-      .post(`${apiUrl}reset-password/`, {
-        email: email,
-      })
-      .then((res) => {
-        setIsSubmitted(true);
-        setMessage(`An email has been sent to ${email} with instructions to reset your password.`);
+    api.post(`reset-password/`, { email })
+      .then(() => {
+        toast.success(`An email has been sent to ${email} with instructions to reset your password.`);
+        
+        setTimeout(() => {
+          router.push("/"); // Redirect to home page
+        }, 2000); // Wait 2 seconds for the user to see the toast
       })
       .catch((error) => {
+        let errorMessage = "Something went wrong. Please try again.";
         if (error.response) {
-          setMessage(error.response.data.detail || "Something went wrong. Please try again.");
+          errorMessage = error.response.data.detail || errorMessage;
         } else if (error.request) {
-          setMessage("No response from the server. Please check your internet connection.");
-        } else {
-          setMessage("An error occurred. Please try again.");
+          errorMessage = "No response from the server. Please check your internet connection.";
         }
+        toast.error(errorMessage);
       })
       .finally(() => {
-        setloading(false);
-        if (!isSubmitted) {
-          setTimeout(() => {
-            setMessage(""); 
-          }, 3000);
-        }
+        setLoading(false);
       });
   };
 
@@ -51,31 +44,28 @@ export default function ResetRequest() {
           Enter your email address to receive a password reset link.
         </p>
 
-        {!isSubmitted ? (
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="text-sm font-medium text-gray-600">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="example@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                required
-              />
-            </div>
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email" className="text-sm font-medium text-gray-600">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full mt-1 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
+              required
+            />
+          </div>
 
-            <button
+          <button
             type="submit"
             className={`w-full py-3 rounded-lg transition duration-300 ${
-              loading
-                ? "bg-teal-800 text-white "
-                : "bg-teal-600 text-white hover:bg-teal-700"
+              loading ? "bg-teal-800 text-white" : "bg-teal-600 text-white hover:bg-teal-700"
             }`}
-            disabled={loading} // Disable the button while loading
+            disabled={loading}
           >
             {loading ? (
               <span className="flex justify-center items-center">
@@ -85,16 +75,10 @@ export default function ResetRequest() {
               "Reset Password"
             )}
           </button>
-          </form>
-        ) : (
-          toast.success(message)
-        )}
-
-      
-
+        </form>
 
         <p className="text-sm text-center text-gray-600 mt-3">
-          <Link href={ `/signin`} className="text-teal-600 font-medium hover:underline">
+          <Link href="/signin" className="text-teal-600 font-medium hover:underline">
             Sign in
           </Link>
         </p>

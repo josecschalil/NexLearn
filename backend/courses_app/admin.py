@@ -81,3 +81,6 @@ class ChapterQuestionAdmin(admin.ModelAdmin):
 class ExamQuestionAdmin(admin.ModelAdmin):
     list_display = ('exam', 'question')
     search_fields = ('exam__exam_title', 'question__question_text')
+
+
+

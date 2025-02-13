@@ -4,6 +4,8 @@ import axios from "axios";
 import useAuthentication from "@/hooks/useAuthentication";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import api from "../services/api";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const SignUpPage = () => {
@@ -73,7 +75,7 @@ const SignUpPage = () => {
     try {
       const normalizedEmail = normalizeEmail(formData.email);
 
-      const response = await axios.post(`${apiUrl}/signup/`, {
+      const response = await api.post(`/signup/`, {
         name: formData.name,
         email: normalizedEmail,
         password: formData.password,

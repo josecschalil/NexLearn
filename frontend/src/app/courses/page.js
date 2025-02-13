@@ -1,19 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/productCard";
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import api from "../services/api"; 
+
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
-      console.log(`${apiUrl}/api/courses`)
-      const response = await fetch(`${apiUrl}/api/courses`);
-      if (response.ok) {
-        const data = await response.json();
-        setCourses(data);
-      } else {
-        console.error("Failed to fetch courses");
+      try {
+        const response = await api.get("/api/courses"); 
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
       }
     };
 
@@ -21,15 +20,17 @@ const CoursesPage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto bg-white py-8 font-poppins rounded-xl p-6">
-      <h2 className="text-4xl font-bold text-gray-800 mb-6">Courses</h2>
-      <div className="w-full h-[1px] bg-gray-300 mb-8"></div>
+    <div className="min-h-screen md:py-8 font-jakarta md:px-6">
+    <div className="max-w-6xl mx-auto bg-white py-8  rounded-xl p-6">
+      <h2 className="text-4xl font-bold text-gray-800 mb-8 md:mb-6">Courses</h2>
+      <div className="w-full hidden md:block h-[1px] bg-gray-300 mb-8"></div>
 
       <div className="grid max2:grid-cols-1 grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {courses.map((course) => (
           <ProductCard key={course.id} course={course} />
         ))}
       </div>
+    </div>
     </div>
   );
 };

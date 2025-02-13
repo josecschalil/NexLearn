@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import api from "../../../services/api";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const VideosPage = () => {
@@ -16,22 +18,17 @@ const VideosPage = () => {
 
     const fetchVideo = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/api/lecture-videos/${videoId}/`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setVideo(data);
-        } else {
-          console.error(`Failed to fetch video: ${response.statusText}`);
-        }
+        const response = await api.get(`/api/lecture-videos/${videoId}/`);
+    
+        // Directly use response.data
+        setVideo(response.data);
       } catch (error) {
         console.error("Error fetching video:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false once the operation finishes
       }
     };
+    
 
     fetchVideo();
   }, [videoId]);

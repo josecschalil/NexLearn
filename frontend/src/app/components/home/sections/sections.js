@@ -7,7 +7,7 @@ const Sections = () => {
     { count: 2000, label: "Video Classes" },
     { count: 80000, label: "Questions" },
     { count: 2000, label: "Quizzes" },
-    { count: 3000, label: "Study Materials" },
+    { count: 3000, label: " Materials" },
   ];
 
   return (
