@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import api from "../../services/api";
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const TimeSelector = ({ time, setTime }) => {
   const times = [
@@ -29,7 +28,9 @@ const TimeSelector = ({ time, setTime }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{t.icon}</small>
             <div className="text-left">
-              <small className="hidden sm:block text-sm ">{t.value} minutes </small>
+              <small className="hidden sm:block text-sm ">
+                {t.value} minutes{" "}
+              </small>
               <small className=" sm:hidden text-sm ">{t.value} </small>
             </div>
           </div>
@@ -61,7 +62,9 @@ const QuestionSelector = ({ numQuestions, setNumQuestions }) => {
           <div className="flex items-center space-x-2">
             <small className="text">{num.icon}</small>
             <div className="text-left">
-              <small className=" hidden sm:block text-sm ">{num.value} Questions</small>
+              <small className=" hidden sm:block text-sm ">
+                {num.value} Questions
+              </small>
               <small className=" sm:hidden text-sm ">{num.value}</small>
             </div>
           </div>
@@ -95,7 +98,7 @@ const DifficultySelector = ({ difficulty, setDifficulty }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{d.icon}</small>
             <div className="text-left">
-              <small className="hidden sm:block text-sm font-">Level {d.value}</small>
+              <small className="hidden sm:block text-sm">Level {d.value}</small>
               <small className="sm:hidden text-sm ">{d.value}</small>
             </div>
           </div>
@@ -105,57 +108,46 @@ const DifficultySelector = ({ difficulty, setDifficulty }) => {
   );
 };
 
-const SubjectSelector = ({
-  setSubjects,
-  subjects,
+const ChapterSelector = ({
   selectedChapters,
   setSelectedChapters,
   courseid,
 }) => {
-  const [subjectOptions, setSubjectOptions] = useState([]);
-  const [expandedSubjects, setExpandedSubjects] = useState([]);
+  const [EachSubjectDetails, setEachSubjectDetails] = useState([]);
+  const [activeSubjectId, setActiveSubjectId] = useState(null); // Store only one active subject
 
-  const toggleChapter = (chapter) => {
+  const toggleChapter = (chapterId) => {
     setSelectedChapters((prev) =>
-      prev.includes(chapter)
-        ? prev.filter((item) => item !== chapter)
-        : [...prev, chapter]
+      prev.includes(chapterId)
+        ? prev.filter((id) => id !== chapterId)
+        : [...prev, chapterId]
     );
   };
 
-  const toggleSubject = (subjectName) => {
-    setExpandedSubjects((prev) =>
-      prev.includes(subjectName)
-        ? prev.filter((item) => item !== subjectName)
-        : [...prev, subjectName]
-    );
-    setSubjects((prev) =>
-      prev.includes(subjectName)
-        ? prev.filter((item) => item !== subjectName)
-        : [...prev, subjectName]
-    );
+  const toggleSubject = (subjectId) => {
+    setActiveSubjectId((prev) => (prev === subjectId ? null : subjectId)); // Collapse if same subject is clicked
   };
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await api.get(
-          `/api/subjects/?course_id=${courseid}`
-        );
+        const response = await api.get(`/api/subjects/?course_id=${courseid}`);
         const subjectsData = response.data;
 
-        const updatedSubjectOptions = await Promise.all(
+        const updatedEachSubjectDetails = await Promise.all(
           subjectsData.map(async (subject) => {
             const chaptersResponse = await api.get(
-              `/api/chapters/?subject=${subject.id}`
+              `/api/chapters/?subject_id=${subject.id}`
             );
             return {
-              ...subject,
+              id: subject.id,
+              name: subject.name,
               chapters: chaptersResponse.data,
             };
           })
         );
-        setSubjectOptions(updatedSubjectOptions);
+
+        setEachSubjectDetails(updatedEachSubjectDetails);
       } catch (error) {
         console.error("Error fetching subjects or chapters:", error);
       }
@@ -164,61 +156,77 @@ const SubjectSelector = ({
     fetchSubjects();
   }, [courseid]);
 
-  if (!subjectOptions.length) {
+  if (!EachSubjectDetails.length) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <div className="flex  gap-6 mb-6">
-        {subjectOptions.map((subject) => (
+      <div className="flex gap-6 mb-6">
+        {EachSubjectDetails.map((subject) => (
           <div
             key={subject.id}
-            className={`p-4  border  transition-all duration-100 hover:border-gray-500 rounded-2xl  ${
-              subjects.includes(subject.name)
-                ? "border-teal-800"
-                : "border-gray-300"
+            className={`p-4 border  flex transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
+              activeSubjectId === subject.id
+                ? "border-teal-800 border-1"
+                : "border-gray-300 border-1"
             }`}
-            onClick={() => toggleSubject(subject.name)}
+            onClick={() => toggleSubject(subject.id)}
           >
-            <div className="flex items-center space-x-4 cursor-pointer">
-              <h3 className="text-sm font-instSansB font-bold text-gray-800">
-                {subject.name}
-              </h3>
-            </div>
+            <h3 className="text-sm text-gray-800 mr-2">{subject.name}</h3>
+            <span
+                      className={`transform transition-all duration-300 ${  activeSubjectId === subject.id? "rotate-180" : ""}`}
+                    >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              className="transition-transform duration-300"
+            >
+              <path
+                d="M7 10l5 5 5-5z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+            </svg>
+            </span>
           </div>
         ))}
       </div>
-      {subjects.map((selectedSubject) => {
-        const currentSubject = subjectOptions.find(
-          (subject) => subject.name === selectedSubject
-        );
 
-        return (
-          <div key={currentSubject.id} className="mb-8">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
-              {currentSubject.name} Chapters
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-              {currentSubject.chapters.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  className={`p-4 border flex items-center  transition-all duration-100 hover:border-gray-500 hover:shadow rounded-2xl ${
-                    selectedChapters.includes(chapter.id)
-                      ? "border-teal-800"
-                      : "border-gray-300"
-                  }`}
-                  onClick={() => toggleChapter(chapter.id)}
-                >
-                  <h4 className="text-sm font-bold text-gray-800 line-clamp-2">
-                    {chapter.name}
-                  </h4>
+      {activeSubjectId && (
+        <div className="mb-8">
+          {EachSubjectDetails.map(
+            (subject) =>
+              subject.id === activeSubjectId && (
+                <div key={subject.id}>
+                  <h3 className="text-lg text-gray-800 mb-4">
+                    {subject.name} Chapters
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                    {subject.chapters.map((chapter) => (
+                      <div
+                        key={chapter.id}
+                        className={`p-4 border flex items-center transition-all duration-100 hover:border-gray-500 hover:shadow rounded-2xl cursor-pointer ${
+                          selectedChapters.includes(chapter.id)
+                            ? "border-teal-800"
+                            : "border-gray-300"
+                        }`}
+                        onClick={() => toggleChapter(chapter.id)}
+                      >
+                        <h4 className="text-sm text-gray-800 line-clamp-2">
+                          {chapter.name}
+                        </h4>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+              )
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -235,8 +243,7 @@ const ModalTimeQuestions = ({
   const isNextEnabled = time && numQuestions && difficulty;
 
   return (
-    <div className="px-2 modal w-fit rounded-lg  text-gray-800 mx-auto font-instSansB">
-
+    <div className="px-2 modal w-fit rounded-lg  text-gray-800 mx-auto font-istok font-bold ">
       <h2 className="text-lg text-left mb-4">Set Duration</h2>
       <TimeSelector time={time} setTime={setTime} />
 
@@ -252,7 +259,7 @@ const ModalTimeQuestions = ({
         setDifficulty={setDifficulty}
       />
 
-      <div className="text-left mt-6">
+      <div className="text-left mt-6 ">
         <button
           disabled={!isNextEnabled}
           onClick={onNext}
@@ -278,14 +285,12 @@ const ModalSubjects = ({
   setSelectedChapters,
   courseid,
 }) => {
-  const isNextEnabled = subjects.length > 0 && selectedChapters.length > 0;
+  const isNextEnabled = selectedChapters.length > 0;
 
   return (
-    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-instSansB">
-      <h2 className="text-lg font-semibold text-left mb-4">
-        Select Subjects and Chapters
-      </h2>
-      <SubjectSelector
+    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok font-bold ">
+      <h2 className="text-lg  text-left mb-4">Select Chapters</h2>
+      <ChapterSelector
         setSubjects={setSubjects}
         subjects={subjects}
         selectedChapters={selectedChapters}
@@ -295,7 +300,7 @@ const ModalSubjects = ({
       <div className="flex justify-between mt-4">
         <button
           onClick={onBack}
-          className="border px-6 py-2 text-md font-jakarta rounded-lg font-bold transition-all text-gray-700 hover:border-gray-900"
+          className="border px-6 py-2 text-md  rounded-lg  transition-all text-gray-700 hover:border-gray-900"
         >
           Back
         </button>
@@ -303,7 +308,7 @@ const ModalSubjects = ({
         <button
           onClick={onNext}
           disabled={!isNextEnabled}
-          className={`border px-6 py-2 text-md font-jakarta rounded-lg font-bold transition-all ${
+          className={`border px-6 py-2 text-md  rounded-lg  transition-all ${
             isNextEnabled
               ? "hover:border-gray-500"
               : "text-gray-500 cursor-not-allowed"
@@ -343,7 +348,7 @@ const TestCreator = ({ id }) => {
         .join("&");
 
       const questionApiUrl = `/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
-      console.log( questionApiUrl)
+      console.log(questionApiUrl);
       const questionResponse = await api.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
 
@@ -352,7 +357,7 @@ const TestCreator = ({ id }) => {
       const examPayload = {
         exam_title: "customtest",
         time: time,
-        user:userId,
+        user: userId,
         difficulty: difficulty,
         is_fullCourseExam: false,
         is_fullSubjectExam: false,
@@ -364,15 +369,11 @@ const TestCreator = ({ id }) => {
       };
 
       console.log(examPayload);
-      const createExamResponse = await api.post(
-        `/api/exams/`,
-        examPayload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const createExamResponse = await api.post(`/api/exams/`, examPayload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const newExamId = createExamResponse.data.exam_id;
       console.log("New Exam Created:", newExamId);
@@ -392,7 +393,7 @@ const TestCreator = ({ id }) => {
         answers: {},
         visited: [],
         marked_for_review: [],
-        time_remaining: time*60,
+        time_remaining: time * 60,
         is_timer_running: false,
         is_active: true,
         attempt_number: 1,
@@ -401,10 +402,7 @@ const TestCreator = ({ id }) => {
       };
 
       try {
-        const response = await api.post(
-          `/api/exam-data/`,
-          payload_exam_data
-        );
+        const response = await api.post(`/api/exam-data/`, payload_exam_data);
         console.log("Test started successfully:", response.data);
       } catch (error) {
         console.error("Error starting the test:", error);
@@ -421,32 +419,29 @@ const TestCreator = ({ id }) => {
   return (
     <div className="py-4 relative">
       <>
-      
-      {showModal === 1 && (
-        <ModalTimeQuestions
-          onNext={handleNext}
-          setNumQuestions={setNumQuestions}
-          setTime={setTime}
-          setDifficulty={setDifficulty}
-          numQuestions={numQuestions}
-          time={time}
-          difficulty={difficulty}
-          
-        />
-        
-      )}
-      {showModal === 2 && (
-        <ModalSubjects
-          onNext={handleSubmit}
-          onBack={handleBack}
-          setSubjects={setSubjects}
-          subjects={subjects}
-          selectedChapters={selectedChapters}
-          setSelectedChapters={setSelectedChapters}
-          courseid={id}
-        />
-      )}</>
-      
+        {showModal === 1 && (
+          <ModalTimeQuestions
+            onNext={handleNext}
+            setNumQuestions={setNumQuestions}
+            setTime={setTime}
+            setDifficulty={setDifficulty}
+            numQuestions={numQuestions}
+            time={time}
+            difficulty={difficulty}
+          />
+        )}
+        {showModal === 2 && (
+          <ModalSubjects
+            onNext={handleSubmit}
+            onBack={handleBack}
+            setSubjects={setSubjects}
+            subjects={subjects}
+            selectedChapters={selectedChapters}
+            setSelectedChapters={setSelectedChapters}
+            courseid={id}
+          />
+        )}
+      </>
     </div>
   );
 };
