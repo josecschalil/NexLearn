@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import api from "../../services/api";
 import DualListBox from "react-dual-listbox";
 import "react-dual-listbox/lib/react-dual-listbox.css";
-import { FaArrowRight, FaArrowLeft, FaAngleDoubleRight, FaAngleDoubleLeft } from "react-icons/fa";
 
 const ExamQuestionsPage = () => {
     const { examId } = useParams();
