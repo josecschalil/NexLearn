@@ -22,7 +22,9 @@ const ProfilePage = () => {
           const courses = response.data.courses;
 
           const coursePromises = courses.map((coursedata) => {
-            return api.get(`/api/courses/${coursedata.course_id}`);
+            return api.get(
+              `/api/courses/${coursedata.course_id}`
+            );
           });
 
           Promise.all(coursePromises)
@@ -54,13 +56,11 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen md:py-8 font-inter md:px-6">
-      <div className="max-w-6xl min-h-[80vh] mx-auto  p-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-          Profile
-        </h2>
-        <div className="hidden md:block h-[1px] bg-gray-300 mb-8"></div>
+    <div className="min-h-screen bg-gray-50 md:py-8 font-jakarta md:px-6">
+      <div className="max-w-5xl min-h-[80vh] mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
+        <h2 className="text-3xl font-bold font-instSansB ">Profile</h2>
         <div className="mt-6 flex flex-col gap-6">
+          <hr></hr>
           <div>
             <h3 className="text-2xl font-instSansB mb-4  text-gray-800">
               User Details
@@ -76,50 +76,53 @@ const ProfilePage = () => {
             <h3 className=" text-2xl font-instSansB mb-4 text-gray-800">
               Courses Enrolled
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
-              {coursesData.length === 0 ? (
-                <p className="text-gray-600 mt-4 mb-4">No courses enrolled.</p>
-              ) : (
-                coursesData.map((course, index) => (
-                  <Link key={index} href={`/student-portal/${course.id}`}>
-                    <div className="border border-white transition-all duration-300 hover:border-gray-400 rounded-2xl ">
-                      <div className="relative">
-                        <img
-                          className=" w-full rounded-2xl  aspect-video  object-cover "
-                          src={course.img}
-                          alt={course.title}
-                        />
-                      </div>
-                      <div className="flex pt-6 -mt-6 flex-col items-center justify-between shadow transition-all duration-100 rounded-2xl">
-                        <div className="flex items-center mr-auto font-inter p-3">
-                          <div className="h-10 w-10  flex items-center mr-3 justify-center rounded-full">
-                            <span
-                              role="img"
-                              aria-label="course-icon"
-                              className="text-2xl"
-                            >
-                              🎓
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm xs:text-lg font-bold text-gray-800">
-                              {course.title}
-                            </h3>
-                            <p className="text-[11px] xs:text-sm text-gray-500 mt-1 ">
-                              {course.chapters} Chapters •{" "}
-                              {(+course.classes || 0) +
-                                (+course.tests || 0) +
-                                (+course.studymaterials || 0)}{" "}
-                              Contents
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+            {coursesData.length === 0 ? (
+              <p className="text-gray-600 mt-4 mb-4">No courses enrolled.</p>
+            ) : (
+              coursesData.map((course, index) => (
+                <div
+                  key={course.id}
+                  className="flex items-center justify-between p-4 border  hover:border-gray-500 hover:shadow transition-all duration-100 rounded-2xl mb-4"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="h-10 w-10 bg-blue-100 flex items-center mr-3 justify-center rounded-full">
+                      <span
+                        role="img"
+                        aria-label="course-icon"
+                        className="text-2xl"
+                      >
+                        🎓
+                      </span>
                     </div>
-                  </Link>
-                ))
-              )}
-            </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800 font-instSansB">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {course.chapters} Chapters • {course.contents} Contents
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="hidden md:block w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-teal-500 h-full"
+                        style={{ width: `${progressArray[index]}%` }}
+                      ></div>
+                    </div>
+                    <span className="hidden md:block text-sm text-gray-500">
+                      {progressArray[index]}% complete
+                    </span>
+
+                    <Link href={`/courses/${course.id}`}>
+                      <button className="px-4 py-2 bg-teal-800 hover:bg-teal-900 text-white rounded-2xl text-sm">
+                        Details
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
         <div className="text-2xl font-instSansB mt-2 text-gray-800">

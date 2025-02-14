@@ -12,7 +12,7 @@ const AboutPage = () => {
         ©  JEENEETPULSE 
         
         </h1>
-        <p className="text-lg px-4 font-medium max-w-3xl mx-auto">
+        <p className="text-lg font-medium max-w-3xl mx-auto">
           The ultimate platform  for aspiring students preparing for JEE and
           NEET. Test your skills, practice questions, and watch expert-led
           classes.
