@@ -199,7 +199,7 @@ const CheckoutPage = () => {
                {isEnrolled ? (
               <div className="text-teal-800 font-semibold">Already Enrolled</div>
             ) : (
-              <PaymentButton course={course} userId={userId} userDetails={userDetails} onSuccess={handleSubmit} />
+              <PaymentButton course={course} userId={userId} userDetails={userDetails} isAuthenticated={isAuthenticated}/>
             )}
             </div>
           </div>

@@ -260,8 +260,8 @@ useEffect(() => {
             type="submit"
             className={`w-full py-3 rounded-lg transition duration-300 ${
               isloading
-                ? "bg-teal-400 text-white animate-pulse"
-                : "bg-teal-600 text-white hover:bg-teal-700"
+                ? "bg-teal-900 text-white animate-pulse"
+                : "bg-teal-700 text-white hover:bg-teal-800"
             }`}
             disabled={isloading} // Disable the button while loading
           >

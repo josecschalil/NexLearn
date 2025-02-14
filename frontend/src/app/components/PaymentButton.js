@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast} from "sonner";
 import api from "../services/api";
 
-const PaymentButton = ({ course, userId, userDetails, isAuthenticated, showPopup }) => {
+const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
   if (!course || !userId) {
     return null;
   }
