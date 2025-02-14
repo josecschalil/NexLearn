@@ -56,19 +56,8 @@ DEBUG = True
 
 # Allow All Hosts & CORS (Temporary for Development)
 ALLOWED_HOSTS = ["*"]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://api.jeeneetpulse.com",
-    "https://jeeneetpulse.com",
-    "https://www.jeeneetpulse.com",
-]
-
-# CORS Allowed Origins - Must have full URLs
-CORS_ALLOWED_ORIGINS = [
-    "https://api.jeeneetpulse.com",
-    "https://jeeneetpulse.com",
-    "https://www.jeeneetpulse.com",
-]
+CSRF_TRUSTED_ORIGINS = ["*"]
+CORS_ALLOWED_ORIGINS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True  # Required for Django-CORS-Headers
 
 
