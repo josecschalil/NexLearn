@@ -1,27 +1,16 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthentication from "@/hooks/useAuthentication";
 import { useRouter } from "next/navigation";
-import gsap from "gsap";
 import { toast } from "sonner";
 import api from "../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const SignUpPage = () => {
+
   const router = useRouter();
-  const [showRules, setShowRules] = useState(false);
-  const [delayedShowRules, setDelayedShowRules] = useState(false);
-
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setDelayedShowRules(showRules);
-  }, 200);
-
-  return () => clearTimeout(timer); // Cleanup on unmount or state change
-}, [showRules]);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -35,34 +24,12 @@ useEffect(() => {
 
   const [isloading, setIsloading] = useState(false);
 
-  const rulesRef = useRef(null);
+  useEffect(()=>{
+      if(isAuthenticated){
+      toast.error("Already Signed In. Sign Out to Register")
+      router.push(`/`);}
 
-useEffect(() => {
-  if (showRules) {
-    gsap.to(rulesRef.current, {
-      height: "auto",
-      opacity: 1,
-      y: 0, // Reset position when opening
-      duration: 0.3,
-      ease: "power2.out",
-    });
-  } else {
-    gsap.to(rulesRef.current, {
-      height: 0,
-      opacity: 0,
-      y: "-10vh", // Move up when closing
-      duration: 0.2,
-      ease: "power2.in",
-    });
-  }
-}, [showRules]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      toast.error("Already Signed In. Sign Out to Register");
-      router.push(`/`);
-    }
-  }, [isAuthenticated]);
+  },[isAuthenticated])
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -72,9 +39,7 @@ useEffect(() => {
   const normalizeEmail = (email) => {
     if (!email) return "";
     const [localPart, domainPart] = email.split("@");
-    return domainPart
-      ? `${localPart.toLowerCase()}@${domainPart.toLowerCase()}`
-      : email;
+    return domainPart ? `${localPart.toLowerCase()}@${domainPart.toLowerCase()}` : email;
   };
 
   const validatePassword = () => {
@@ -104,7 +69,6 @@ useEffect(() => {
     const passwordError = validatePassword();
     if (passwordError) {
       setError(passwordError);
-      setIsloading(false);
       return;
     }
 
@@ -117,6 +81,7 @@ useEffect(() => {
         password: formData.password,
         re_password: formData.password,
       });
+
 
       setIsloading(false);
       setError("");
@@ -156,16 +121,16 @@ useEffect(() => {
   };
 
   return (
-    <div className="h-[88vh] flex sm:items-center sm:justify-center e">
-      <div className="w-full  scale-90   sm:max-w-md bg-white md:border py-4 pt-6 rounded-3xl  border-gray-300 px-2 md:p-8">
-        <h2 className="text-3xl font-semibold font-instSansB text-center text-gray-800">
+    <div className="min-h-screen flex sm:items-center sm:justify-center bg-gray-50">
+      <div className="w-full sm:max-w-lg bg-white sm:shadow-xl sm:rounded-xl p-8">
+        <h2 className="text-3xl font-bold text-center text-gray-800">
           Sign Up
         </h2>
         <p className="text-sm text-gray-600 text-center mt-2">
           Join us to kickstart your journey for JEE or NEET preparation!
         </p>
 
-        <form className="mt-8 space-y-5 " onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="name"
@@ -198,7 +163,7 @@ useEffect(() => {
               value={formData.email}
               onChange={handleChange}
               placeholder="example@email.com"
-              className="w-full  px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
               aria-label="Email Address"
               required
             />
@@ -217,11 +182,9 @@ useEffect(() => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Create a password"
-              className="w-full mt-0 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
               aria-label="Password"
               required
-              onFocus={() => setShowRules(true)}
-              onBlur={() => setShowRules(false)}
             />
           </div>
 
@@ -238,20 +201,10 @@ useEffect(() => {
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Re-enter your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
               aria-label="Confirm Password"
               required
             />
-          </div>
-
-<div
-              ref={rulesRef}
-              className="overflow-hidden bg-gray-100  p-3 text-center rounded-lg text-sm text-gray-700"
-              style={{ height: 0, opacity: 0 }}
-            >
-              Your password must be at least 8 characters long, contain an
-              uppercase letter, a lowercase letter, a number, and a special
-              character.
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
