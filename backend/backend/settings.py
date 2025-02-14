@@ -1,32 +1,18 @@
 from pathlib import Path
 from datetime import timedelta
-import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security Settings
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-# RAZORPAY_KEY_ID="rzp_live_q7VIn9wEkKAusy"
-# RAZORPAY_KEY_SECRET="DSJsynsyJBqjlZW9elWTQkjQ"
-
-
-RAZORPAY_KEY_ID="rzp_test_MMtbyq8sHx2QaO"
-RAZORPAY_KEY_SECRET="bQWcQjJUwScgrNiKkCTmsJG4"
-
+RAZORPAY_KEY_ID = "rzp_test_MMtbyq8sHx2QaO"
+RAZORPAY_KEY_SECRET = "bQWcQjJUwScgrNiKkCTmsJG4"
 
 
 # Media & Static Files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = 'static/'
-
 
 
 # Installed Apps
@@ -65,12 +51,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 ASGI_APPLICATION = 'backend.asgi.application'
 
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+SECRET_KEY = "django-insecure-igt2(drbd-j!9174r@skyw1p%&f53i3q5dhlpp7o$!(4t$7ko0"
+DEBUG = True
 
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
-
+# Allow All Hosts & CORS (Temporary for Development)
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["*"]
+CORS_ALLOWED_ORIGINS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True  # Required for Django-CORS-Headers
 
 
 # Authentication & Permissions
@@ -114,17 +102,6 @@ TEMPLATES = [
         },
     },
 ]
-# Database Configuration
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT", "5432"),
-    }
-}
 
 
 # Password validation
@@ -157,12 +134,24 @@ USE_I18N = True
 
 USE_TZ = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "jeeneetpulse",
+        "USER": "postgres",
+        "PASSWORD": "1234",
+        "HOST": "db",
+        "PORT": "5432",
+    }
+}
+
+# Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "websitenotificationsender@gmail.com"
+EMAIL_HOST_PASSWORD = "cnbhnghsdfuqccez"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Site & Djoser Settings
@@ -179,7 +168,8 @@ DJOSER = {
 
 # Content Security Policy (CSP) Settings
 CSP_DEFAULT_SRC = ("'self'",)
-CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com")
+CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com",
+                "https://fonts.googleapis.com")
 CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")

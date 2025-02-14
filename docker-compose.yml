@@ -24,8 +24,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    env_file:
-      - ./backend/.env
     environment:
       - DATABASE_URL=postgres://postgres:1234@db:5432/jeeneetpulse
       - DEBUG=1
