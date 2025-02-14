@@ -240,7 +240,7 @@ const TestPage = () => {
     };
 
     return (
-      <div className="mx-4 px-4 py-2 text-black bg-gray-100 shadow w-20 h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300">
+      <div className="mx-4 py-4 text-center sm:py-2 text-black bg-gray-100 shadow w-20 h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300">
         {formatTime(timeRemaining)}
       </div>
     );
@@ -382,19 +382,18 @@ const TestPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-center  md:mb-0 md:justify-end items-center text-md ">
-          <div className="flex justify-start items-center">
-            <button
-              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+        <div className="flex justify-center  md:mb-0 md:justify-end items-center text-sm xs:text-md ">
+
+          <div className="flex justify-end items-center text-md">
+          <button
+              className="px-4 py-2  h-fit text-black bg-gray-100 shadow  text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
               onClick={AttemptLater}
             >
               Attempt Later
             </button>
-          </div>
-          <div className="flex justify-end items-center text-md">
             <TimerComponent timeRemaining={timeRemaining} />
             <button
-              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              className="px-4 py-4 sm:py-2 text-black bg-gray-100 shadow h-full text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
               onClick={handleSubmit}
             >
               Submit
@@ -531,42 +530,63 @@ const TestPage = () => {
           </div>
 
           <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
-            <div className="my-5 grid grid-cols-3 lg:flex font-instSansB mx-auto gap-5 items-center ">
+            <div className="my-5 flex-wrap flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
+
+            <button
+                onClick={prevQuestion}
+                disabled={currentQuestionIndex === 0}
+                className="px-4 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Previous
+              </button>
+            
+              <button
+                onClick={clearAnswer}
+                className="px-4 py-2   text-white bg-red-500 hover:border-black  flex-1 border  rounded-2xl    active:border-[2px] transition-all duration-300"
+              >
+                Clear
+              </button>
+
+              <button
+                onClick={nextQuestion}
+                disabled={currentQuestionIndex === totalQuestions - 1}
+                className="px-7 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Next
+              </button>
+
               <button
                 onClick={saveandNext}
-                className="px-4 py-2 h-fit text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+                className="px-4 py-2 h-fit hidden lg:flex text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
               >
                 Save and Next
               </button>
 
               <button
-                onClick={clearAnswer}
-                className="px-4 py-2 h-full  text-white bg-red-500 hover:border-black   border  rounded-2xl    active:border-[2px] transition-all duration-300"
-              >
-                Clear
-              </button>
-              <button
                 onClick={markForReview}
-                className="px-4 py-2 h-fit  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
+                className="px-4 py-2 h-fit hidden lg:flex  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
               >
                 Mark and Next
               </button>
 
-              <button
-                onClick={prevQuestion}
-                disabled={currentQuestionIndex === 0}
-                className="px-4 py-2 text-black bg-gray-100 shadow h-fit   border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-              >
-                Previous
-              </button>
-              <button
-                onClick={nextQuestion}
-                disabled={currentQuestionIndex === totalQuestions - 1}
-                className="px-7 py-2 text-black bg-gray-100 shadow h-fit  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-              >
-                Next
-              </button>
+            
+            
             </div>{" "}
+            <div className="flex gap-2 md:gap-6">
+                          <button
+                onClick={saveandNext}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1 text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+              >
+                Save and Next
+              </button>
+
+              <button
+                onClick={markForReview}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
+              >
+                Mark and Next
+              </button>
+            </div>
           </div>
         </div>
 
