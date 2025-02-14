@@ -24,9 +24,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgres://postgres:1234@db:5432/jeeneetpulse
-      - DEBUG=1
+    env_file:
+      - ./backend/.env
+    
 
   caddy:
     image: caddy:latest
