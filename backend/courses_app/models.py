@@ -154,7 +154,7 @@ class UserCourseData(models.Model):
     progress = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user.username} - {self.course.code} - {self.progress}%"
+        return f"{self.user.name} - {self.course.title} - {self.progress}%"
 
     class Meta:
         
@@ -176,7 +176,7 @@ class UserExamData(models.Model):
     attempt_number = models.IntegerField()
 
     def __str__(self):
-        return f"ExamAttempt (User: {self.user.username}, Exam: {self.exam_id}, Attempt: {self.attempt_number})"
+        return f"ExamAttempt (User: {self.user.name}, Exam: {self.exam_id}, Attempt: {self.attempt_number})"
 
 class ChapterQuestion(models.Model):
     chapter = models.ForeignKey(
@@ -215,3 +215,17 @@ class ExamQuestion(models.Model):
     def __str__(self):
         return f"Exam: {self.exam.exam_title}, Question: {self.question.id}"
 
+
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    course = models.ForeignKey("Course", on_delete=models.CASCADE)
+    razorpay_order_id = models.CharField(max_length=255, unique=True)
+    razorpay_payment_id = models.CharField(max_length=255, blank=True, null=True)
+    razorpay_signature = models.TextField(blank=True, null=True)
+    amount = models.IntegerField()
+    status = models.CharField(max_length=50, default="PENDING")  # PENDING, SUCCESS, FAILED
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.razorpay_order_id} - {self.status}"

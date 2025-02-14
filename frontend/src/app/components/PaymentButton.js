@@ -1,7 +1,7 @@
 "use client";
-import { useEffect } from "react";
 import axios from "axios";
-import { toast, Toaster } from "sonner";
+import { toast} from "sonner";
+import api from "../services/api";
 
 const PaymentButton = ({ course, userId, userDetails, isAuthenticated, showPopup }) => {
   if (!course || !userId) {
@@ -27,7 +27,7 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated, showPopup
   const addCourseToUser = async () => {
     try {
       const data = { user: userId, course: course.id };
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userCourses/`, data);
+      const response = await api.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/userCourses/`, data);
       console.log("Course added to user successfully:", response.data);
       toast.success("Course added to your account successfully!");
     } catch (error) {
@@ -49,9 +49,11 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated, showPopup
     }
 
     try {
-      const orderResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create-order/`,
+      const orderResponse = await api.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/create-order/`,
         {
+          user_id: userId,
+          course_id: course.id,
           amount: course.current_price * 100,
           currency: "INR",
           receipt: `receipt_${userId}_${course.id}`,
@@ -74,10 +76,8 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated, showPopup
         handler: async (response) => {
           try {
             const verifyResponse = await axios.post(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/verify-payment/`,
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}api/verify-payment/`,
               {
-                user: userId,
-                course: course.id,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,

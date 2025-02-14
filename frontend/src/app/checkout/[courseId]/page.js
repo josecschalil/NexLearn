@@ -8,7 +8,6 @@ import showPopup from "@/app/components/Toast";
 import axios from "axios";
 import api from "../../services/api";
 
-
 const CheckoutPage = () => {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
@@ -53,8 +52,7 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await api.get(`/api/courses/${courseId}`
-        );
+        const response = await api.get(`/api/courses/${courseId}`);
         setCourse(response.data);
         setLoading(false);
       } catch (err) {
@@ -197,36 +195,14 @@ const CheckoutPage = () => {
               Payment Options
             </h2>
             <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                id="phonepe"
-                name="paymentGateway"
-                defaultChecked
-                className="w-5 h-5 text-teal-600 focus:ring-2"
-              />
-               <div>
-            <h1>Pay with Razorpay</h1>
-             <PaymentButton 
-        course={course} 
-        userId={userId} 
-        userDetails={userDetails} 
-        isAuthenticated={isAuthenticated} 
-      />
-
-        </div>
+            
+               {isEnrolled ? (
+              <div className="text-teal-800 font-semibold">Already Enrolled</div>
+            ) : (
+              <PaymentButton course={course} userId={userId} userDetails={userDetails} onSuccess={handleSubmit} />
+            )}
             </div>
           </div>
-          <button
-            className={`bg-teal-600 text-white px-4 py-2 text-nowrap text-md font-semibold rounded-xl ${
-              isEnrolled
-                ? "bg-gray-400 cursor-not-allowed"
-                : "hover:bg-teal-700 transition"
-            }`}
-            disabled={isEnrolled}
-            onClick={handlePayment}
-          >
-            {isEnrolled ? "Already Enrolled" : "Buy Now"}
-          </button>
         </div>
       </div>
     </div>
