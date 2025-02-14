@@ -1,13 +1,13 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import PaymentButton from "@/app/components/PaymentButton";
 import Link from "next/link";
 import useAuthentication from "@/hooks/useAuthentication";
 import showPopup from "@/app/components/Toast";
 import axios from "axios";
 import api from "../../services/api";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const CheckoutPage = () => {
   const { courseId } = useParams();
@@ -204,9 +204,16 @@ const CheckoutPage = () => {
                 defaultChecked
                 className="w-5 h-5 text-teal-600 focus:ring-2"
               />
-              <label htmlFor="phonepe" className="text-lg text-gray-700">
-                Pay via PhonePe
-              </label>
+               <div>
+            <h1>Pay with Razorpay</h1>
+             <PaymentButton 
+        course={course} 
+        userId={userId} 
+        userDetails={userDetails} 
+        isAuthenticated={isAuthenticated} 
+      />
+
+        </div>
             </div>
           </div>
           <button

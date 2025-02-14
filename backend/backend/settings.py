@@ -13,10 +13,21 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
+# RAZORPAY_KEY_ID="rzp_live_q7VIn9wEkKAusy"
+# RAZORPAY_KEY_SECRET="DSJsynsyJBqjlZW9elWTQkjQ"
+
+
+RAZORPAY_KEY_ID="rzp_test_MMtbyq8sHx2QaO"
+RAZORPAY_KEY_SECRET="bQWcQjJUwScgrNiKkCTmsJG4"
+
+
+
 # Media & Static Files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = 'static/'
+
+
 
 # Installed Apps
 INSTALLED_APPS = [

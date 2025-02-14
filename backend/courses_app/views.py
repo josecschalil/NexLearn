@@ -503,3 +503,72 @@ def get_questions(request):
         return JsonResponse({"questions": list(question_ids)})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+#razorpayy
+
+import razorpay
+from django.conf import settings
+
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_order(request):
+    """
+    API to create a Razorpay order
+    """
+    try:
+        # Initialize Razorpay Client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        # Get amount from frontend (Ensure it's in paise, e.g., ₹100 = 10000)
+        amount = request.data.get("amount")  # Amount in paise
+        currency = "INR"
+        
+        # Order data
+        order_data = {
+            "amount": amount,
+            "currency": currency,
+            "payment_capture": 1,  # Auto-capture payment
+        }
+
+        # Create order on Razorpay
+        order = client.order.create(data=order_data)
+
+        return Response(order)  # Return Razorpay order details to frontend
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_payment(request):
+    """
+    API to verify Razorpay payment
+    """
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        payment_id = request.data.get("razorpay_payment_id")
+        order_id = request.data.get("razorpay_order_id")
+        signature = request.data.get("razorpay_signature")
+
+        params_dict = {
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
+        }
+
+        # Verify payment signature
+        result = client.utility.verify_payment_signature(params_dict)
+
+        if result:
+            return Response({"status": "Payment verified!"})
+        else:
+            return Response({"error": "Invalid payment signature"}, status=400)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
