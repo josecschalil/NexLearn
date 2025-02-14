@@ -26,4 +26,5 @@ static/
 *.swp
 
 # Ignore environment files
-.env
+
+
