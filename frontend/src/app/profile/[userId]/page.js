@@ -56,11 +56,15 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 md:py-8 font-jakarta md:px-6">
-      <div className="max-w-5xl min-h-[80vh] mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
-        <h2 className="text-3xl font-bold font-instSansB ">Profile</h2>
+    <div className="overflow-x-hidden min-h-screen md:py-8  md:px-6">
+    <div className="max-w-6xl mx-auto space-x-6 ">
+      <div className=" bg-white py-8 rounded-xl px-6">
+        <h3 className="text-xl  sm:text-3xl   md:mb-4 font-bold text-gray-800 font-inter">
+        Profile
+        </h3>
+        <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
         <div className="mt-6 flex flex-col gap-6">
-          <hr></hr>
+         
           <div>
             <h3 className="text-2xl font-instSansB mb-4  text-gray-800">
               User Details
@@ -157,6 +161,7 @@ const ProfilePage = () => {
           Frequently Asked Questions{" "}
         </div>
       </div>
+    </div>
     </div>
   );
 };

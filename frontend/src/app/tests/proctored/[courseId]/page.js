@@ -108,7 +108,7 @@ const TestsPage = () => {
           content="Prepare for exams with our mock tests. Check schedules, start tests, and analyze your performance."
         />
       </Head>
-      <main className="min-h-screen  md:py-8 font-jakarta md:px-6">
+      <main className="min-h-screen  md:py-8 font-jakarta md:px-6 overflow-x-hidden">
         <section className="max-w-6xl mx-auto p-6">
         <h3 className="text-xl xs:text-2xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
                Practice Exams

@@ -33,7 +33,7 @@ const FeaturedTests = () => {
           {featuredTests?.map((test, index) => (
             <Link
               key={index}
-              className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center"
+              className="border border-gray-300 rounded-2xl shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center"
               href={`/tests/proctored/exams/${test.exam_id}`}
             >
               <div className=" ml-3 flex items-center justify-center text-2xl">

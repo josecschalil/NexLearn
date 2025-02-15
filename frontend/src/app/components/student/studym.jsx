@@ -40,7 +40,7 @@ const StudyMaterials = () => {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
+                <div className="border border-gray-300 rounded-2xl shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
                   <span className="text-2xl">🗂️</span>
                   <div className="ml-4 flex-1">
                     <h4 className="font-inter font-semibold text-gray-900 truncate">

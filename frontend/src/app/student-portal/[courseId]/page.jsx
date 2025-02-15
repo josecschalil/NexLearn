@@ -36,7 +36,7 @@ const CoursePage = () => {
 
   return (
     <div className="overflow-x-hidden min-h-screen md:py-8 font-jakarta md:px-6">
-      <div className="max-w-6xl mx-auto flex space-x-6 ">
+      <div className="max-w-6xl mx-auto space-x-6 ">
         <div className="flex-1 bg-white py-8 rounded-xl px-6">
           <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
             {course.title}

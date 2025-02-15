@@ -64,9 +64,10 @@ const ChapterPage = () => {
     <div className="min-h-screen md:py-8 font-jakarta md:px-6 overflow-x-hidden">
     <div className="max-w-6xl mx-auto bg-white p-6">
       <div className=" gap-4 ">
-        <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2 md:mb-6">
-          {chapter?.name}</h2>
-          <hr className="h-[1px] -mr-[50vw]  bg-gray-300 mb-8"></hr>
+      <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+            {chapter?.name}
+          </h3>
+          <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
 
         {contents?.length === 0 ? (
           <p className="text-gray-600 mt-4">No videos available.</p>

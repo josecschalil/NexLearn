@@ -156,7 +156,7 @@ const TestsPage = () => {
                           <button
                             onClick={() => handleStartTest(exam.exam_id)}
                             aria-label={`Start Mock Test ${exam.exam_id}`}
-                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
                           >
                             Start Test
                           </button>
