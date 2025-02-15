@@ -107,16 +107,16 @@ const Exams = ({ id, setIsTestCreatorOpen }) => {
       <div  onClick={createtesttoggler} className="flex transition-all rounded-2xl hover:shadow hover:border-gray-500 duration-100  items-center justify-between p-4 border border-gray-300  mb-4">
         <div className="flex items-center space-x-4">
           <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
-            <span role="img" aria-label="exam-icon" className="text-2xl">
+            <span role="img" aria-label="exam-icon" className="text-xl">
               🛠️
             </span>
           </div>
           {/* Details */}
           <div>
-            <h3 className="text-lg font-bold font-inter text-gray-800">
+          <h3 className="text-[14px] xs:text-lg font-bold font-inter text-gray-800">
               Custom Tests
             </h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-[12px] xs:text-sm text-gray-500 mt-1">
               Create and customize your own test sessions!
             </p>
           </div>
