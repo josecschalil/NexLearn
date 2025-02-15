@@ -47,8 +47,8 @@ const Contents = () => {
   }, [courseId]);  
 
   return (
-    <div className="min-h-screen md:bg-gray-50 md:py-8 font-jakarta md:px-6">
-      <div className="max-w-5xl mx-auto bg-white shadow-md rounded-xl  p-6 ">
+    <div className="min-h-screen  md:py-8 font-jakarta md:px-6">
+      <div className="max-w-6xl mx-auto bg-white   p-6 ">
 
       <div className="flex flex-col gap-4  mb-6">
           {/* Course Title */}
