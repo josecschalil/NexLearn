@@ -96,9 +96,9 @@ const CoursePage = () => {
             }
           `}</style>
 
-          <div className=" relative my-4 mb-8  top-[5vh] md:top-0 h-full  bg-white  p-4 px-0 rounded-2xl transition-transform  duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
+<div className=" relative z-50 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
-              <div className="font-istok font-extrabold text-2xl text-gray-800 px-6">
+              <div className="font-istok font-extrabold text-2xl text-gray-800 px-6 mr-10 xsm:mr-0">
                 Creating Custom Test
               </div>
               <button

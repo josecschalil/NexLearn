@@ -7,10 +7,10 @@ import api from "../../services/api";
 
 const TimeSelector = ({ time, setTime }) => {
   const times = [
-    { value: 15, icon: "⏱️", catchphrase: "Quick Burst!" },
-    { value: 30, icon: "⏳", catchphrase: "A Steady Pace!" },
-    { value: 60, icon: "⏰", catchphrase: "Midway Challenge!" },
-    { value: 180, icon: "🕰️", catchphrase: "The Full Marathon!" },
+    { value: 10, icon: "⏱️", catchphrase: "Quick Burst!" },
+    { value: 20, icon: "⏳", catchphrase: "A Steady Pace!" },
+    { value: 30, icon: "⏰", catchphrase: "Midway Challenge!" },
+    { value: 60, icon: "🕰️", catchphrase: "The Full Marathon!" },
   ];
 
   return (
@@ -28,9 +28,10 @@ const TimeSelector = ({ time, setTime }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{t.icon}</small>
             <div className="text-left">
-              <small className="text-sm ">
+              <small className="block text-sm ">
                 {t.value} mins{" "}
               </small>
+ 
             </div>
           </div>
         </button>
@@ -47,7 +48,7 @@ const QuestionSelector = ({ numQuestions, setNumQuestions }) => {
   ];
 
   return (
-    <div className="gird grid-cols-2 gap-4 mb-4 ">
+    <div className="flex flex-wrap gap-4 mb-4 ">
       {questionCounts.map((num) => (
         <button
           key={num.value}
@@ -58,7 +59,7 @@ const QuestionSelector = ({ numQuestions, setNumQuestions }) => {
           }`}
           onClick={() => setNumQuestions(num.value)}
         >
-          <div className="flex-1  flex  w-full items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <small className="text">{num.icon}</small>
             <div className="text-left">
               <small className=" hidden sm:block text-sm ">
@@ -98,7 +99,7 @@ const DifficultySelector = ({ difficulty, setDifficulty }) => {
             <small className="text">{d.icon}</small>
             <div className="text-left">
               <small className="hidden sm:block text-sm">Level {d.value}</small>
-              <small className="sm:hidden text-sm ">{d.value}</small>
+              <small className="sm:hidden text-sm ">Lev {d.value}</small>
             </div>
           </div>
         </button>
@@ -161,18 +162,18 @@ const ChapterSelector = ({
 
   return (
     <div>
-      <div className="flex gap-6 mb-6">
+      <div className=" grid grid-cols-1 xsm:grid-cols-2 md:flex  md:flex-row gap-2 md:gap-6 mb-6">
         {EachSubjectDetails.map((subject) => (
           <div
             key={subject.id}
-            className={`p-4 border  flex transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
+            className={`p-4 border  flex  transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
               activeSubjectId === subject.id
                 ? "border-teal-800 border-1"
                 : "border-gray-300 border-1"
             }`}
             onClick={() => toggleSubject(subject.id)}
           >
-            <h3 className="text-sm text-gray-800 mr-2">{subject.name}</h3>
+            <h3 className="text-md text-gray-800 mr-2">{subject.name}</h3>
             <span
                       className={`transform transition-all duration-300 ${  activeSubjectId === subject.id? "rotate-180" : ""}`}
                     >
@@ -204,7 +205,7 @@ const ChapterSelector = ({
                   <h3 className="text-lg text-gray-800 mb-4">
                     {subject.name} Chapters
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {subject.chapters.map((chapter) => (
                       <div
                         key={chapter.id}
@@ -242,7 +243,7 @@ const ModalTimeQuestions = ({
   difficulty,
 }) => {
 
-  const isNextEnabled = examname?.trim() !== "" && time && numQuestions && difficulty;
+  const isNextEnabled = examname?.trim() !== " " && time && numQuestions && difficulty;
 
   return (
     <div className="px-2 modal w-fit rounded-lg text-gray-800 mx-auto font-istok font-bold">
@@ -253,10 +254,10 @@ const ModalTimeQuestions = ({
           value={examname}
           onChange={(e) => {
             console.log("New Exam Name:", e.target.value); // Debugging
-            setExamName(e.target.value);
+            setExamName(e.target.value || "custom test");
           }}
-          placeholder=""
-          className="w-full border-b border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
+          placeholder="enter exam name."
+          className="w-full border-b placeholder:text-[16px] placeholder:font-semibold border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
         />
       </div>
 
