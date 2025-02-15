@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from .views import create_order,verify_payment
 from .views import CourseViewSet, SubjectViewSet, ChapterViewSet, LectureVideoViewSet,ExamQuestionViewSet, ChapterQuestionViewSet, ExamViewSet, QuestionViewSet, CourseAddViewSet, bulk_create_chapters,UserExamDataViewSet,ChapterQuestionsView,LectureNoteViewSet,BulkQuestionUploadView,ChapterListView,CourseChaptersView,get_questions,SubjectChaptersView
 
 router = DefaultRouter()
@@ -23,6 +24,8 @@ urlpatterns = [
     path('course/<uuid:course_id>/chapters/', CourseChaptersView.as_view(), name='course_chapters'),
     path('subject/<uuid:subject_id>/chapters/', SubjectChaptersView.as_view(), name='subject_chapters'),
     path("api/get-questions/", get_questions, name="get-questions"),
+    path('create-order/', create_order, name='create-order'),
+    path('verify-payment/', verify_payment, name='verify-payment'),
 
 ]
 

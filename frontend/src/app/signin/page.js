@@ -60,7 +60,7 @@ const SignInPage = () => {
       localStorage.setItem("user_id", userId);
 
       toast.success("User logged in successfully.");
-      router.push(`/student-portal`);
+      router.push(`/`);
 
     } catch (err) {
       setError("Invalid email or password.");
@@ -70,9 +70,9 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="h-[90vh] flex items-center justify-center bg-gray-50">
-      <div className="w-full sm:max-w-md bg-white sm:shadow-lg sm:rounded-xl p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Sign In</h2>
+    <div className="h-[88vh] flex items-center justify-center">
+      <div className="w-full sm:max-w-sm bg-white md:border border-gray-300 sm:rounded-3xl p-6">
+        <h2 className="text-2xl font-bold text-center font-instSansB text-gray-800">Sign In</h2>
         <p className="text-sm text-gray-600 text-center mt-2">
           Welcome back! Please enter your details.
         </p>

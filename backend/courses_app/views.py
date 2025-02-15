@@ -169,7 +169,7 @@ class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['course_id','subject_id','chapter_id','user_id','is_featured']  
+    filterset_fields = ['course_id','subject_id','chapter_id','user_id','is_featured','is_customTest']  
     search_fields = ['name', 'type']
     ordering_fields = ['name', 'type']
 
@@ -503,3 +503,92 @@ def get_questions(request):
         return JsonResponse({"questions": list(question_ids)})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+#razorpayy
+
+import razorpay
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.conf import settings
+import razorpay
+from .models import Order
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_order(request):
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        user_id = request.data.get("user_id")
+        course_id = request.data.get("course_id")
+        amount = request.data.get("amount")  # Amount in paise
+        
+        if not user_id or not course_id or not amount:
+            return Response({"error": "Missing required fields"}, status=400)
+
+        # Create order with Razorpay
+        order_data = {
+            "amount": amount,
+            "currency": "INR",
+            "payment_capture": 1,  # Auto-capture payment
+        }
+        order = client.order.create(data=order_data)
+
+        # Store order details in database
+        print([field.name for field in User._meta.get_fields()])
+
+        user = User.objects.get(userid=user_id)
+        new_order = Order.objects.create(
+            user=user,
+            course_id=course_id,
+            razorpay_order_id=order["id"],
+            amount=amount,
+            status="PENDING"
+        )
+
+        return Response(order)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_payment(request):
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        order_id = request.data.get("razorpay_order_id")
+        payment_id = request.data.get("razorpay_payment_id")
+        signature = request.data.get("razorpay_signature")
+
+        order = Order.objects.filter(razorpay_order_id=order_id).first()
+        if not order:
+            return Response({"error": "Order not found"}, status=404)
+
+        params_dict = {
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
+        }
+
+        # Verify payment signature
+        if client.utility.verify_payment_signature(params_dict):
+            order.razorpay_payment_id = payment_id
+            order.razorpay_signature = signature
+            order.status = "SUCCESS"
+            order.save()
+            return Response({"status": "Payment verified!"})
+        else:
+            order.status = "FAILED"
+            order.save()
+            return Response({"error": "Invalid payment signature"}, status=400)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

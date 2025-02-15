@@ -83,4 +83,15 @@ class ExamQuestionAdmin(admin.ModelAdmin):
     search_fields = ('exam__exam_title', 'question__question_text')
 
 
+from django.contrib import admin
+from .models import Order
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("user", "course", "razorpay_order_id", "razorpay_payment_id","razorpay_signature", "amount", "status", "created_at")
+    search_fields = ("user__username", "course__title", "razorpay_order_id", "razorpay_payment_id")
+    list_filter = ("status", "created_at")
+    ordering = ("-created_at",)
+
+
 

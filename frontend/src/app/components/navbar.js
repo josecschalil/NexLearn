@@ -95,7 +95,7 @@ const Navbar = () => {
     <>
       <nav
         ref={navbarRef}
-        className="font-jakarta border-b sticky top-0 border-b-gray-400 shadow-sm backdrop-blur-2xl z-50 bg-opacity-5 transition-all duration-300 font-medium items-center pt-4 mx-auto py-5 bg-white w-screen"
+        className="font-jakarta border-b sticky top-0 border-b-gray-400 shadow-sm backdrop-blur-2xl z-30 bg-opacity-5 transition-all duration-300 font-medium items-center pt-4 mx-auto py-5 bg-white w-screen"
       >
         <div className="flex flex-row max-w-7xl px-3 pr-5 md:px-6 items-center justify-between gap-14 mx-auto">
           <div

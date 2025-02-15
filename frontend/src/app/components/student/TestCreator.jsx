@@ -28,10 +28,10 @@ const TimeSelector = ({ time, setTime }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{t.icon}</small>
             <div className="text-left">
-              <small className="hidden sm:block text-sm ">
+              <small className="block text-sm ">
                 {t.value} minutes{" "}
               </small>
-              <small className=" sm:hidden text-sm ">{t.value} </small>
+ 
             </div>
           </div>
         </button>
@@ -162,18 +162,18 @@ const ChapterSelector = ({
 
   return (
     <div>
-      <div className="flex gap-6 mb-6">
+      <div className=" grid grid-cols-2 md:flex  md:flex-row gap-2 md:gap-6 mb-6">
         {EachSubjectDetails.map((subject) => (
           <div
             key={subject.id}
-            className={`p-4 border  flex transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
+            className={`p-4 border  flex  transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
               activeSubjectId === subject.id
                 ? "border-teal-800 border-1"
                 : "border-gray-300 border-1"
             }`}
             onClick={() => toggleSubject(subject.id)}
           >
-            <h3 className="text-sm text-gray-800 mr-2">{subject.name}</h3>
+            <h3 className="text-md text-gray-800 mr-2">{subject.name}</h3>
             <span
                       className={`transform transition-all duration-300 ${  activeSubjectId === subject.id? "rotate-180" : ""}`}
                     >
@@ -243,7 +243,7 @@ const ModalTimeQuestions = ({
   difficulty,
 }) => {
 
-  const isNextEnabled = examname?.trim() !== "" && time && numQuestions && difficulty;
+  const isNextEnabled = examname?.trim() !== " " && time && numQuestions && difficulty;
 
   return (
     <div className="px-2 modal w-fit rounded-lg text-gray-800 mx-auto font-istok font-bold">
@@ -254,10 +254,10 @@ const ModalTimeQuestions = ({
           value={examname}
           onChange={(e) => {
             console.log("New Exam Name:", e.target.value); // Debugging
-            setExamName(e.target.value);
+            setExamName(e.target.value || "custom test");
           }}
-          placeholder=""
-          className="w-full border-b border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
+          placeholder="enter exam name."
+          className="w-full border-b placeholder:text-[16px] placeholder:font-semibold border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
         />
       </div>
 
