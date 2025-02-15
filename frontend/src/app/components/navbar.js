@@ -87,7 +87,7 @@ const Navbar = () => {
     
   };
 
-  const isTestPage = pathname.startsWith("/tests/custom/exams/");
+  const isTestPage = pathname.startsWith("/tests/custom/exams/") || pathname.startsWith("/tests/proctored/exams/") ;
 
   if (isTestPage) return null;
 

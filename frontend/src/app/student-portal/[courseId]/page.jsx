@@ -36,15 +36,14 @@ const CoursePage = () => {
 
   return (
     <div className="min-h-screen md:py-8 font-jakarta md:px-6">
-    <div className="max-w-6xl mx-auto flex space-x-6 ">
+      <div className="max-w-6xl mx-auto flex space-x-6 ">
+        <div className="flex-1 bg-white py-8 rounded-xl p-6">
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-6">
+            {course.title}
+          </h2>
+          <div className="hidden md:block h-[1px] bg-gray-300 mb-8"></div>
 
-      <div className="flex-1 bg-white py-8 rounded-xl p-6">
-        <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-6">
-          {course.title}
-        </h2>
-        <div className="hidden md:block h-[1px] bg-gray-300 mb-8"></div>
-
-        {/* <div className="flex flex-col gap-4  mb-6">
+          {/* <div className="flex flex-col gap-4  mb-6">
           <div className="flex items-center">
             <Link href={"/student-portal"}>
               {" "}
@@ -74,27 +73,30 @@ const CoursePage = () => {
           </div>
         </div> */}
 
-        <div>
-        {activeTab === "Contents" && <Exams id={courseId} setIsTestCreatorOpen={setIsTestCreatorOpen} />}
-          {activeTab === "Recents" && <StudyMaterials id={courseId}  />}
+          <div>
+            {activeTab === "Contents" && (
+              <Exams
+                id={courseId}
+                setIsTestCreatorOpen={setIsTestCreatorOpen}
+              />
+            )}
+            {activeTab === "Recents" && <StudyMaterials id={courseId} />}
+          </div>
         </div>
       </div>
-    
-    </div>
-    {isTestCreatorOpen && (
+      {isTestCreatorOpen && (
         <div className=" fixed  inset-0 px-4 bg-black bg-opacity-30  z-20 flex justify-center items-center">
+          <style jsx>{`
+            .custom-scroll::-webkit-scrollbar {
+              display: none; /* Hides scrollbar for WebKit browsers (Chrome, Safari) */
+            }
+            .custom-scroll {
+              -ms-overflow-style: none; /* Hides scrollbar for Internet Explorer and Edge */
+              scrollbar-width: none; /* Hides scrollbar for Firefox */
+            }
+          `}</style>
 
-<style jsx>{`
-  .custom-scroll::-webkit-scrollbar {
-    display: none; /* Hides scrollbar for WebKit browsers (Chrome, Safari) */
-  }
-  .custom-scroll {
-    -ms-overflow-style: none;  /* Hides scrollbar for Internet Explorer and Edge */
-    scrollbar-width: none;      /* Hides scrollbar for Firefox */
-  }
-`}</style>
-
-          <div className=" relative my-4 mb-8  top-[3.2vh] md:top-0  bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
+          <div className=" relative my-4 mb-8  top-[5vh] md:top-0 h-full  bg-white  p-4 px-0 rounded-2xl transition-transform  duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
               <div className="font-istok font-extrabold text-2xl text-gray-800 px-6">
                 Creating Custom Test

@@ -11,7 +11,7 @@ const ProductCard = ({ course }) => {
             alt={course.title}
           />
 
-          <div className="absolute top-2 right-2 bg-teal-500 text-white text-[10px] px-2 py-[2px] rounded-sm">
+          <div className="absolute top-2 right-2 bg-teal-700 text-white text-[10px] px-2 py-[2px] rounded-2xl">
             {Math.round(
               ((course.price - course.current_price) / course.price) * 100
             )}

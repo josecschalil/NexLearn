@@ -87,7 +87,6 @@ const TestPage = () => {
           `/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (response.data) {
-          console.log(`sss$`);
           const fetchedId = response.data[0].id;
           setTableId(fetchedId);
         }
@@ -158,7 +157,7 @@ const TestPage = () => {
 
   const AttemptLater = () => {
     saveData();
-    router.push("/tests/proctored");
+    router.push(`/tests/proctored/${examdetails.course}`);
   };
 
   const totalQuestions = Questions?.length;

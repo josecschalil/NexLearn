@@ -7,10 +7,10 @@ import api from "../../services/api";
 
 const TimeSelector = ({ time, setTime }) => {
   const times = [
-    { value: 10, icon: "⏱️", catchphrase: "Quick Burst!" },
-    { value: 20, icon: "⏳", catchphrase: "A Steady Pace!" },
-    { value: 30, icon: "⏰", catchphrase: "Midway Challenge!" },
-    { value: 60, icon: "🕰️", catchphrase: "The Full Marathon!" },
+    { value: 15, icon: "⏱️", catchphrase: "Quick Burst!" },
+    { value: 30, icon: "⏳", catchphrase: "A Steady Pace!" },
+    { value: 60, icon: "⏰", catchphrase: "Midway Challenge!" },
+    { value: 180, icon: "🕰️", catchphrase: "The Full Marathon!" },
   ];
 
   return (
@@ -28,10 +28,9 @@ const TimeSelector = ({ time, setTime }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{t.icon}</small>
             <div className="text-left">
-              <small className="hidden sm:block text-sm ">
-                {t.value} minutes{" "}
+              <small className="text-sm ">
+                {t.value} mins{" "}
               </small>
-              <small className=" sm:hidden text-sm ">{t.value} </small>
             </div>
           </div>
         </button>
@@ -48,7 +47,7 @@ const QuestionSelector = ({ numQuestions, setNumQuestions }) => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-4 mb-4 ">
+    <div className="gird grid-cols-2 gap-4 mb-4 ">
       {questionCounts.map((num) => (
         <button
           key={num.value}
@@ -59,13 +58,13 @@ const QuestionSelector = ({ numQuestions, setNumQuestions }) => {
           }`}
           onClick={() => setNumQuestions(num.value)}
         >
-          <div className="flex items-center space-x-2">
+          <div className="flex-1  flex  w-full items-center space-x-2">
             <small className="text">{num.icon}</small>
             <div className="text-left">
               <small className=" hidden sm:block text-sm ">
                 {num.value} Questions
               </small>
-              <small className=" sm:hidden text-sm ">{num.value}</small>
+              <small className=" sm:hidden text-sm ">{num.value} Qos</small>
             </div>
           </div>
         </button>
