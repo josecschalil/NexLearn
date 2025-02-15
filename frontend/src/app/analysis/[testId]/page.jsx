@@ -40,6 +40,7 @@ const AnalysisPage = () => {
         const testResponse = await api.get(`/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
         if (testResponse.data && testResponse.data.length > 0) {
+          console.log(testResponse.data[0])
           setTestData(testResponse.data[0]);
         } else {
           console.error("No test data found.");
@@ -49,6 +50,7 @@ const AnalysisPage = () => {
         const Response = await api.get(`/api/questions/exam-id/${testId}`
         );
         if (Response.data) {
+          console.log(Response.data)
             setQuestions(Response.data);
           }
       } catch (error) {
@@ -127,111 +129,96 @@ const AnalysisPage = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto font-hindi">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Analysis and Data
-        </h1>
-        <button
-          onClick={() => router.push(`/student-portal`)}
-          className="border border-gray-600 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md transition"
-        >
-          Back to Tests
-        </button>
-      </header>
+    <div className="min-h-screen md:py-8 font-jakarta md:px-6 overflow-x-hidden">
+    <div className="max-w-6xl mx-auto bg-white py-8  rounded-xl p-6">
+      <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 md:mb-6">Analysis And Insights</h2>
+      <hr className=" -mr-[100vw]  h-[1px] bg-gray-300 mb-2"></hr>
 
-      {/* Summary */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-3 text-gray-700">Summary</h2>
-        <ul className="list-disc ml-6 text-lg">
-          <li>Total Questions: {questions.length}</li>
-          <li>Answered: {Object.keys(answers || {}).length}</li>
-          <li>Correct Answers: {totalCorrect}</li>
-          <li>Marked for Review: {marked_for_review.length}</li>
-          <li>
-            Time Remaining: {Math.floor(time_remaining / 60)}m{" "}
-            {time_remaining % 60}s
-          </li>
-        </ul>
-      </div>
+    {/* <button
+        onClick={() => router.push(`/student-portal`)}
+        className="px-3 py-2 text-black border transition duration-300 rounded"
+      >
+        Back to Tests
+      </button> */}
+  
+    {/* Summary Section */}
+    <section className="mb-10 bg-white  pt-4 ">
+      <ul className="list-none  font-semibold text-lg text-gray-700 space-y-2">
+        <li>Total Questions: {questions.length}</li>
+        <li>Answered: {Object.keys(answers || {}).length}</li>
+        <li>Correct Answers: {totalCorrect}</li>
+        <li>Marked for Review: {marked_for_review.length}</li>
+        <li>
+          Time Remaining: {Math.floor(time_remaining / 60)}m {time_remaining % 60}s
+        </li>
+      </ul>
+    </section>
+  
+    {/* Question-wise Analysis Section */}
+    <section className="">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Question-wise Analysis</h2>
+      <div className="">
+        {categorizedQuestions.map((question, index) => {
+          const status = question.isCorrect
+            ? "Correct"
+            : question.isAnswered
+            ? "Wrong"
+            : "Not Answered";
+  
+          return (
+            <div key={index} className="border-b py-3 hover:bg-gray-50  transition duration-300">
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => toggleQuestionDetails(index)}
+              >
+                <span className="font-semibold text-md text-gray-700">
+                  {index + 1}. <RenderTextWithLatex text={question.question_text} />
+                </span>
 
-      {/* <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-3 text-gray-700">
-          Performance Graph
-        </h2>
-        <div className="w-full md:w-3/4">
-          <Bar data={barData} options={{ responsive: true }} />
-        </div>
-      </div> */}
+                  <span
+                    >
+                      {/* Down arrow icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 24"
+                        width="18"
+                        height="25"
+                        className={`transition-all duration-300 transform ${expandedQuestions[index] ? 'rotate-180' : ''}`}
 
-      {/* Subject-wise Analysis */}
-      {/* <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-3 text-gray-700">
-          Subject-wise Analysis
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {subjectData.map(({ subject, total, answered, correct, review }) => (
-            <div
-              key={subject}
-              className="p-4 border border-gray-300 rounded-md bg-gray-50 shadow-md"
-            >
-              <h3 className="text-lg font-bold text-gray-800 mb-2">{subject}</h3>
-              <ul className="list-disc ml-4 text-gray-600">
-                <li>Total Questions: {total}</li>
-                <li>Answered: {answered}</li>
-                <li>Correct: {correct}</li>
-                <li>Marked for Review: {review}</li>
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
-      {/* Questions with Dropdown */}
-      <div>
-        <h2 className="text-2xl font-semibold  mb-4 text-gray-700">
-          Question-wise Analysis
-        </h2>
-        <div>
-          {categorizedQuestions.map((question, index) => {
-            const status = question.isCorrect
-              ? "Correct"
-              : question.isAnswered
-              ? "Wrong"
-              : "Not Answered";
-
-            return (
-              <div key={index} className="border-b p-4">
-                <div
-                  className=" cursor-pointer"
-                  onClick={() => toggleQuestionDetails(index)}
-                >
-                  <span>
-                    {index + 1}.
-                  </span>
-
-                  <RenderTextWithLatex text= {question.question_text}/> 
-                 
-                  <span>{expandedQuestions[index] ? "-" : "+"}</span>
-                </div>
-                {expandedQuestions[index] && (
-                  <div className="mt-2">
-                    <p>Selected Answer: {answers?.[index + 1] || "Not Answered"}</p>
-                    
-                    <p>Correct Answer: {question.correct_answer}</p>
-                    <p>Status: {status}</p>
-                    <p className="font-hindi text-2xl my-3">Solution</p>
-                    <RenderTextWithLatex text= {question.solution_text}/> 
-                    <p className="font-hindi text-2xl my-3">Hindi Solution</p>
-                    <RenderTextWithLatex text= {question.solution_text_hindi}/> 
-                  </div>
-                )}
+                      >
+                        <path
+                          d="M7 10l5 5 5-5z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                    </span>
+              
               </div>
-            );
-          })}
-        </div>
-      </div>
+              {expandedQuestions[index] && (
+  <div className="mt-4 text-md text-gray-600">
+    <p><strong>Selected Answer:</strong> {answers?.[index + 1] || "Not Answered"}</p>
+    <p><strong>Correct Answer:</strong> {question.correct_answer} - {question[`option_${question.correct_answer.toLowerCase()}_text`]}</p>
+
+    <p><strong>Status:</strong> {status}</p>
+    <div className="mt-4">
+      <p className="font-semibold text-md text-indigo-600">Solution</p>
+      <RenderTextWithLatex text={question.solution_text} />
+      <p className="font-semibold text-md text-indigo-600 mt-4">Hindi Solution</p>
+      <RenderTextWithLatex text={question.solution_text_hindi} language={"HI"}/>
     </div>
+  </div>
+)}
+
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  </div>
+  </div>
+  
   );
 };
 

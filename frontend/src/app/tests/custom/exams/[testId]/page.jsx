@@ -326,7 +326,7 @@ const TestPage = () => {
             <span className="">{examdetails?.exam_title} </span>
             <span
               onClick={() => setisopen(!isopen)}
-              className={` transform transition-all duration-300 items-center flex mx-2 hidden cursor-pointer ${
+              className={` transform transition-all duration-300 items-center mx-2 hidden cursor-pointer ${
                 isopen ? "rotate-180" : ""
               }`}
             >

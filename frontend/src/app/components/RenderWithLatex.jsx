@@ -18,18 +18,20 @@ const MathComponent = ({ text, block = false }) => {
     return <span dangerouslySetInnerHTML={{ __html: latexHtml }} />;
 };
 
-const RenderTextWithLatex = ({ text }) => {
+const RenderTextWithLatex = ({ text , language }) => {
 
     if (!text) {
         return <span>No question text available</span>; // Fallback text in case of undefined or null
-      }
+    }
 
-      const escapedText = text.replace(/\\\\/g, '\\'); // this line took me 2-3hrs. fucker.
+    const escapedText = text.replace(/\\\\/g, '\\'); // this line took me 2-3hrs. fucker.
 
     // console.log(`text revcived: ${text}`)
     const parts = escapedText.split(/(\$.*?\$|\\\[.*?\\\])/g);
     
     return parts.map((part, index) => {
+        const fontClass = language === 'HI' ? 'font-hindi' : 'font-inter';  // Choose font based on language
+
         if (part.startsWith('$') && part.endsWith('$')) {
             return <MathComponent key={index} text={part.slice(1, -1)} block={false} />;
         }
@@ -38,7 +40,7 @@ const RenderTextWithLatex = ({ text }) => {
             return <MathComponent key={index} text={part.slice(2, -2)} block={true} />;
         }
 
-        return <span className="font-hindi"key={index}>{part}</span>;
+        return <span className={fontClass} key={index}>{part}</span>;
     });
 };
 
