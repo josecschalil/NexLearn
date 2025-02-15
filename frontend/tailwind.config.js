@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       screens: {
         'max1': { max: '1080px' },
-        'xs':{min: '400px'},
+        xs: '400px',  
         'xsm':{min: '550px'},
         'max2': { max: '480px' },
         'nmd': { min:'932px'}, // Custom media query for max-width 1080px

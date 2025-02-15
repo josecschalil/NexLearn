@@ -108,13 +108,13 @@ const TestsPage = () => {
           content="Prepare for exams with our mock tests. Check schedules, start tests, and analyze your performance."
         />
       </Head>
-      <main className="min-h-screen  md:py-8 font-jakarta md:px-6">
+      <main className="min-h-screen  md:py-8 font-jakarta md:px-6 overflow-x-hidden">
         <section className="max-w-6xl mx-auto  font-istok p-6">
-          <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 font-inter">
-            Created Custom Exams
-          </h1>
-          <hr className="my-3 hidden md:block bg-gray-400"></hr>
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-4">
+        <h3 className="text-xl sm:text-2xl md:text-4xl font-bold font-inter text-gray-800">
+               Created Exams
+              </h3>
+              <hr className="mt-2 -mr-[40vw] mb-6 md:mb-8"></hr>
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  sm:gap-4">
             {loading ? (
               <p>Loading exams...</p>
             ) : error ? (
@@ -140,11 +140,11 @@ const TestsPage = () => {
                         </div>
                       </span>
                       <div>
-                        <h3 className="text-lg font-bold font-inter text-gray-800">
+                      <h3 className="text-[14px] xs:text-xl font-bold font-inter text-gray-800">
                           {exam.exam_title}
                         </h3>
-                        <p className="text-sm text-gray-700 mt-1">
-                          {" "}
+                        <p className="text-[12px] xs:text-sm text-gray-500 mt-1">
+                         
                           Level {exam?.diffculty} | {exam.time} mins
                         </p>
                       </div>
@@ -165,7 +165,7 @@ const TestsPage = () => {
                         <Link href={`/analysis/${exam.exam_id}`}>
                           <button
                             aria-label={`See Analysis of Mock Test ${exam.exam_id}`}
-                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+                            className="px-6 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
                           >
                             Analyse
                           </button>
@@ -175,7 +175,7 @@ const TestsPage = () => {
                           <button
                             onClick={() => handleResumeTest(exam.exam_id)}
                             aria-label={`Resume Mock Test ${exam.exam_id}`}
-                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
                           >
                             Resume
                           </button>

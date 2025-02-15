@@ -35,15 +35,13 @@ const CoursePage = () => {
   }
 
   return (
-    <div className="min-h-screen md:py-8 font-jakarta md:px-6">
+    <div className="overflow-x-hidden min-h-screen md:py-8 font-jakarta md:px-6">
       <div className="max-w-6xl mx-auto flex space-x-6 ">
         <div className="flex-1 bg-white py-8 rounded-xl px-6">
-
-
-        <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
-          {course.title}
-        </h3>
-        <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
+          <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+            {course.title}
+          </h3>
+          <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
 
           {/* <div className="flex flex-col gap-4  mb-6">
           <div className="flex items-center">
@@ -98,7 +96,7 @@ const CoursePage = () => {
             }
           `}</style>
 
-<div className=" relative z-50 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
+          <div className=" relative z-50 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
               <div className="font-istok font-extrabold text-2xl text-gray-800 px-6 mr-10 xsm:mr-0">
                 Creating Custom Test
