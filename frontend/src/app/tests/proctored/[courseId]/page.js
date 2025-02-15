@@ -109,9 +109,9 @@ const TestsPage = () => {
         />
       </Head>
       <main className="min-h-screen  md:py-8 font-jakarta md:px-6">
-        <section className="max-w-6xl mx-auto   p-6">
+        <section className="max-w-6xl mx-auto p-6">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 font-inter">Practice Exams</h1>
-          <hr className="my-3 hidden md:block bg-gray-400"></hr>
+          <hr className="my-3 -mr-[10vw] sm:mr-0 block bg-gray-400"></hr>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-4">
             {loading ? (
               <p>Loading exams...</p>
@@ -157,7 +157,7 @@ const TestsPage = () => {
                     aria-label={`See Analysis of Mock Test ${exam.exam_id}`}
                     className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
                   >
-                    See Analysis
+                    Analyse
                   </button>
                 </Link>
               ) : (
@@ -167,7 +167,7 @@ const TestsPage = () => {
                     aria-label={`Resume Mock Test ${exam.exam_id}`}
                     className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
                   >
-                    Resume Test
+                    Resume 
                   </button>
                 </Link>
               )}

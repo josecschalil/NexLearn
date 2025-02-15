@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect ,useState} from "react";
-import VideoCard2 from "@/app/components/videocard2";
+import Link from "next/link";
 import api from "../../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -61,23 +61,57 @@ const ChapterPage = () => {
 
 
   return (
-    <div className="min-h-screen md:bg-gray-50 md:py-8 font-jakarta md:px-6">
-      <div className="max-w-5xl mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-gray-700 font-instSansB mb-10 mt-3 ml-4 ">
-          {chapter?.name}
-        </h2>
+    <div className="min-h-screen md:py-8 font-jakarta md:px-6 overflow-x-hidden">
+    <div className="max-w-6xl mx-auto bg-white p-6">
+      <div className=" gap-4 ">
+        <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2 md:mb-6">
+          {chapter?.name}</h2>
+          <hr className="h-[1px] -mr-[50vw]  bg-gray-300 mb-8"></hr>
 
-        <ul className="mt-4 mx-4 grid max2:grid-cols-1 grid-cols-2 gap-4 md:grid-cols-3 md:gap-x-20 md:gap-y-10">
-          {contents?.map((video) => (
-            <VideoCard2
-              key={video.id}
-              link={video.thumbnail}
-              url={`/learn/video/${video.id}`}
-              title={video.video_title}
+        {contents?.length === 0 ? (
+          <p className="text-gray-600 mt-4">No videos available.</p>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center ">
 
-            />
-          ))}
-        </ul>
+            {contents?.map((video, index) => (
+              <Link
+                key={index}
+                href={`/learn/video/${video.id}`}
+                className="group"
+              >
+                <div className="cursor-pointer">
+                  
+                  <div className="relative w-fit">
+                    <img
+                      className="aspect-video w-fit rounded-lg h-48 object-cover transition-transform duration-300 "
+                      src={video.thumbnail}
+                      alt={video.video_title}
+                    />
+                    <span className="absolute bottom-2 right-4 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
+                      {video.duration || "10:00"}
+                    </span>
+                    </div>
+                   
+            
+                  
+                  <div className="flex items-center space-x-3 mt-4">
+                    <span className="text-3xl mb-2 -mt-1">📽️</span>
+                    <div className="flex-1">
+                      <h4 className="text-md font-semibold text-gray-900 line-clamp-2">
+                        {video.video_title}
+                      </h4>
+                      <p className="text-sm font-istok text-gray-600 mt-1">
+                        {video.subject || "Physics"} •{" "}
+                        {video.language || "Hindi"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );
