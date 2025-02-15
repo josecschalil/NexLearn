@@ -49,6 +49,7 @@ async function refreshAccessToken() {
     if (typeof window !== "undefined") {
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_id");
       window.location.href = '/signin';
     }
     return null;

@@ -46,8 +46,10 @@ const SignInPage = () => {
     setLoading(true);
 
     try {
+      const normalizedEmail = formData.email.toLowerCase();
       const response = await axios.post(`${apiUrl}auth/token/`, {
-        email: formData.email,
+        
+        email: normalizedEmail,
         password: formData.password,
       });
 
