@@ -267,7 +267,7 @@ const TestPage = () => {
 
   // Rendering
   return (
-    <div className="h-screen">
+    <div className="h-screen overflow-x-hidden">
     <header className="md:items-center font-instSansB flex flex-col md:flex-row justify-between text-2xl md:h-[10%] px-4">
       <div className=" hidden md:flex justify-start items-center">
         <button
