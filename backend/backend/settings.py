@@ -56,9 +56,20 @@ DEBUG = True
 
 # Allow All Hosts & CORS (Temporary for Development)
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["*"]
-CORS_ALLOWED_ORIGINS = ["*"]
-CORS_ALLOW_ALL_ORIGINS = True  # Required for Django-CORS-Headers
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1"
+]
+
+# CORS Allowed Origins - Must have full URLs
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # If frontend runs on a different port
+    "http://127.0.0.1:3000"
+]
+
+CORS_ALLOW_ALL_ORIGINS = False  # Restrict to specific origins for security
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies/auth headers in requests
 
 
 # Authentication & Permissions
@@ -140,7 +151,7 @@ DATABASES = {
         "NAME": "jeeneetpulse",
         "USER": "postgres",
         "PASSWORD": "1234",
-        "HOST": "db",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }

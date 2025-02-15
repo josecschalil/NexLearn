@@ -20,14 +20,15 @@ const StudyMaterials = () => {
   }, []);
 
   return (
-    <div className="my-8">
-      <h3 className="text-xl font-semibold text-gray-800 font-instSansB mb">
-        Lecture Notes
-      </h3>
+    <div className="my-10 ">
+                <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
+          Featured Notes
+        </h3>
+        <hr className="mt-2 -mr-[40vw] mb-5 md:mb-8 "></hr>
       {studyMaterials?.length === 0 ? (
         <p className="text-gray-600 mt-4">No lecture notes available.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-4 md:gap-y-6 mt-4">
           {studyMaterials?.map((note, index) => {
             const hasPdf = !!note.pdf_file; // Check if pdf_file exists
 
@@ -42,7 +43,7 @@ const StudyMaterials = () => {
                 <div className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
                   <span className="text-2xl">🗂️</span>
                   <div className="ml-4 flex-1">
-                    <h4 className="font-instSansB text-gray-900 truncate">
+                    <h4 className="font-inter font-semibold text-gray-900 truncate">
                       {note.pdf_title}
                     </h4>
                     <p className="text-sm text-gray-500 mt-1 font-istok">
@@ -58,7 +59,7 @@ const StudyMaterials = () => {
               >
                 <span className="text-2xl">🗂️</span>
                 <div className="ml-4 flex-1">
-                  <h4 className="font-instSansB text-gray-900 truncate">
+                  <h4 className="font-inter font-semibold text-gray-900 truncate">
                     {note.pdf_title}
                   </h4>
                   <p className="text-sm text-gray-500 mt-1 font-istok">

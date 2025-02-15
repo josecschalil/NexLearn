@@ -22,13 +22,14 @@ const FeaturedTests = () => {
 
   return (
     <div className="my-4">
-      <h3 className="text-xl font-semibold text-gray-800 font-instSansB mb">
-        Exams
-      </h3>
+                    <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
+          Featured Exams
+        </h3>
+        <hr className="mt-2 -mr-[40vw] mb-5 md:mb-8"></hr>
       {featuredTests?.length === 0 ? (
         <p className="text-gray-600 mt-4">No Exams available.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-4 md:gap-y-6 mt-4">
           {featuredTests?.map((test, index) => (
             <Link
               key={index}
@@ -40,7 +41,7 @@ const FeaturedTests = () => {
               </div>
 
               <div className="p-4 flex-1">
-                <h4 className="font-instSansB text-gray-900 truncate">
+                <h4 className="font-inter font-semibold text-gray-900 truncate">
                   {test.exam_title}
                 </h4>
                 <p className="text-sm text-gray-700 font-istok mt-1">

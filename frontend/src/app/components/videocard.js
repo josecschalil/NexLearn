@@ -11,7 +11,7 @@ const VideoCard = ({ title, faculty, time, link, url }) => {
           <img
             src={link}
             alt="Video Thumbnail"
-            className="rounded-2xl aspect-video shadow-md object-cover"
+            className="rounded-2xl h-48  aspect-video shadow-md object-cover"
           />
           </div>
        
