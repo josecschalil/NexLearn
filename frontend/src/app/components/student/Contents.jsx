@@ -10,7 +10,7 @@ const Contents = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await api.get(`/api/lecture-videos/?is_featured=true`);
+        const response = await api.get(`/api/featured-videos/`);
         setVideos(response.data); // Axios automatically parses JSON
       } catch (error) {
         console.error("Failed to fetch Videos:", error);

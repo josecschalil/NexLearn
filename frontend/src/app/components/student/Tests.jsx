@@ -10,7 +10,7 @@ const FeaturedTests = () => {
   useEffect(() => {
     const fetchFeaturedTests = async () => {
       try {
-        const response = await api.get(`/api/exams/?is_featured=true`);
+        const response = await api.get(`/api/featured-exams/`);
         setFeaturedTests(response.data);
       } catch (error) {
         console.error("Failed to fetch featured tests:", error);

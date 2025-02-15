@@ -8,7 +8,6 @@ from .serializers import (
     LectureVideoSerializer, ExamSerializer, QuestionSerializer,
     UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,
     LectureNoteSerializer,BulkExamQuestionSerializer )
-from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action,api_view,permission_classes
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -24,6 +23,12 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.http import JsonResponse
 from django.views import View
+import razorpay
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+import razorpay
+from .models import Order
+from django.contrib.auth import get_user_model
 
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
@@ -194,18 +199,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionSerializer
 
     def get_permissions(self):
-        """
-        Assign permissions dynamically:
-        - `list` and `retrieve`: Authenticated users (`AllowAny`).
-        - `create`, `update`, `partial_update`, `destroy`: Admin users only (`IsAdminUser`).
-        """
+
         if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
             return [AllowAny()]
-        return [IsAdminUser()]  # Restrict all modifications to admin users
+        return [IsAdminUser()]
 
     @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
     def get_questions_by_chapter(self, request, chapter_id=None):
-        """Retrieve questions by chapter ID"""
         questions = Question.objects.filter(chapters__chapter_id=chapter_id)
         if questions.exists():
             serializer = self.get_serializer(questions, many=True)
@@ -214,7 +214,6 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='exam-id/(?P<exam_id>[^/.]+)')
     def get_questions_by_exam_id(self, request, exam_id=None):
-        """Retrieve questions by exam ID"""
         questions = Question.objects.filter(exams__exam_id=exam_id)
         if questions.exists():
             serializer = self.get_serializer(questions, many=True)
@@ -223,7 +222,6 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['put'], url_path='update')
     def update_question(self, request, pk=None):
-        """Update an existing question (Admin Only)"""
         question = self.get_object()
         serializer = self.get_serializer(question, data=request.data)
         if serializer.is_valid():
@@ -506,18 +504,6 @@ def get_questions(request):
 
 
 
-#razorpayy
-
-import razorpay
-from django.conf import settings
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from django.conf import settings
-import razorpay
-from .models import Order
-from django.contrib.auth import get_user_model
-
 User = get_user_model()
 
 @api_view(['POST'])
@@ -592,3 +578,30 @@ def verify_payment(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+class FeaturedVideoView(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = LectureVideo.objects.filter(is_featured=True)
+    serializer_class = LectureVideoSerializer
+
+class FeaturedExamView(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = Exam.objects.filter(is_featured=True)
+    serializer_class = ExamSerializer
+
+class FeaturedNotesView(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = LectureNote.objects.filter(is_featured=True)
+    serializer_class = LectureNoteSerializer
+
+class FeaturedQuestionViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes=[AllowAny]
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    @action(detail=False, methods=['get'], url_path='exam-id/(?P<exam_id>[^/.]+)')
+    def get_questions_by_exam_id(self, request, exam_id=None):
+        questions = Question.objects.filter(exams__exam_id=exam_id)
+        if questions.exists():
+            serializer = self.get_serializer(questions, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"detail": "No questions found for this exam."}, status=status.HTTP_404_NOT_FOUND)

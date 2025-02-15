@@ -1,0 +1,14 @@
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=api.jeeneetpulse.com,jeeneetpulse.com
+CSRF_TRUSTED_ORIGINS=https://jeeneetpulse.com,https://www.jeeneetpulse.com,https://api.jeeneetpulse.com
+CORS_ALLOWED_ORIGINS=https://jeeneetpulse.com,https://www.jeeneetpulse.com,https://api.jeeneetpulse.com
+DB_NAME=jeeneetpulse
+DB_USER=postgres
+DB_PASSWORD=1234
+DB_HOST=db
+DB_PORT=5432
+EMAIL_HOST_USER=websitenotificationsender@gmail.com
+EMAIL_HOST_PASSWORD=cnbhnghsdfuqccez
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
