@@ -10,9 +10,6 @@ import api from "../../../../services/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TestPage = () => {
-
-
-
   const router = useRouter();
   const { testId } = useParams();
   const userId = localStorage.getItem("user_id");
@@ -55,9 +52,6 @@ const TestPage = () => {
 
   //   fetchQuestions();
   //}, [testId]);
-
-
-
 
   const dropdownRef = useRef(null);
 
@@ -240,8 +234,8 @@ const TestPage = () => {
     };
 
     return (
-      <div className="mx-4 px-4 py-2 text-black bg-gray-100 shadow w-20 h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300">
-        {formatTime(timeRemaining)}
+      <div className="px-2 pr-0  text-black text-[16px] border flex border-gray-400 hover:border-gray-600 rounded-lg  disabled:text-gray-300 active:border-[2px] transition-all duration-300">
+        <div className="my-2 mr-2"> {formatTime(timeRemaining)}</div> <div onClick={handleSubmit} className="xsm:hidden border-l pt-2 px-2 rounded-r-lg hover:bg-slate-100 ">  Submit</div>
       </div>
     );
   };
@@ -332,7 +326,7 @@ const TestPage = () => {
             <span className="">{examdetails?.exam_title} </span>
             <span
               onClick={() => setisopen(!isopen)}
-              className={` transform transition-all duration-300 items-center flex mx-2 md:hidden cursor-pointer ${
+              className={` transform transition-all duration-300 items-center flex mx-2 hidden cursor-pointer ${
                 isopen ? "rotate-180" : ""
               }`}
             >
@@ -382,19 +376,19 @@ const TestPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-center  md:mb-0 md:justify-end items-center text-md ">
-          <div className="flex justify-start items-center">
+        <div className="flex justify-center md:justify-end items-center text-sm xs:text-md">
+          <div className="flex  justify-end items-center space-y-0 space-x-4">
             <button
-              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              className="px-4 py-2 text-black text-[16px] border border-gray-400 hover:border-gray-600 rounded-lg tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
               onClick={AttemptLater}
             >
               Attempt Later
             </button>
-          </div>
-          <div className="flex justify-end items-center text-md">
+
             <TimerComponent timeRemaining={timeRemaining} />
+
             <button
-              className="px-4 py-2 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              className="px-4 hidden xsm:block py-2 text-black text-[16px] border border-gray-400 hover:border-gray-600 rounded-lg disabled:text-gray-300 active:border-[2px] transition-all duration-300"
               onClick={handleSubmit}
             >
               Submit
@@ -403,63 +397,9 @@ const TestPage = () => {
         </div>
       </header>
 
-      <div
-        ref={dropdownRef}
-        className="md:hidden pb-4 px-6 border-l   md:w-[30vw] overflow-hidden opacity-0"
-      >
-        <div className="bg-white rounded-md mt-5">
-          <h3 className="text border-b py-2 mb-2">Legend</h3>
-          <div className="flex flex-wrap gap-4 pt-2">
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-gray-300 rounded mr-2"></div>
-              <span>Not Visited</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-red-300 rounded mr-2"></div>
-              <span>Visited</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-emerald-500 rounded mr-2"></div>
-              <span>Answered</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-violet-300 rounded mr-2"></div>
-              <span>Marked for Review</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-purple-700 rounded mr-2"></div>
-              <span>Answered & Marked for Review</span>
-            </div>
-          </div>
-        </div>
+   
 
-        {/* Questions Section */}
-        <div className="bg-white rounded-md mb-5 mt-4">
-          <div className="border-b mb-4 py-2">Questions</div>
-          <div className="flex flex-wrap gap-3">
-            {Questions?.map((question, overallIndex) => {
-              const index = Questions.indexOf(question);
-              let bgColor = "bg-gray-300"; // Default: Not Visited
-              if (visited.has(index)) bgColor = "bg-orange-300"; // Visited
-              if (answers[index]) bgColor = "bg-emerald-500"; // Answered
-              if (markedForReview.has(index)) bgColor = "bg-violet-300"; // Marked for Review
-              if (markedForReview.has(index) && answers[index]) bgColor = "bg-violet-500"; // Both
-
-              return (
-                <button
-                  key={index}
-                  className={`w-10 h-10 rounded-xl text-white font-instSansB font-semibold ${bgColor}`}
-                  onClick={() => goToQuestion(index)}
-                >
-                  {index + 1}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex justify-between mt-0 bg-white border-t flex-col md:flex-row h-[90%] ">
+      <div className="flex  bg-white mt-4 border-t flex-col md:flex-row h-[90%] ">
         <div className="md:w-[70vw] flex flex-col">
           <div className="p-6 bg-white rounded-xl font-jakarta">
             <p className="text-lg mb-4">
@@ -531,46 +471,63 @@ const TestPage = () => {
           </div>
 
           <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
-            <div className="my-5 grid grid-cols-3 lg:flex font-instSansB mx-auto gap-5 items-center ">
+            <div className="my-5 flex-wrap flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
+              <button
+                onClick={prevQuestion}
+                disabled={currentQuestionIndex === 0}
+                className="px-4 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Previous
+              </button>
+
+              <button
+                onClick={clearAnswer}
+                className="px-4 py-2   text-white bg-red-500 hover:border-black  flex-1 border  rounded-2xl    active:border-[2px] transition-all duration-300"
+              >
+                Clear
+              </button>
+
+              <button
+                onClick={nextQuestion}
+                disabled={currentQuestionIndex === totalQuestions - 1}
+                className="px-7 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Next
+              </button>
+
               <button
                 onClick={saveandNext}
-                className="px-4 py-2 h-fit text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+                className="px-4 py-2 h-fit hidden lg:flex text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
               >
                 Save and Next
               </button>
 
               <button
-                onClick={clearAnswer}
-                className="px-4 py-2 h-full  text-white bg-red-500 hover:border-black   border  rounded-2xl    active:border-[2px] transition-all duration-300"
-              >
-                Clear
-              </button>
-              <button
                 onClick={markForReview}
-                className="px-4 py-2 h-fit  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
+                className="px-4 py-2 h-fit hidden lg:flex  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
               >
                 Mark and Next
               </button>
+            </div>{" "}
+            <div className="flex gap-3 md:gap-6">
+              <button
+                onClick={saveandNext}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1 text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+              >
+                Save and Next
+              </button>
 
               <button
-                onClick={prevQuestion}
-                disabled={currentQuestionIndex === 0}
-                className="px-4 py-2 text-black bg-gray-100 shadow h-fit   border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+                onClick={markForReview}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
               >
-                Previous
+                Mark and Next
               </button>
-              <button
-                onClick={nextQuestion}
-                disabled={currentQuestionIndex === totalQuestions - 1}
-                className="px-7 py-2 text-black bg-gray-100 shadow h-fit  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-              >
-                Next
-              </button>
-            </div>{" "}
+            </div>
           </div>
         </div>
 
-        <div className="hidden md:block p-4 px-6 border-l md:w-[30vw]">
+        <div className="flex flex-col-reverse md:flex-col p-4 px-6 border-l md:w-[30vw]">
           <div className="bg-white rounded-md mb-5">
             <h3 className="text border-b py-2 mb-2">Legend</h3>
             <div className="flex flex-wrap gap-4 pt-2">
