@@ -21,6 +21,7 @@ module.exports = {
         poppins: ['Poppins', 'Sans'],
         hindi:['Hindi','Poppins'],
         jakarta:['Jakarta','Sans'], 
+        jakarta2:['Jakarta2','Sans'], 
         istok:['Istok','Sans'],
         istokn:['IstokN','Sans'],
         montserrat: ['Montserrat', 'Sans'], 

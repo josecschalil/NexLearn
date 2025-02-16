@@ -61,7 +61,7 @@ const CourseList = () => {
   return (
     <div>
       {userId ? (
-        <div className="min-h-screen md:py-8 font-jakarta md:px-6 ">
+        <div className="min-h-screen md:py-8 font-jakarta md:px-6  overflow-x-hidden">
           <div className="max-w-6xl mx-auto flex space-x-6 ">
             <div className="flex-1 bg-white py-8 rounded-xl p-6">
             <h3 className="text-xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">

@@ -62,9 +62,9 @@ const Contents = () => {
               <div className="ml-3 flex items-center justify-center text-2xl">
                 🎓
               </div>
-              <div className="p-4 flex-1">
+              <div className="p-4 flex-1 overflow-x-hidden">
                 <h4 className="max-xs:text-[14px] font-inter font-semibold text-gray-900 truncate">
-                  {subject.name}
+                  {subject.name} 
                 </h4>
                 <p className="text-[12px] xs:text-sm sm:text-sm text-gray-700 font-istok mt-1">
                   {subject.chapters} Chapters

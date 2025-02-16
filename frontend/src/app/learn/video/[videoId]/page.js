@@ -54,7 +54,7 @@ const VideosPage = () => {
     <div className="max-w-6xl mx-auto bg-white p-6">
       <div className=" gap-4 ">
       <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
-            {chapter?.name}
+            {video?.video_title}
           </h3>
           <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
       <div className="max-w-5xl mx-auto bg-white  rounded-2xl md:p-6">

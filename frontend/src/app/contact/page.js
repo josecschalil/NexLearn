@@ -48,14 +48,15 @@ const ContactUsPage = () => {
       <div className="max-w-5xl mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
         <div className="bg-white mx-auto flex flex-col md:flex-row">
           <div className="sm:px-6 font-instSansB md:w-[50%]">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Get in Touch With Us.</h2>
-            <p className="text-gray-600 font-instSansN mb-6">
-              Our friendly team would love to hear from you.
+            <h2 className="max-xs:text-lg text-2xl font-bold font-inter text-gray-800 mb-2">Get in Touch With Us</h2>
+            <hr className="mt-2 md:hidden -mr-[40vw] mb-6 md:mb-8"></hr>
+            <p className="text-gray-600 hidden md:block font-instSansN mb-6 max-xs:text-sm">
+              Our team would love to hear from you.
             </p>
             <form className="space-y-3" onSubmit={handleSubmit}>
               <div className="flex gap-3">
                 <div className="w-1/2">
-                  <label className="block text-gray-700 mb-2 font-medium">First Name</label>
+                  <label className="block text-gray-700 mb-2 font-instSansN max-xs:text-sm">First Name</label>
                   <input
                     type="text"
                     name="firstName"
@@ -66,7 +67,7 @@ const ContactUsPage = () => {
                   />
                 </div>
                 <div className="w-1/2">
-                  <label className="block text-gray-700 mb-2 font-medium">Last Name</label>
+                  <label className="block text-gray-700 mb-2 font-instSansN max-xs:text-sm">Last Name</label>
                   <input
                     type="text"
                     name="lastName"
@@ -78,7 +79,7 @@ const ContactUsPage = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-gray-700 mb-2 font-medium">Phone</label>
+                <label className="block text-gray-700 mb-2 font-instSansN max-xs:text-sm">Phone</label>
                 <input
                   type="text"
                   name="phone"
@@ -89,7 +90,7 @@ const ContactUsPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-2 font-medium">Email</label>
+                <label className="block text-gray-700 mb-2 font-instSansN max-xs:text-sm">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -100,7 +101,7 @@ const ContactUsPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-2 font-medium">Your Message</label>
+                <label className="block text-gray-700 mb-2 font-instSansN max-xs:text-sm">Your Message</label>
                 <textarea
                   name="message"
                   value={formData.message}
@@ -112,7 +113,7 @@ const ContactUsPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-teal-600 text-white py-3 px-4 rounded-lg"
+                className="w-full bg-teal-600 font-inter font-semibold max-xs:text-sm text-white py-3 px-4 rounded-lg"
                 disabled={loading}
               >
                 {loading ? "Submitting..." : "Submit"}

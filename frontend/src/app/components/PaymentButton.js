@@ -115,7 +115,7 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
 
   return (
     <button
-      className="bg-teal-700 text-white px-4 py-2 rounded-md hover:bg-teal-900 transition"
+      className="bg-teal-700 text-white px-4 py-2 max-xs:text-xs font-semibold rounded-md hover:bg-teal-900 transition"
       onClick={handlePayment}
     >
       Pay ₹{course.current_price} with Razorpay

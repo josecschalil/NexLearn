@@ -173,7 +173,7 @@ const ChapterSelector = ({
             }`}
             onClick={() => toggleSubject(subject.id)}
           >
-            <h3 className="text-md text-gray-800 mr-2">{subject.name}</h3>
+            <h3 className="max-xs:text-sm text-gray-800 mr-2">{subject.name}</h3>
             <span
                       className={`transform transition-all duration-300 ${  activeSubjectId === subject.id? "rotate-180" : ""}`}
                     >
@@ -246,9 +246,9 @@ const ModalTimeQuestions = ({
   const isNextEnabled = examname?.trim() !== " " && time && numQuestions && difficulty;
 
   return (
-    <div className="px-2 modal w-fit rounded-lg  mx-auto font-istok  font-medium">
+    <div className="px-2 modal w-fit rounded-lg  mx-auto font-istok  font-semibold">
       <div className="mb-4">
-        <label className="text-lg  text-left block mb-2">Exam Name:</label>
+        <label className="xs:text-lg  text-left block sm:mb-2">Exam Name:</label>
         <input
           type="text"
           value={examname}
@@ -257,17 +257,17 @@ const ModalTimeQuestions = ({
             setExamName(e.target.value || "custom test");
           }}
           placeholder="enter exam name."
-          className="w-full border-b placeholder:text-[16px] placeholder: border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
+          className="w-full border-b placeholder:max-xs:text-sm font-semibold  placeholder: border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
         />
       </div>
 
-      <h2 className="text-lg text-left mb-4">Set Duration</h2>
+      <h2 className="xs:text-lg  text-left mb-4">Set Duration</h2>
       <TimeSelector time={time} setTime={setTime} />
 
-      <h2 className="text-lg text-left mb-4">Set Number of Questions</h2>
+      <h2 className="xs:text-lg  text-left mb-4">Set Number of Questions</h2>
       <QuestionSelector numQuestions={numQuestions} setNumQuestions={setNumQuestions} />
 
-      <h2 className="text-lg text-left mb-4">Set Difficulty</h2>
+      <h2 className="xs:text-lg  text-left mb-4">Set Difficulty</h2>
       <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
 
       <div className="text-left mt-6">
@@ -298,8 +298,8 @@ const ModalSubjects = ({
   const isNextEnabled = selectedChapters.length > 0;
 
   return (
-    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok  font-sem ">
-      <h2 className="text-lg  text-left mb-4">Select Chapters</h2>
+    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok font-semibold  font-sem ">
+      <h2 className="xs:text-lg   text-left mb-4">Select Chapters</h2>
       <ChapterSelector
         setSubjects={setSubjects}
         subjects={subjects}
@@ -310,7 +310,7 @@ const ModalSubjects = ({
       <div className="flex justify-between mt-4">
         <button
           onClick={onBack}
-          className="border px-6 py-2 text-md  rounded-lg  transition-all text-gray-700 hover:border-gray-900"
+          className="border px-4 sm:px-6 py-2 max-xs:text-sm  rounded-lg  transition-all text-gray-700 hover:border-gray-900"
         >
           Back
         </button>
@@ -318,7 +318,7 @@ const ModalSubjects = ({
         <button
           onClick={onNext}
           disabled={!isNextEnabled}
-          className={`border px-6 py-2 text-md  rounded-lg  transition-all ${
+          className={`border px-4 sm:px-6 py-2 max-xs:text-sm  rounded-lg  transition-all ${
             isNextEnabled
               ? "hover:border-gray-500"
               : "text-gray-500 cursor-not-allowed"
