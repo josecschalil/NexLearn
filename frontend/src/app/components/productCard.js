@@ -22,23 +22,23 @@ const ProductCard = ({ course }) => {
         {/* Content Section */}
         <div className="py-3">
           {/* Type */}
-          <p className="text-teal-600 text-xs  font-medium tracking-widest mb-2">
+          <p className="text-teal-600 text-[10px] xs:text-xs sm:text-xs  font-medium tracking-widest mb-1 xs:mb-2 s:mb-2">
             {course.course_type}
           </p>
 
           {/* Title */}
-          <h3 className="text-lg  font-bold text-gray-800 mb-1 truncate">
+          <h3 className="text-[14px]  xs:text-lg sm:text-lg font-bold text-gray-800 mb-1 truncate">
             {course.title}
           </h3>
 
-          <h3 className="text-sm text-justify text-gray-800 mb-1  line-clamp-3">
+          <h3 className="text-xs xs:text-sm sm:text-sm text-justify text-gray-800 mb-1  line-clamp-3">
             {course.description}
           </h3>
 
           {/* Price Section */}
           <div className="flex justify-between gap-4">
             <div className="mt-1 flex justify-between items-center">
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-md xs:text-lg  sm:text-lg font-semibold text-gray-800">
                 Rs.{course.current_price}
                 <span className="text-sm line-through text-gray-400 ml-2">
                   {course.price}

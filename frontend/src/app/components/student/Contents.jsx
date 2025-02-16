@@ -23,7 +23,7 @@ const Contents = () => {
   return (
     <div className="font-inter ">
       <div className="mb-[4vh]">
-        <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
+      <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
           Featured Classes
         </h3>
         <hr className="mt-2 -mr-[40vw] "></hr>
@@ -42,7 +42,7 @@ const Contents = () => {
                   
                   <div className="relative w-fit">
                     <img
-                      className="aspect-video w-fit rounded-lg h-48 object-cover transition-transform duration-300 "
+                      className="aspect-video w-fit rounded-lg max-xs:h-44 h-48 object-cover  transition-transform duration-300 "
                       src={video.thumbnail}
                       alt={video.video_title}
                     />
@@ -56,10 +56,10 @@ const Contents = () => {
                   <div className="flex items-center space-x-3 mt-4">
                     <span className="text-3xl mb-2 -mt-1">📽️</span>
                     <div className="flex-1">
-                      <h4 className="text-md font-semibold text-gray-900 line-clamp-2">
+                      <h4 className="max-xs:text-sm text-md font-semibold text-gray-900 line-clamp-2 pr-2">
                         {video.video_title}
                       </h4>
-                      <p className="text-sm font-istok text-gray-600 mt-1">
+                      <p className="max-xs:text-xs text-sm font-istok text-gray-600 mt-1">
                         {video.subject || "Physics"} •{" "}
                         {video.language || "Hindi"}
                       </p>

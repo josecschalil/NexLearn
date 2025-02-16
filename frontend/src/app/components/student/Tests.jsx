@@ -22,7 +22,7 @@ const FeaturedTests = () => {
 
   return (
     <div className="my-4">
-                    <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
+                     <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
           Featured Exams
         </h3>
         <hr className="mt-2 -mr-[40vw] mb-5 md:mb-8"></hr>
@@ -41,10 +41,10 @@ const FeaturedTests = () => {
               </div>
 
               <div className="p-4 flex-1">
-                <h4 className="font-inter font-semibold text-gray-900 truncate">
+                <h4 className=" max-xs:text-sm font-inter font-semibold text-gray-900 truncate">
                   {test.exam_title}
                 </h4>
-                <p className="text-sm text-gray-700 font-istok mt-1">
+                <p className=" max-xs:text-xs text-sm text-gray-700 font-istok mt-1">
                   {test.time / 60} hours | Level {test.difficulty}
                 </p>
               </div>
