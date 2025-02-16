@@ -3,7 +3,6 @@ import useFetchUserDetails from "./useFetchUserDetails";
 import { usePathname } from "next/navigation"; 
 
 const useAuthentication = () => {
-  console.log("in useauth")
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   console.log("Initializing authentication process...");
   const { userDetails, fetchUserDetails } = useFetchUserDetails();

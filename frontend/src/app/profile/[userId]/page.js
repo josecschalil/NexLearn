@@ -14,6 +14,16 @@ const ProfilePage = () => {
   const [progressArray, setProgressArray] = useState([]);
   const { userId } = useParams();
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>
+          Please <Link href="/signin">sign in</Link> to access your profile.
+        </p>
+      </div>
+    );
+  }
+
   useEffect(() => {
     if (userId) {
       api
@@ -45,15 +55,7 @@ const ProfilePage = () => {
     }
   }, [userId]);
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>
-          Please <Link href="/signin">sign in</Link> to access your profile.
-        </p>
-      </div>
-    );
-  }
+
 
   return (
     <div className="overflow-x-hidden min-h-screen md:py-8  md:px-6">
