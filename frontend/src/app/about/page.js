@@ -8,11 +8,11 @@ const AboutPage = () => {
     <div className="bg-gray-100 min-h-screen">
       {/* Header Section */}
       <div className="bg-teal-900 text-white py-20 text-center px-4">
-        <h1 className="text-4xl font-bold mb-4 font-instSansB">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-inter">
         ©  JEENEETPULSE 
         
         </h1>
-        <p className="text-lg font-medium max-w-3xl mx-auto">
+        <p className="text-md sm:text-lg font-medium max-w-3xl px-3 mx-auto">
           The ultimate platform  for aspiring students preparing for JEE and
           NEET. Test your skills, practice questions, and watch expert-led
           classes.

@@ -119,91 +119,91 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 font-jakarta">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left Column - Course Details */}
-        <div className="md:col-span-2 bg-white shadow-md rounded-lg p-8">
-          {/* Header */}
-          <div className="border-b pb-4 mb-4 flex justify-between items-center">
-            <h1 className="text-4xl font-bold text-gray-800">{course.title}</h1>
-            <Link href={`/courses/${course.id}`}>
-              <button className="bg-teal-500 text-white px-4 py-2 text-sm font-semibold rounded-md shadow hover:bg-teal-600 transition">
-                View Details &gt;
+    <div className=" min-h-screen md:bg-gray-100 py-10 font-jakarta overflow-x-hidden">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 md:gap-8">
+        <div className="md:col-span-2 bg-white md:shadow-md md:rounded-2xl p-6 py-2 md:p-8">
+          <div className=" pb-4  flex justify-between items-center md:border-b md:mb-4">
+            <h1 className="text-2xl max-xs:text-xl md:text-4xl font-bold text-gray-800">{course.title}</h1>
+            
+            
+          </div>
+          <hr className="md:hidden -mr-[40vw] mb-6 md:mb-8"></hr>
+
+          <Link href={`/courses/${course.id}`}>
+              <button className="bg-teal-800 mb-4 text-white px-4 py-2 max-xs:text-xs text-sm font-semibold rounded-md shadow hover:bg-teal-600 transition">
+                View Details 
               </button>
             </Link>
-          </div>
-
-          {/* Course Info */}
-          <p className="text-lg text-justify text-gray-600 leading-relaxed">
+          <p className="max-xs:text-sm  text-md md:text-lg text-justify text-gray-600 leading-relaxed">
             {course.description}
           </p>
 
-          {/* Features Summary */}
           <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-lg shadow-md">
-              <span className="text-2xl font-bold text-gray-800">
+            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-2xl shadow-md">
+              <span className="max-xs:text-xl text-2xl font-bold text-gray-800">
                 {course.watch_hours}+
               </span>
-              <p className="text-gray-500 text-sm">Watch Hours</p>
+              <p className="text-gray-500 max-xs:text-xs text-sm">Watch Hours</p>
             </div>
-            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-lg shadow-md">
-              <span className="text-2xl font-bold text-gray-800">
+            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-2xl shadow-md">
+              <span className="max-xs:text-xl text-2xl font-bold text-gray-800">
                 {course.classes}+
               </span>
-              <p className="text-gray-500 text-sm">Classes</p>
+              <p className="text-gray-500 max-xs:text-xs text-sm">Classes</p>
             </div>
           </div>
         </div>
+        <div className="bg-white md:shadow-md md:rounded-2xl p-6 flex flex-col sm:gap-6">
+  <div className="md:border-b mb-4 md:pb-4 ">
+    <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-2">
+      Price Details
+    </h2>
+    <hr className="md:hidden -mr-[40vw] mb-2 "></hr>
+  <div className="text-lg max-xs:text-[15px] font-semibold text-gray-800">
+    ₹{course.current_price}{" "}
+    <span className="text-gray-500 line-through text-xl max-xs:text-[15px]">
+      ₹{course.price}
+    </span>
+    <span className="ml-2 text-teal-500 text-xl max-xs:text-[15px]">
+      ({course.discount}% off)
+    </span>
+  </div>
+  </div>
+  
 
-        {/* Right Column - Pricing, Profile, and Payment */}
-        <div className="bg-white shadow-md rounded-lg p-6 flex flex-col gap-6">
-          {/* Pricing Section */}
-          <div className="border-b pb-4">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
-              Price Details
-            </h2>
-            <div className="text-2xl font-semibold text-gray-800">
-              ₹{course.current_price}{" "}
-              <span className="text-gray-500 line-through text-lg">
-                ₹{course.price}
-              </span>
-              <span className="ml-2 text-teal-500 text-lg">
-                ({course.discount}% off)
-              </span>
-            </div>
-          </div>
+  <div className="md:border-b mb-4 md:pb-4">
+  <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-2">
+     User Details
+    </h2>
+    <hr className="md:hidden -mr-[40vw] mb-2 "></hr>
+  <div className="text-gray-600 font-jakarta2 text-md max-xs:text-sm md:text-lg">
+    <p>
+      Name: <span className="font-semibold">{userDetails?.name}</span>
+    </p>
+    <p>
+      Email: <span className="font-semibold">{userDetails?.email}</span>
+    </p>
+  </div>
+  </div>
+  
 
-          {/* User Profile Section */}
-          <div className="border-b pb-4">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
-              User Profile
-            </h2>
-            <div className="text-gray-600 text-lg">
-              <p>
-                Name: <span className="font-semibold">{userDetails?.name}</span>
-              </p>
-              <p>
-                Email:{" "}
-                <span className="font-semibold">{userDetails?.email}</span>
-              </p>
-            </div>
-          </div>
+  {/* Payment Options */}
+  <div>
+    <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-4">
+      Payment Options
+    </h2>
+    <hr className="md:hidden -mr-[40vw] mb-6 md:mb-8"></hr>
+    <div className="flex items-center gap-3">
+      {isEnrolled ? (
+        <div className="text-teal-800 font-semibold">Already Enrolled</div>
+      ) : (
+        <PaymentButton course={course} userId={userId} userDetails={userDetails} isAuthenticated={isAuthenticated} />
+      )}
+    </div>
+  </div>
+</div>
 
-          {/* Payment Options */}
-          <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Payment Options
-            </h2>
-            <div className="flex items-center gap-3">
-            
-               {isEnrolled ? (
-              <div className="text-teal-800 font-semibold">Already Enrolled</div>
-            ) : (
-              <PaymentButton course={course} userId={userId} userDetails={userDetails} isAuthenticated={isAuthenticated}/>
-            )}
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );

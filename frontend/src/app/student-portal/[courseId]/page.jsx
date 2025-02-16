@@ -98,7 +98,7 @@ const CoursePage = () => {
 
           <div className=" relative z-50 max-xs:scale-90 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
-              <div className="font-istok  text-lg sm:text-2xl  px-6 mr-10 xsm:mr-0">
+              <div className="font-istok  font-semibold max-xs:text-lg text-2xl  px-6 mr-10 xsm:mr-0">
                 Creating Custom Test
               </div>
               <button

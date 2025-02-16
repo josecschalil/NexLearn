@@ -30,7 +30,7 @@ const RenderTextWithLatex = ({ text , language }) => {
     const parts = escapedText.split(/(\$.*?\$|\\\[.*?\\\])/g);
     
     return parts.map((part, index) => {
-        const fontClass = language === 'HI' ? 'font-hindi' : 'font-inter';  // Choose font based on language
+        const fontClass = language === 'HI' ? 'font-hindi' : 'font-jakarta2';  // Choose font based on language
 
         if (part.startsWith('$') && part.endsWith('$')) {
             return <MathComponent key={index} text={part.slice(1, -1)} block={false} />;

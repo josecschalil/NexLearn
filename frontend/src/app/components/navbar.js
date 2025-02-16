@@ -215,26 +215,26 @@ const Navbar = () => {
           className="transition-all lg:hidden bg-teal-900 duration-300 ease-in-out overflow-hidden"
         >
           <div className="text-white pt-2 font-inter">
-            <ul className="flex flex-col text-lg font-instSansB pl-6 uppercase font-bold">
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1 mt-4">
+            <ul className="flex flex-col max-xs:text-sm text-lg font-instSansB pl-6 uppercase font-bold">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1 mt-4">
                 <a href="/">Home</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/student-portal">Student Portal</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/courses">Courses</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/featured">Featured</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/about">About</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/contact">Contact</a>
               </li>
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 {!isAuthenticated ? (
                   <a href="/signin">SIGN IN</a>
                 ) : (
@@ -242,7 +242,7 @@ const Navbar = () => {
                 )}
               </li>
 
-              <li className="border-b mb-4 hover:translate-x-4 transition-all py-1">
+              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/signup">Register</a>
               </li>
               <li className="pb-2 mb-4">

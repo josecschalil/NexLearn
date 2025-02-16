@@ -211,8 +211,8 @@ const TestPage = () => {
     };
 
     return (
-        <div className="px-2 pr-0  text-black text-[16px] border flex border-gray-400 hover:border-gray-600 rounded-lg  disabled:text-gray-300 active:border-[2px] transition-all duration-300">
-          <div className="my-2 mr-2"> {formatTime(timeRemaining)}</div> <div onClick={handleSubmit} className="xsm:hidden border-l pt-2 px-2 rounded-r-lg hover:bg-slate-100 ">  Submit</div>
+        <div  className="px-4 flex  pr-0 max-xs:text-sm  bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-xl disabled:text-gray-300 active:border-[2px] transition-all duration-300">
+          <div className="my-2 mr-2 max-xs:w-[40px] w-[60px] text-center"> {formatTime(timeRemaining)}</div> <div onClick={handleSubmit} className="xsm:hidden border-l border-gray-200 pt-2 px-2  rounded-r-xl hover:bg-gray-200 ">  Submit</div>
         </div>
       );
   };
@@ -300,7 +300,7 @@ const TestPage = () => {
 
       <div className="flex  items-center border-b mt-2 md:mt-0 -mx-6 px-7 mb-4 md:pb-0 md:mb-0 md:border-none">
         <div className="flex justify-start   md:justify-center py-3  md:items-center font-extrabold">
-          <span className="">{examdetails?.exam_title} </span>
+          <span className="max-xs:text-xl text-gray-800">{examdetails?.exam_title} </span>
           <span
             onClick={() => setisopen(!isopen)}
             className={` transform transition-all duration-300 items-center mx-2 hidden cursor-pointer ${
@@ -325,7 +325,7 @@ const TestPage = () => {
         </div>
         <div className="ml-auto">
           <button
-            className={` md:hidden mx-auto relative w-20 h-[37px] text-sm rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
+            className={` md:hidden mx-auto relative w-20 h-[37px] text-sm max-xs:scale-90 rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
               language === "en" ? "bg-black" : "bg-teal-800"
             }`}
             onClick={toggleLanguage}
@@ -356,7 +356,7 @@ const TestPage = () => {
       <div className="flex justify-center md:justify-end items-center text-sm xs:text-md">
         <div className="flex  justify-end items-center space-y-0 space-x-4">
           <button
-            className="px-4 py-2 text-black text-[16px] border border-gray-400 hover:border-gray-600 rounded-lg tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+            className="px-4 max-xs:text-sm  py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
             onClick={AttemptLater}
           >
             Attempt Later
@@ -365,7 +365,7 @@ const TestPage = () => {
           <TimerComponent timeRemaining={timeRemaining} />
 
           <button
-            className="px-4 hidden xsm:block py-2 text-black text-[16px] border border-gray-400 hover:border-gray-600 rounded-lg disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+            className="px-4 hidden max-xs:text-sm xsm:block py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
             onClick={handleSubmit}
           >
             Submit
@@ -379,7 +379,7 @@ const TestPage = () => {
     <div className="flex  bg-white mt-4 md:mt-0 border-t flex-col md:flex-row h-[90%] ">
       <div className="md:w-[70vw] flex flex-col">
         <div className="p-6 bg-white rounded-xl font-jakarta">
-          <p className="text-lg mb-4">
+          <p className="text-lg max-xs:text-sm  mb-4 text-justify">
             {currentQuestionIndex + 1}.{" "}
             {language === "en" ? (
               <RenderTextWithLatex
@@ -399,7 +399,7 @@ const TestPage = () => {
             />
           )}
 
-          <div className="grid grid-cols-2 gap-3 md:w-[80%] mt-8">
+          <div className="grid grid-cols-2 gap-3 md:w-[80%] mt-8 max-xs:text-sm ">
             {["A", "B", "C", "D"].map((optionKey, index) => {
               const optionText =
                 language === "en"
@@ -448,7 +448,7 @@ const TestPage = () => {
         </div>
 
         <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
-          <div className="my-5 flex-wrap flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
+          <div className="my-5 flex-wrap max-xs:text-sm font-medium flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
             <button
               onClick={prevQuestion}
               disabled={currentQuestionIndex === 0}
@@ -486,7 +486,7 @@ const TestPage = () => {
               Mark and Next
             </button>
           </div>{" "}
-          <div className="flex gap-3 md:gap-6">
+          <div className="flex gap-3 md:gap-6 max-xs:text-sm font-medium">
             <button
               onClick={saveandNext}
               className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1 text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
@@ -504,7 +504,7 @@ const TestPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse md:flex-col p-4 px-6 border-l md:w-[30vw]">
+      <div className="flex flex-col-reverse md:flex-col p-4 px-6 border-l max-xs:text-sm font-medium md:w-[30vw]">
         <div className="bg-white rounded-md mb-5">
           <h3 className="text border-b py-2 mb-2">Legend</h3>
           <div className="flex flex-wrap gap-4 pt-2">
