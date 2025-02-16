@@ -21,7 +21,7 @@ const StudyMaterials = () => {
 
   return (
     <div className="my-10 ">
-                <h3 className="text-2xl sm:text-4xl md:mb-4 font-bold text-gray-800 font-inter">
+                 <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
           Featured Notes
         </h3>
         <hr className="mt-2 -mr-[40vw] mb-5 md:mb-8 "></hr>
@@ -40,13 +40,13 @@ const StudyMaterials = () => {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="border border-gray-300 rounded-lg shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
+                <div className="border border-gray-300 rounded-2xl shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
                   <span className="text-2xl">🗂️</span>
                   <div className="ml-4 flex-1">
-                    <h4 className="font-inter font-semibold text-gray-900 truncate">
+                    <h4 className="font-inter max-xs:text-sm font-semibold text-gray-900 truncate">
                       {note.pdf_title}
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1 font-istok">
+                    <p className="text-sm max-xs:text-xs text-gray-500 mt-1 font-istok">
                       {note.pdf_type}
                     </p>
                   </div>
@@ -59,10 +59,10 @@ const StudyMaterials = () => {
               >
                 <span className="text-2xl">🗂️</span>
                 <div className="ml-4 flex-1">
-                  <h4 className="font-inter font-semibold text-gray-900 truncate">
+                  <h4 className="font-inter max-xs:text-sm font-semibold text-gray-900 truncate">
                     {note.pdf_title}
                   </h4>
-                  <p className="text-sm text-gray-500 mt-1 font-istok">
+                  <p className="text-sm max-xs:text-xs text-gray-500 mt-1 font-istok">
                     {note.pdf_type}
                   </p>
                 </div>

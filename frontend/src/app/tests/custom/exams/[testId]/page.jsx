@@ -399,7 +399,7 @@ const TestPage = () => {
 
    
 
-      <div className="flex  bg-white mt-4 border-t flex-col md:flex-row h-[90%] ">
+      <div className="flex  bg-white mt-4 md:mt-0 border-t flex-col md:flex-row h-[90%] ">
         <div className="md:w-[70vw] flex flex-col">
           <div className="p-6 bg-white rounded-xl font-jakarta">
             <p className="text-lg mb-4">

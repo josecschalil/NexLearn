@@ -104,19 +104,19 @@ const Exams = ({ id, setIsTestCreatorOpen }) => {
   return (
     <div className="relative ">
 
-      <div className="flex  transition-all rounded-2xl hover:shadow hover:border-gray-500 duration-100  items-center justify-between p-4 border border-gray-300  mb-4">
+      <div  onClick={createtesttoggler} className="flex transition-all rounded-2xl hover:shadow hover:border-gray-500 duration-100  items-center justify-between p-4 border border-gray-300  mb-4">
         <div className="flex items-center space-x-4">
           <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
-            <span role="img" aria-label="exam-icon" className="text-2xl">
+            <span role="img" aria-label="exam-icon" className="text-xl">
               🛠️
             </span>
           </div>
           {/* Details */}
           <div>
-            <h3 className="text-lg font-bold font-instSansB text-gray-800">
+          <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
               Custom Tests
             </h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-[12px] xs:text-sm sm:text-sm text-gray-500 mt-1">
               Create and customize your own test sessions!
             </p>
           </div>
@@ -125,7 +125,7 @@ const Exams = ({ id, setIsTestCreatorOpen }) => {
         <div className="flex flex-col sm:flex-row gap-3 items-center ">
           <button
             onClick={createtesttoggler}
-            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+            className="px-4 py-2 hidden sm:block border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
           >
             Create
           </button>

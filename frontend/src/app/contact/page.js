@@ -47,7 +47,7 @@ const ContactUsPage = () => {
     <div className="md:min-h-screen md:bg-gray-50 md:py-8 font-jakarta md:px-6">
       <div className="max-w-5xl mx-auto bg-white md:shadow-md md:rounded-2xl p-6">
         <div className="bg-white mx-auto flex flex-col md:flex-row">
-          <div className="px-6 font-instSansB md:w-[50%]">
+          <div className="sm:px-6 font-instSansB md:w-[50%]">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Get in Touch With Us.</h2>
             <p className="text-gray-600 font-instSansN mb-6">
               Our friendly team would love to hear from you.

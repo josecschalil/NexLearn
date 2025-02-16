@@ -108,11 +108,13 @@ const TestsPage = () => {
           content="Prepare for exams with our mock tests. Check schedules, start tests, and analyze your performance."
         />
       </Head>
-      <main className="min-h-screen  md:py-8 font-jakarta md:px-6">
-        <section className="max-w-6xl mx-auto   p-6">
-          <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 font-inter">Practice Exams</h1>
-          <hr className="my-3 hidden md:block bg-gray-400"></hr>
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-4">
+      <main className="min-h-screen  md:py-8 font-jakarta md:px-6 overflow-x-hidden">
+        <section className="max-w-6xl mx-auto p-6">
+        <h3 className="text-xl xs:text-2xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+               Practice Exams
+              </h3>
+              <hr className="mt-2 -mr-[40vw] mb-6 md:mb-8"></hr>
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  sm:gap-4">
             {loading ? (
               <p>Loading exams...</p>
             ) : error ? (
@@ -130,14 +132,14 @@ const TestsPage = () => {
                           {emojis[index % emojis.length]}
                         </div>
               <div>
-                <h3 className="text-lg font-bold font-inter text-gray-800">
-                  {exam.exam_title}
-                </h3>
-                <p className="text-sm text-gray-700 mt-1">
-                          {" "}
+              <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
+                          {exam.exam_title}
+                        </h3>
+                        <p className="text-[12px] xs:text-sm sm:text-sm text-gray-500 mt-1">
+                         
                           Level {exam?.diffculty} | {exam.time} mins
                         </p>
-              </div>
+                      </div>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -146,8 +148,7 @@ const TestsPage = () => {
                   <button
                     onClick={() => handleStartTest(exam.exam_id)}
                     aria-label={`Start Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
-                  >
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm">
                     Start
                   </button>
                 </Link>
@@ -155,9 +156,9 @@ const TestsPage = () => {
                 <Link href={`/analysis/${exam.exam_id}`}>
                   <button
                     aria-label={`See Analysis of Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm"
                   >
-                    See Analysis
+                    Analyse
                   </button>
                 </Link>
               ) : (
@@ -165,9 +166,9 @@ const TestsPage = () => {
                   <button
                     onClick={() => handleResumeTest(exam.exam_id)}
                     aria-label={`Resume Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-sm"
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm"
                   >
-                    Resume Test
+                    Resume 
                   </button>
                 </Link>
               )}

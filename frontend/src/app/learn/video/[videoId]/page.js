@@ -50,10 +50,15 @@ const VideosPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 font-jakarta px-6">
-      <div className="max-w-5xl mx-auto bg-white shadow-md rounded-2xl p-6">
-        <div className="mt-4 p-4">
-          <h2 className="text-xl font-semibold mb-4">{video.video_title}</h2>
+<div className="min-h-screen md:py-8 font-jakarta md:px-6 overflow-x-hidden">
+    <div className="max-w-6xl mx-auto bg-white p-6">
+      <div className=" gap-4 ">
+      <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+            {chapter?.name}
+          </h3>
+          <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
+      <div className="max-w-5xl mx-auto bg-white  rounded-2xl md:p-6">
+        <div className="mt-4 md:p-4">
           <div
             className="video-container bg-black rounded-lg overflow-hidden"
             style={{ position: 'relative', paddingTop: '56.25%' }}
@@ -69,6 +74,7 @@ const VideosPage = () => {
         </div>
       </div>
     </div>
+    </div></div>
   );
 };
 

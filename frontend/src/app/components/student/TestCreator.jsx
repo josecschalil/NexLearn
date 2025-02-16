@@ -162,7 +162,7 @@ const ChapterSelector = ({
 
   return (
     <div>
-      <div className=" grid grid-cols-1 xsm:grid-cols-2 md:flex  md:flex-row gap-2 md:gap-6 mb-6">
+      <div className=" grid grid-cols-1 xsm:grid-cols-2 md:flex font-istok  md:flex-row gap-2 md:gap-6 mb-6">
         {EachSubjectDetails.map((subject) => (
           <div
             key={subject.id}
@@ -246,9 +246,9 @@ const ModalTimeQuestions = ({
   const isNextEnabled = examname?.trim() !== " " && time && numQuestions && difficulty;
 
   return (
-    <div className="px-2 modal w-fit rounded-lg text-gray-800 mx-auto font-istok font-bold">
+    <div className="px-2 modal w-fit rounded-lg  mx-auto font-istok  font-medium">
       <div className="mb-4">
-        <label className="text-lg text-left block mb-2">Exam Name:</label>
+        <label className="text-lg  text-left block mb-2">Exam Name:</label>
         <input
           type="text"
           value={examname}
@@ -257,7 +257,7 @@ const ModalTimeQuestions = ({
             setExamName(e.target.value || "custom test");
           }}
           placeholder="enter exam name."
-          className="w-full border-b placeholder:text-[16px] placeholder:font-semibold border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
+          className="w-full border-b placeholder:text-[16px] placeholder: border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
         />
       </div>
 
@@ -298,7 +298,7 @@ const ModalSubjects = ({
   const isNextEnabled = selectedChapters.length > 0;
 
   return (
-    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok font-bold ">
+    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok  font-sem ">
       <h2 className="text-lg  text-left mb-4">Select Chapters</h2>
       <ChapterSelector
         setSubjects={setSubjects}
@@ -380,7 +380,7 @@ const TestCreator = ({ id }) => {
       };
 
       //console.log(examPayload);
-      const createExamResponse = await api.post(`/api/exams/`, examPayload, {
+      const createExamResponse = await api.post(`api/exams/`, examPayload, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -64,10 +64,10 @@ const CourseList = () => {
         <div className="min-h-screen md:py-8 font-jakarta md:px-6 ">
           <div className="max-w-6xl mx-auto flex space-x-6 ">
             <div className="flex-1 bg-white py-8 rounded-xl p-6">
-              <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-6">
+            <h3 className="text-xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
                 My Courses
-              </h2>
-              <div className="hidden md:block h-[1px] bg-gray-300 mb-8"></div>
+              </h3>
+              <hr className="mt-2 -mr-[40vw] mb-6 md:mb-8"></hr>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {coursesData.length === 0 ? (
                   <div className="h-[70vh] sm:h-[80vh] flex flex-col items-center justify-center text-center">
@@ -101,10 +101,10 @@ const CourseList = () => {
                             </span>
                           </div>
                           <div>
-                            <h3 className="text-sm xs:text-lg font-bold text-gray-800">
+                            <h3 className="text-sm xs:text-lg sm:text-lg font-bold text-gray-800">
                               {course.title}
                             </h3>
-                            <p className="text-[11px] xs:text-sm text-gray-500 mt-1 ">
+                            <p className="text-[11px] xs:text-sm sm:text-sm  text-gray-500 mt-1 ">
                               {course.chapters} Chapters •{" "}
                               {(+course.classes || 0) +
                                 (+course.tests || 0) +
