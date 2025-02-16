@@ -132,10 +132,10 @@ const TestsPage = () => {
                           {emojis[index % emojis.length]}
                         </div>
               <div>
-              <h3 className="text-[14px] xs:text-lg font-bold font-inter text-gray-800">
+              <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
                           {exam.exam_title}
                         </h3>
-                        <p className="text-[12px] xs:text-sm text-gray-500 mt-1">
+                        <p className="text-[12px] xs:text-sm sm:text-sm text-gray-500 mt-1">
                          
                           Level {exam?.diffculty} | {exam.time} mins
                         </p>
@@ -148,7 +148,7 @@ const TestsPage = () => {
                   <button
                     onClick={() => handleStartTest(exam.exam_id)}
                     aria-label={`Start Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm">
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm">
                     Start
                   </button>
                 </Link>
@@ -156,7 +156,7 @@ const TestsPage = () => {
                 <Link href={`/analysis/${exam.exam_id}`}>
                   <button
                     aria-label={`See Analysis of Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm"
                   >
                     Analyse
                   </button>
@@ -166,7 +166,7 @@ const TestsPage = () => {
                   <button
                     onClick={() => handleResumeTest(exam.exam_id)}
                     aria-label={`Resume Mock Test ${exam.exam_id}`}
-                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
+                    className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] sm:text-sm xs:text-sm"
                   >
                     Resume 
                   </button>

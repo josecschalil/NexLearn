@@ -101,10 +101,10 @@ const CourseList = () => {
                             </span>
                           </div>
                           <div>
-                            <h3 className="text-sm xs:text-lg font-bold text-gray-800">
+                            <h3 className="text-sm xs:text-lg sm:text-lg font-bold text-gray-800">
                               {course.title}
                             </h3>
-                            <p className="text-[11px] xs:text-sm text-gray-500 mt-1 ">
+                            <p className="text-[11px] xs:text-sm sm:text-sm  text-gray-500 mt-1 ">
                               {course.chapters} Chapters •{" "}
                               {(+course.classes || 0) +
                                 (+course.tests || 0) +

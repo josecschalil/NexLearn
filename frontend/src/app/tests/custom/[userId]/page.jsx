@@ -140,10 +140,10 @@ const TestsPage = () => {
                         </div>
                       </span>
                       <div>
-                      <h3 className="text-[14px] xs:text-xl font-bold font-inter text-gray-800">
+                      <h3 className="text-[14px] xs:text-lg sm:text-lg font-semibold font-inter text-gray-800">
                           {exam.exam_title}
                         </h3>
-                        <p className="text-[12px] xs:text-sm text-gray-500 mt-1">
+                        <p className="text-[12px] xs:text-sm sm:text-sm text-gray-500 mt-1">
                          
                           Level {exam?.diffculty} | {exam.time} mins
                         </p>
@@ -156,7 +156,7 @@ const TestsPage = () => {
                           <button
                             onClick={() => handleStartTest(exam.exam_id)}
                             aria-label={`Start Mock Test ${exam.exam_id}`}
-                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
+                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm  sm:text-sm"
                           >
                             Start Test
                           </button>
@@ -165,17 +165,17 @@ const TestsPage = () => {
                         <Link href={`/analysis/${exam.exam_id}`}>
                           <button
                             aria-label={`See Analysis of Mock Test ${exam.exam_id}`}
-                            className="px-6 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
+                            className="px-6 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm sm:text-sm"
                           >
                             Analyse
                           </button>
                         </Link>
                       ) : (
                         <Link href={`/tests/proctored/exams/${exam.exam_id}`}>
-                          <button
+                          <button 
                             onClick={() => handleResumeTest(exam.exam_id)}
                             aria-label={`Resume Mock Test ${exam.exam_id}`}
-                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm"
+                            className="px-4 py-2 border border-teal-900 transition-all duration-100 rounded-full hover:bg-teal-800 hover:text-white text-[11px] xs:text-sm sm:text-sm"
                           >
                             Resume
                           </button>

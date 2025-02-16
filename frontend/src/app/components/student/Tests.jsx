@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import api from "../../services/api";
+import useAuthentication from "@/hooks/useAuthentication";
 
 const emojis = ["📖", "📝", "🎯", "📚", "✏️", "🏆", "💡", "🔬", "📊", "🔎"]; // Random emojis
 
 const FeaturedTests = () => {
   const [featuredTests, setFeaturedTests] = useState(null);
+  const { isAuthenticated, userDetails } = useAuthentication();
 
   useEffect(() => {
     const fetchFeaturedTests = async () => {

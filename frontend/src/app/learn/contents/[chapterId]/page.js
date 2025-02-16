@@ -72,7 +72,7 @@ const ChapterPage = () => {
         {contents?.length === 0 ? (
           <p className="text-gray-600 mt-4">No videos available.</p>
         ) : (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center ">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:justify-items-center xs:justify-items-center ">
 
             {contents?.map((video, index) => (
               <Link
@@ -84,7 +84,7 @@ const ChapterPage = () => {
                   
                   <div className="relative w-fit">
                     <img
-                      className="aspect-video w-fit rounded-lg h-48 object-cover transition-transform duration-300 "
+                      className="aspect-video w-fit rounded-2xl h-48 object-cover transition-transform duration-300 "
                       src={video.thumbnail}
                       alt={video.video_title}
                     />
@@ -98,10 +98,10 @@ const ChapterPage = () => {
                   <div className="flex items-center space-x-3 mt-4">
                     <span className="text-3xl mb-2 -mt-1">📽️</span>
                     <div className="flex-1">
-                      <h4 className="text-md font-semibold text-gray-900 line-clamp-2">
+                      <h4 className="text-md max-xs:text-[14px] font-semibold text-gray-900 line-clamp-2">
                         {video.video_title}
                       </h4>
-                      <p className="text-sm font-istok text-gray-600 mt-1">
+                      <p className="text-sm  max-xs:text-[12px] font-istok text-gray-600 mt-1">
                         {video.subject || "Physics"} •{" "}
                         {video.language || "Hindi"}
                       </p>

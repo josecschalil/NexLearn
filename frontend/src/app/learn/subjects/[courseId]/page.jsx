@@ -63,10 +63,10 @@ const Contents = () => {
                 🎓
               </div>
               <div className="p-4 flex-1">
-                <h4 className="text-[14px] xs:text-lg font-inter font-semibold text-gray-900 truncate">
+                <h4 className="max-xs:text-[14px] font-inter font-semibold text-gray-900 truncate">
                   {subject.name}
                 </h4>
-                <p className="text-[12px] xs:text-sm text-gray-700 font-istok mt-1">
+                <p className="text-[12px] xs:text-sm sm:text-sm text-gray-700 font-istok mt-1">
                   {subject.chapters} Chapters
                 </p>
               </div>

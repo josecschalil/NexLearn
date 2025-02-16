@@ -38,7 +38,7 @@ const CoursePage = () => {
     <div className="overflow-x-hidden min-h-screen md:py-8 font-jakarta md:px-6">
       <div className="max-w-6xl mx-auto space-x-6 ">
         <div className="flex-1 bg-white py-8 rounded-xl px-6">
-          <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+          <h3 className="text-xl  xs:text-3xl sm:text-4xl  md:mb-4 font-bold  font-inter">
             {course.title}
           </h3>
           <hr className="mt-2 -mr-[40vw] mb-4 md:mb-8"></hr>
@@ -96,14 +96,14 @@ const CoursePage = () => {
             }
           `}</style>
 
-          <div className=" relative z-50 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
+          <div className=" relative z-50 max-xs:scale-90 my-4 mb-8 top-[5vh]  md:top-[5vh]   bg-white  p-4 px-0 rounded-2xl transition-transform h-auto duration-300 max-h-[90vh] overflow-y-scroll custom-scroll">
             <div className="flex border-b pb-3">
-              <div className="font-istok font-extrabold text-2xl text-gray-800 px-6 mr-10 xsm:mr-0">
+              <div className="font-istok  text-lg sm:text-2xl  px-6 mr-10 xsm:mr-0">
                 Creating Custom Test
               </div>
               <button
                 onClick={() => setIsTestCreatorOpen(false)}
-                className="absolute top-4 right-4 p-2 pb-[1.4px] pt-0 px-2  z-20 border border-gray-600 rounded-md text-xl hover:bg-slate-100  text-gray-700 hover:text-gray-900 cursor-pointer"
+                className="absolute top-4 right-4 p-2 pb-[1.4px] pt-0 px-2  z-20 border  rounded-md text-xl hover:bg-slate-100  text-gray-700 hover:text-gray-900 cursor-pointer"
               >
                 &times;
               </button>

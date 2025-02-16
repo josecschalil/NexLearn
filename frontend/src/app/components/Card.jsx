@@ -14,10 +14,10 @@ const InfoCard = ({ title, description, icon, buttonText, link }) => {
           </span>
         </div>
         <div>
-          <h3 className="text-[14px] xs:text-lg font-bold font-inter text-gray-800">
+          <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
             {title}
           </h3>
-          <p className="text-[12px] xs:text-sm text-gray-500 mt-1">
+          <p className="text-[12px] xs:text-sm sm:text-sm text-gray-500 mt-1">
             {description}
           </p>
         </div>
