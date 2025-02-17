@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import api from "../services/api";
 import InfoCard from "../components/Card";
+import useAuthentication from "@/hooks/useAuthentication";
 const CourseList = () => {
-  const [coursesData, setCoursesData] = useState([]);
-  const [progressArray, setProgressArray] = useState([]);
+  const { isAuthenticated, userdetails } = useAuthentication();
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +58,7 @@ const CourseList = () => {
 
   return (
     <div>
-      {userId ? (
+      {userdetails.is_staff? (
         <div className="min-h-screen md:py-8 font-jakarta md:px-6  overflow-x-hidden">
           <div className="max-w-6xl mx-auto flex space-x-6 ">
             <div className="flex-1 bg-white py-8 rounded-xl p-6">
