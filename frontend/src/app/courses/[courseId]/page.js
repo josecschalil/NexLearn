@@ -4,8 +4,6 @@ import Link from "next/link";
 import ProductCard from "@/app/components/productCard";
 import { useParams, useRouter } from "next/navigation";
 import api from "../../services/api";
-import { toast } from "sonner";
-import { Router } from "lucide-react";
 
 
 const CoursePage = () => {
