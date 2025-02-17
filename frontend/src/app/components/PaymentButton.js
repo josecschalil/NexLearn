@@ -2,11 +2,14 @@
 import axios from "axios";
 import { toast} from "sonner";
 import api from "../services/api";
+import { useRouter } from "next/navigation";
 
 const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
   if (!course || !userId) {
     return null;
   }
+
+    const router = useRouter();
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -29,7 +32,8 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
       const data = { user: userId, course: course.id };
       const response = await api.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/userCourses/`, data);
       console.log("Course added to user successfully:", response.data);
-      toast.success("Course added to your account successfully!");
+      router.push(`/student-portal`)
+      
     } catch (error) {
       console.error("Error adding course to user:", error.response?.data || error.message);
       toast.error("Failed to add course. Please contact support.");

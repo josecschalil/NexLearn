@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import api from "../../services/api";
+import api from "../../../services/api";
 import DualListBox from "react-dual-listbox";
 import "react-dual-listbox/lib/react-dual-listbox.css";
-import RenderWithLatex from "../../components/RenderWithLatex";
+import RenderWithLatex from "../../../components/RenderWithLatex";
 
 const ExamQuestionsPage = () => {
     const { examId } = useParams();

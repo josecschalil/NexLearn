@@ -4,11 +4,9 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
 import useAuthentication from "@/hooks/useAuthentication";
-import Router from "next/navigation";
-
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const Navbar = () => {
-
-
   const pathname = usePathname();
   const [user_id, setUserId] = useState(null);
   const { isAuthenticated, userDetails } = useAuthentication();
@@ -18,6 +16,21 @@ const Navbar = () => {
   const [isRotated, setIsRotated] = useState(false);
   const navbarRef = useRef(null);
   const linksRef = useRef([]);
+
+  const router = useRouter();
+
+  const handleProfileRedirect = () => {
+    const userId = localStorage.getItem("user_id");
+
+    if (userId) {
+      router.push(`/profile/${userId}`);
+    } else {
+      toast.error("Log in to access your Profile.");
+    }
+    setMenuOpen(false);
+    setDropdownOpen(false);
+    setIsRotated(false);
+  };
 
   useEffect(() => {
     gsap.from(navbarRef.current, {
@@ -84,10 +97,28 @@ const Navbar = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_id");
-    
+  
+    // Navigate to home page and refresh
+    window.location.replace('/');  // This will navigate to the home page and refresh
   };
 
-  const isTestPage = pathname.startsWith("/tests/custom/exams/") || pathname.startsWith("/tests/proctored/exams/") ;
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+        setIsRotated(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside); 
+    };
+  }, []);
+
+  const isTestPage =
+    pathname.startsWith("/tests/custom/exams/") ||
+    pathname.startsWith("/tests/proctored/exams/");
 
   if (isTestPage) return null;
 
@@ -159,7 +190,7 @@ const Navbar = () => {
                   >
                     {userDetails?.name}
                     <span
-                      className={`transform ${isRotated ? "rotate-180" : ""}`}
+                      className={`transform transition-all duration-200 ${isRotated ? "rotate-180" : ""}`}
                     >
                       {/* Down arrow icon */}
                       <svg
@@ -179,26 +210,28 @@ const Navbar = () => {
                     </span>
                   </div>
 
-                  {/* Dropdown Menu */}
                   {dropdownOpen && (
                     <div
                       className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10"
                       ref={dropdownRef}
                     >
                       <ul className="text-sm text-gray-800">
-                        <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                          <Link href={`/profile/${user_id}`}>Profile</Link>
-                        </li>
-                        <Link href={`/`}>
+                        <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"  onClick={handleProfileRedirect}>
                           <button
-                            onClick={() => {
+                          >
+                            PROFILE
+                          </button>
+                        </li>
+                        <li  onClick={() => {
                               handleLogout();
-                            }}
+                            }}>
+                          <button
+                           
                             className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                           >
                             SIGN OUT
                           </button>
-                        </Link>
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -238,16 +271,20 @@ const Navbar = () => {
                 {!isAuthenticated ? (
                   <a href="/signin">SIGN IN</a>
                 ) : (
-                  <a href="/"><button onClick={handleLogout}>SIGN OUT</button></a>
+                  <a href="/">
+                    <button onClick={handleLogout}>SIGN OUT</button>
+                  </a>
                 )}
               </li>
 
               <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
                 <a href="/signup">Register</a>
               </li>
-              <li className="pb-2 mb-4">
-                <a href={`/profile/${user_id}`}>Profile</a>
-              </li>
+              
+               <li className="pb-2 mb-4">
+               <a   onClick={handleProfileRedirect}>Profile</a>
+             </li>
+             
             </ul>
           </div>
         </div>

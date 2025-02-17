@@ -58,19 +58,18 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://api.jeeneetpulse.com",
-    "https://jeeneetpulse.com",
-    "https://www.jeeneetpulse.com",
+    "http://localhost",
+    "http://127.0.0.1"
 ]
 
 # CORS Allowed Origins - Must have full URLs
 CORS_ALLOWED_ORIGINS = [
-    "https://api.jeeneetpulse.com",
-    "https://jeeneetpulse.com",
-    "https://www.jeeneetpulse.com",
+    "http://localhost:3000",  # If frontend runs on a different port
+    "http://127.0.0.1:3000"
 ]
-CORS_ALLOW_ALL_ORIGINS = True  # Required for Django-CORS-Headers
 
+CORS_ALLOW_ALL_ORIGINS = False  # Restrict to specific origins for security
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies/auth headers in requests
 
 # Authentication & Permissions
 REST_FRAMEWORK = {
@@ -151,7 +150,7 @@ DATABASES = {
         "NAME": "jeeneetpulse",
         "USER": "postgres",
         "PASSWORD": "1234",
-        "HOST": "db",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }

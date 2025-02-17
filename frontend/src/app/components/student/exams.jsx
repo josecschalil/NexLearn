@@ -7,99 +7,13 @@ const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const Exams = ({ id, setIsTestCreatorOpen }) => {
 
   const userId = localStorage.getItem("user_id");
-  const [examMetadata, setExamMetadata] = useState([]);
   const [isTestCreatorOpenInside, setIsTestCreatorOpenInside] = useState(false);
-  const [exams, setExams] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const createtesttoggler = () => {
     const newState = !isTestCreatorOpenInside;
     setIsTestCreatorOpenInside(newState);
     setIsTestCreatorOpen(newState); 
   };
-
-  // useEffect(() => {
-  //   const fetchExams = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/exams/?course_id=${id}`
-  //       ); // Change this URL as per your actual endpoint
-  //       setExams(response.data);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       setError("Failed to fetch exams.");
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchExams();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchAllExamMetaData = async () => {
-  //     if (!userId) return;
-
-  //     try {
-  //       const metadataPromises = exams.map((exam) =>
-  //         axios.get(
-  //           `http://127.0.0.1:8000/api/exam-data/filter/?user=${userId}&exam_id=${exam.exam_id}`
-  //         )
-  //       );
-
-  //       const metadataResponses = await Promise.all(metadataPromises);
-
-  //       const metadata = metadataResponses.map((response, index) => {
-  //         const examData = response.data[0];
-  //         return {
-  //           examId: exams[index].exam_id,
-  //           is_active: examData ? examData.is_active : false,
-  //           is_submitted: examData ? examData.is_submitted : false,
-  //         };
-  //       });
-
-  //       setExamMetadata(metadata);
-  //       console.log("Fetched Exam Metadata: ", metadata);
-  //     } catch (error) {
-  //       console.error("Error fetching exam metadata:", error);
-  //     }
-  //   };
-
-  //   if (exams.length > 0) {
-  //     fetchAllExamMetaData();
-  //   }
-  // }, [exams, userId]);
-
-  // const handleStartTest = async (examId) => {
-  //   if (!userId || !examId) {
-  //     console.error("Missing user_id or examId");
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     exam_id: examId,
-  //     current_question_index: 1,
-  //     answers: {},
-  //     visited: [],
-  //     marked_for_review: [],
-  //     time_remaining: 1800,
-  //     is_timer_running: false,
-  //     is_active: true,
-  //     attempt_number: 1,
-  //     user: userId,
-  //     is_submitted: false,
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       "http://127.0.0.1:8000/api/exam-data/",
-  //       payload
-  //     );
-  //     console.log("Test started successfully:", response.data);
-  //   } catch (error) {
-  //     console.error("Error starting the test:", error);
-  //   }
-  // };
 
   return (
     <div className="relative ">

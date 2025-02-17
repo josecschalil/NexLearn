@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import api from "../services/api";
+import api from "@/app/services/api";
 import { useParams, useRouter } from "next/navigation";
 const AdminExamPage = () => {
   const [exams, setExams] = useState([]);
@@ -71,7 +71,7 @@ const AdminExamPage = () => {
 
   const handleFeed =async (examId) => {
 
-    router.push(`/exam-question-connect/${examId}`);
+    router.push(`/admin/create-exam/${examId}`);
    
   };
   const handleDelete = async (examId) => {
@@ -145,11 +145,16 @@ const AdminExamPage = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen font-inter">
-      <h1 className="text-4xl font-bold mb-6 text-teal-800 text-center">Admin - Manage Exams</h1>
-
-      <div className="bg-white p-6 shadow-md rounded-lg mb-6">
-        <h2 className="text-2xl font-bold mb-4">{editExamId ? "Edit Exam" : "Create New Exam"}</h2>
+    <div className="min-h-screen md:py-8 font-jakarta md:px-6  overflow-x-hidden">
+    <div className="max-w-6xl mx-auto flex space-x-6 ">
+      <div className="flex-1 bg-white py-8 rounded-xl p-6">
+      <h3 className="text-xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
+          Admin Panel
+        </h3>
+        <hr className="mt-2 -mr-[40vw] mb-6 md:mb-8"></hr>
+  
+      <div className="mt-4 md:border w-fit bg-white md:p-6 md:shadow-md md:rounded-lg mb-6">
+        <h2 className="md:text-2xl font-bold mb-4">{editExamId ? "Edit Exam" : "Create New Exam"}</h2>
         <input
           type="text"
           placeholder="Exam Title"
@@ -177,7 +182,7 @@ const AdminExamPage = () => {
 
         <div className="mb-2">
           <label className="font-semibold">Select Exam Type:</label>
-          <div className="flex space-x-4 mt-2">
+          <div className="flex md:flex-row flex-col md:space-x-4 mt-2">
             {["fullcourse", "fullsubject", "fullchapter"].map((type) => (
               <label key={type} className="flex items-center space-x-2">
                 <input
@@ -286,54 +291,56 @@ const AdminExamPage = () => {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-teal-900 text-white">
-              <th className="p-4 text-left">Title</th>
-              <th className="p-4 text-center">Time</th>
-              <th className="p-4 text-center">Difficulty</th>
-              <th className="p-4 text-center">Exam Type</th>
-              <th className="p-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {exams.map((exam) => (
-              <tr key={exam.exam_id} className="border-b">
-                <td className="p-4 text-left">{exam.exam_title}</td>
-                <td className="p-4 text-center">{exam.time} min</td>
-                <td className="p-4 text-center">{exam.diffculty}</td>
-                <td className="p-4 text-center">
-                  {exam.is_fullCourseExam
-                    ? "Full Course"
-                    : exam.is_fullSubjectExam
-                    ? "Full Subject"
-                    : "Full Chapter"}
-                </td>
-                <td className="p-4 text-center">
+        <div className="w-full bg-white sm:shadow-md sm:rounded-lg overflow-hidden">
+        <div className="bg-teal-900 text-white grid-cols-5 p-4 hidden sm:grid font-bold">
+          <div>Title</div>
+          <div className="text-center">Time</div>
+          <div className="text-center">Difficulty</div>
+          <div className="text-center">Exam Type</div>
+          <div className="text-center">Actions</div>
+        </div>
+      
+        <div className="overflow-x-auto">
+          {exams.map((exam) => (
+            <div key={exam.exam_id} className="xs:text-sm max-xs:text-sm flex gap-2 flex-col sm:grid sm:grid-cols-5 border-b py-4 sm:p-4 text-left">
+              <div>{exam.exam_title}</div>
+              <div className="md:text-center">{exam.time} min</div>
+              <div className="md:text-center">Level : {exam.diffculty}</div>
+              <div className="md:text-center"> 
+                {exam.is_fullCourseExam
+                  ? "Full Course"
+                  : exam.is_fullSubjectExam
+                  ? "Full Subject"
+                  : "Full Chapter"}
+              </div>
+              <div className="">
                 <button
-                    onClick={() => handleFeed(exam.exam_id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                  >
-                    Feed
-                  </button>
-                  <button
-                    onClick={() => handleEdit(exam)}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(exam.exam_id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  onClick={() => handleFeed(exam.exam_id)}
+                  className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                >
+                  Feed
+                </button>
+                <button
+                  onClick={() => handleEdit(exam)}
+                  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(exam.exam_id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
       )}
+    </div>
+    </div>
     </div>
   );
 };

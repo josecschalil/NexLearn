@@ -226,4 +226,4 @@ class UserProfileView(APIView):
 
     def get(self, request):
         user = request.user
-        return Response({"name": user.name, "email": user.email, })
+        return Response({"name": user.name, "email": user.email, "is_superuser":user.is_superuser, "is_staff":user.is_staff })
