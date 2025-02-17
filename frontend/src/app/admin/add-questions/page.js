@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
-import { toast } from 'sonner';
+import useAdminRedirect from "@/hooks/useAdminRedirect";
 
 const BulkQuestionUpload = () => {
   const [courses, setCourses] = useState([]);
@@ -13,6 +13,23 @@ const BulkQuestionUpload = () => {
   const [questionsJson, setQuestionsJson] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const { isAuthenticated, userDetails, loading } = useAdminRedirect({
+    redirectLink: "/",
+    toastMessage: "Login from an admin account to access admin features."
+  });
+
+  if (loading) {
+    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!userDetails.is_staff) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <p>log in as admin to access this page.</p>
+      </div>
+    );
+  }
 
 
   useEffect(() => {

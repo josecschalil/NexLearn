@@ -7,7 +7,6 @@ const useFetchUserDetails = () => {
   const fetchUserDetails = async () => {
     try {
       const response = await api.get("/api/user"); 
-      console.log(response.data);
       setUserDetails(response.data);
     } catch (error) {
       console.error("Failed to fetch user details:", error);
