@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import api from "@/app/services/api";
 import { useParams, useRouter } from "next/navigation";
+import useAdminRedirect from "@/hooks/useAdminRedirect";
 const AdminExamPage = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,24 @@ const AdminExamPage = () => {
     subject: "",
     chapter: ""
   });
+
+
+  const { isAuthenticated, userDetails, loading2 } = useAdminRedirect({
+    redirectLink: "/",
+    toastMessage: "Login from an admin account to access admin features."
+  });
+
+  if (loading2) {
+    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!userDetails?.is_staff) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <p>log as admin to access this page.</p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchExams();
