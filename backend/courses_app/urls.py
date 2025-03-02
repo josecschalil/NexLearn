@@ -1,11 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import create_order,verify_payment
-from .views import CourseViewSet, SubjectViewSet, FeaturedQuestionViewSet,ChapterViewSet, LectureVideoViewSet,ExamQuestionViewSet, ChapterQuestionViewSet, ExamViewSet, QuestionViewSet, CourseAddViewSet, bulk_create_chapters,UserExamDataViewSet,ChapterQuestionsView,LectureNoteViewSet,BulkQuestionUploadView,ChapterListView,CourseChaptersView,get_questions,SubjectChaptersView,FeaturedNotesView,FeaturedVideoView,FeaturedExamView
+from .views import CourseViewSet, SubjectViewSet, ConceptViewSet,FeaturedQuestionViewSet,ChapterViewSet, LectureVideoViewSet,ExamQuestionViewSet, ChapterQuestionViewSet, ExamViewSet, QuestionViewSet, CourseAddViewSet, bulk_create_chapters,UserExamDataViewSet,ChapterQuestionsView,LectureNoteViewSet,BulkQuestionUploadView,ChapterListView,CourseChaptersView,get_questions,SubjectChaptersView,FeaturedNotesView,FeaturedVideoView,FeaturedExamView
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet)
 router.register(r'subjects', SubjectViewSet)
+router.register(r'concepts', ConceptViewSet)
 router.register(r'chapters', ChapterViewSet) #question array displayed from chapterquestions
 router.register(r'lecture-videos', LectureVideoViewSet)
 router.register(r'lecture-notes', LectureNoteViewSet)

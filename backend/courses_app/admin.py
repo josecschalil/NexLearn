@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Course, Subject, Chapter, LectureVideo, LectureNote,
     Exam, Question, UserCourseData, UserExamData,
-    ChapterQuestion, ExamQuestion
+    ChapterQuestion, ExamQuestion,Concept
 )
 
 
@@ -12,6 +12,13 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ('title', 'course_type', 'description')
     list_filter = ('course_type',)
     ordering = ('title',)
+    
+@admin.register(Concept)
+class ConceptAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code')
+    search_fields = ('name', 'code')
+    list_filter = ('name',)
+    ordering = ('name',)
 
 
 @admin.register(Subject)

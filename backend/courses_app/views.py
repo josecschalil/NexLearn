@@ -2,9 +2,9 @@ from rest_framework import viewsets,status
 from .models import (
     Course, Subject, Chapter, LectureVideo,
      Exam, Question,UserCourseData,UserExamData,
-     ExamQuestion,ChapterQuestion,LectureNote )
+     ExamQuestion,ChapterQuestion,LectureNote,Concept )
 from .serializers import (
-    CourseSerializer, SubjectSerializer,ChapterSerializer,
+    CourseSerializer, SubjectSerializer,ChapterSerializer,ConceptSerializer,
     LectureVideoSerializer, ExamSerializer, QuestionSerializer,
     UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,
     LectureNoteSerializer,BulkExamQuestionSerializer )
@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.views import APIView
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 import math
 import random
 from rest_framework.views import APIView
@@ -32,11 +33,12 @@ from django.contrib.auth import get_user_model
 
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
-    permission_classes = [AllowAny,IsAdminUser]
+    permission_classes = [AllowAny]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["chapters"] = Chapter.objects.values("id", "name") 
+        context["concept_codes"] = Concept.objects.values("code", "name")
 
         return context
 
@@ -130,6 +132,18 @@ def get_all_chapters(request):
     serializer = ChapterSerializer(chapters, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+class ConceptViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = Concept.objects.all()
+    serializer_class = ConceptSerializer 
+    @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
+    def get_concepts_by_chapter(self, request, chapter_id=None):
+        chapter = get_object_or_404(Chapter, id=chapter_id)
+        concepts = Concept.objects.filter(chapters__id=chapter_id)
+        serializer = self.get_serializer(concepts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Course.objects.all()
@@ -140,7 +154,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['subject_id']  
+    filterset_fields = ['subject_id','concepts']  
     search_fields = ['name', 'type']
     ordering_fields = ['name', 'type']
     @action(detail=False, methods=['get'], url_path='subject/(?P<subject_id>[^/.]+)')
@@ -195,14 +209,15 @@ class ExamViewSet(viewsets.ModelViewSet):
     
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    def get_permissions(self):
+    # def get_permissions(self):
 
-        if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
-            return [AllowAny()]
-        return [IsAdminUser()]
+    #     if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
+    #         return [AllowAny()]
+    #     return [IsAdminUser()]
 
     @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
     def get_questions_by_chapter(self, request, chapter_id=None):

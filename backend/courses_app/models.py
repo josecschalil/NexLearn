@@ -42,6 +42,7 @@ class Subject(models.Model):
 class Chapter(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)
     name = models.CharField(max_length=255)
+    concepts = models.ManyToManyField("Concept", related_name="chapters")
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     questions = models.ManyToManyField('Question', through='ChapterQuestion', related_name='chapters_related')  
     #you cant name it chapters here - error will come. since its being there in questions MODEL as well.
@@ -104,6 +105,13 @@ class Exam(models.Model):
 
     def __str__(self):
         return f"{self.exam_title}"
+    
+class Concept(models.Model):
+    code = models.CharField(max_length=20, unique=True) 
+    name = models.CharField(max_length=255)  
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
 
 class Question(models.Model):
     LEVEL_CHOICES = [
@@ -114,6 +122,7 @@ class Question(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapters = models.ManyToManyField('Chapter', through='ChapterQuestion', related_name='chapters')
     exams = models.ManyToManyField('Exam', through='ExamQuestion', related_name='exams')
+    concepts = models.ManyToManyField("Concept", related_name="questions")
 
 
     question_text = models.TextField(blank=True, null=True)
