@@ -376,41 +376,7 @@ class UserExamDataViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['put'], url_path='update')
-    def update_exam_data(self, request):
-    
-        user_id = request.query_params.get('user', None)
-        exam_id = request.query_params.get('exam_id', None)
 
-        if not user_id or not exam_id:
-            return Response(
-                {"detail": "Both 'user' and 'exam_id' must be provided as query parameters."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            instance = UserExamData.objects.get(user=user_id, exam_id=exam_id)
-        except UserExamData.DoesNotExist:
-            return Response(
-                {"detail": "UserExamData with the given user and exam_id does not exist."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        update_data = request.data.copy()
-
-        
-        update_data.pop('user', None)
-        update_data.pop('exam_id', None)
-
-
-        serializer = self.get_serializer(instance, data=update_data, partial=True)
-
-        if serializer.is_valid():
-         
-            serializer.save()
-            return Response(serializer.data)  
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()

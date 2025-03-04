@@ -231,7 +231,7 @@ const BulkQuestionUpload = () => {
                   id="questionsJson"
                   value={questionsJson}
                   onChange={(e) => setQuestionsJson(e.target.value)}
-                  rows="8"
+                  rows="4"
                   placeholder='[{ "question": "Sample question?", "answer": "Sample answer" }, ...]'
                   required
                   className="w-full my-2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
