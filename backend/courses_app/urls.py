@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import create_order,verify_payment
 from .views import generate_test_analysis, get_test_analysis
-from .views import CourseViewSet, SubjectViewSet, ConceptViewSet,UserWeakConceptViewSet,FeaturedQuestionViewSet,ChapterViewSet, LectureVideoViewSet,ExamQuestionViewSet, ChapterQuestionViewSet, ExamViewSet, QuestionViewSet, CourseAddViewSet, bulk_create_chapters,UserExamDataViewSet,ChapterQuestionsView,LectureNoteViewSet,BulkQuestionUploadView,ChapterListView,CourseChaptersView,get_questions,SubjectChaptersView,FeaturedNotesView,FeaturedVideoView,FeaturedExamView
+from .views import CourseViewSet, SubjectViewSet, ConceptViewSet,UserWeakConceptViewSet,CuratedQuestionsView,FeaturedQuestionViewSet,ChapterViewSet, LectureVideoViewSet,ExamQuestionViewSet, ChapterQuestionViewSet, ExamViewSet, QuestionViewSet, CourseAddViewSet, bulk_create_chapters,UserExamDataViewSet,ChapterQuestionsView,LectureNoteViewSet,BulkQuestionUploadView,ChapterListView,CourseChaptersView,get_questions,SubjectChaptersView,FeaturedNotesView,FeaturedVideoView,FeaturedExamView
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet)
@@ -28,6 +28,7 @@ urlpatterns = [
     path('upload-questions-chapter/', BulkQuestionUploadView.as_view(), name='upload-questions'),
     path('chapters/bulk/', bulk_create_chapters, name='bulk-create-chapters'),  
     path('chapter-questions/', ChapterQuestionsView.as_view(), name='chapter-questions'),
+    path('curated-questions/', CuratedQuestionsView.as_view(), name='chapter-questions') ,#main algorithm.
     path('course/<uuid:course_id>/chapters/', CourseChaptersView.as_view(), name='course_chapters'),
     path('subject/<uuid:subject_id>/chapters/', SubjectChaptersView.as_view(), name='subject_chapters'),
     path("api/get-questions/", get_questions, name="get-questions"),

@@ -28,10 +28,7 @@ const TimeSelector = ({ time, setTime }) => {
           <div className="flex items-center space-x-3">
             <small className="text">{t.icon}</small>
             <div className="text-left">
-              <small className="block text-sm ">
-                {t.value} mins{" "}
-              </small>
- 
+              <small className="block text-sm ">{t.value} mins </small>
             </div>
           </div>
         </button>
@@ -173,24 +170,28 @@ const ChapterSelector = ({
             }`}
             onClick={() => toggleSubject(subject.id)}
           >
-            <h3 className="max-xs:text-sm text-gray-800 mr-2">{subject.name}</h3>
+            <h3 className="max-xs:text-sm text-gray-800 mr-2">
+              {subject.name}
+            </h3>
             <span
-                      className={`transform transition-all duration-300 ${  activeSubjectId === subject.id? "rotate-180" : ""}`}
-                    >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              className="transition-transform duration-300"
+              className={`transform transition-all duration-300 ${
+                activeSubjectId === subject.id ? "rotate-180" : ""
+              }`}
             >
-              <path
-                d="M7 10l5 5 5-5z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                className="transition-transform duration-300"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
             </span>
           </div>
         ))}
@@ -233,7 +234,7 @@ const ChapterSelector = ({
 
 const ModalTimeQuestions = ({
   examname,
-  setExamName, 
+  setExamName,
   onNext,
   setNumQuestions,
   setTime,
@@ -242,13 +243,15 @@ const ModalTimeQuestions = ({
   time,
   difficulty,
 }) => {
-
-  const isNextEnabled = examname?.trim() !== " " && time && numQuestions && difficulty;
+  const isNextEnabled =
+    examname?.trim() !== " " && time && numQuestions && difficulty;
 
   return (
     <div className="px-2 modal w-fit rounded-lg  mx-auto font-istok  font-semibold">
       <div className="mb-4">
-        <label className="xs:text-lg  text-left block sm:mb-2">Exam Name:</label>
+        <label className="xs:text-lg  text-left block sm:mb-2">
+          Exam Name:
+        </label>
         <input
           type="text"
           value={examname}
@@ -265,17 +268,25 @@ const ModalTimeQuestions = ({
       <TimeSelector time={time} setTime={setTime} />
 
       <h2 className="xs:text-lg  text-left mb-4">Set Number of Questions</h2>
-      <QuestionSelector numQuestions={numQuestions} setNumQuestions={setNumQuestions} />
+      <QuestionSelector
+        numQuestions={numQuestions}
+        setNumQuestions={setNumQuestions}
+      />
 
       <h2 className="xs:text-lg  text-left mb-4">Set Difficulty</h2>
-      <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
+      <DifficultySelector
+        difficulty={difficulty}
+        setDifficulty={setDifficulty}
+      />
 
       <div className="text-left mt-6">
         <button
           disabled={!isNextEnabled}
           onClick={onNext}
           className={`px-4 py-1 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-full tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300${
-            isNextEnabled ? "hover:border-gray-500" : "text-gray-500 cursor-not-allowed"
+            isNextEnabled
+              ? "hover:border-gray-500"
+              : "text-gray-500 cursor-not-allowed"
           }`}
         >
           Next
@@ -285,7 +296,6 @@ const ModalTimeQuestions = ({
   );
 };
 
-
 const ModalSubjects = ({
   onNext,
   onBack,
@@ -294,12 +304,67 @@ const ModalSubjects = ({
   selectedChapters,
   setSelectedChapters,
   courseid,
+  setTestType,
 }) => {
   const isNextEnabled = selectedChapters.length > 0;
+  const [selectedTestType, setSelectedTestType] = useState(null);
+  const handleTestTypeSelection = (type) => {
+    setTestType(type);
+    setSelectedTestType(type);
+  };
 
   return (
-    <div className="px-2 modal bg-white rounded-lg w-full mx-auto font-istok font-semibold  font-sem ">
-      <h2 className="xs:text-lg   text-left mb-4">Select Chapters</h2>
+    <div className="px-6 py-4 modal bg-white rounded-lg w-full mx-auto font-istok font-semibold font-sem">
+ <div
+        onClick={() => handleTestTypeSelection(1)}
+        className={`flex transition-all duration-100 hover:shadow hover:border-gray-500 rounded-2xl items-center justify-between p-4 border mb-4 ${
+          selectedTestType === 1 ? 'border-teal-500' : 'border-gray-300'
+        }`}
+      >
+        <div className="flex items-center space-x-4">
+          <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
+            <span role="img" aria-label="icon" className="text-xl">
+              🎲 {/* Random icon */}
+            </span>
+          </div>
+          <div>
+            <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
+              Random Choice Questions
+            </h3>
+            <p className="text-[12px] hidden sm:block xs:text-sm font-inter font-normal sm:text-sm text-gray-500 mt-1">
+              Questions will be randomly allocated based on the selected chapters.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        onClick={() => handleTestTypeSelection(2)}
+        className={`flex transition-all duration-100 hover:shadow hover:border-gray-500 rounded-2xl items-center justify-between p-4 border mb-4 ${
+          selectedTestType === 2 ? 'border-teal-500' : 'border-gray-300'
+        }`}
+      >
+        <div className="flex items-center space-x-4">
+          <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
+            <span role="img" aria-label="icon" className="text-xl">
+              🧠
+            </span>
+          </div>
+          <div>
+            <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
+              Curated Questions
+            </h3>
+            <p className="text-[12px] xs:text-sm hidden sm:block font-inter font-normal sm:text-sm text-gray-500 mt-1">
+              Curated and designed questions based on your weak concepts from the selected chapters.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2 className="xs:text-xl text-left mb-6 font-bold text-gray-800">
+        Select Chapters
+      </h2>
+
       <ChapterSelector
         setSubjects={setSubjects}
         subjects={subjects}
@@ -307,10 +372,11 @@ const ModalSubjects = ({
         setSelectedChapters={setSelectedChapters}
         courseid={courseid}
       />
-      <div className="flex justify-between mt-4">
+
+      <div className="flex justify-between mt-6">
         <button
           onClick={onBack}
-          className="border px-4 sm:px-6 py-2 max-xs:text-sm  rounded-lg  transition-all text-gray-700 hover:border-gray-900"
+          className="border px-6 py-3 text-gray-700 rounded-lg transition-all hover:border-gray-900 focus:outline-none"
         >
           Back
         </button>
@@ -318,11 +384,11 @@ const ModalSubjects = ({
         <button
           onClick={onNext}
           disabled={!isNextEnabled}
-          className={`border px-4 sm:px-6 py-2 max-xs:text-sm  rounded-lg  transition-all ${
+          className={`border px-6 py-3 text-white rounded-lg transition-all ${
             isNextEnabled
-              ? "hover:border-gray-500"
-              : "text-gray-500 cursor-not-allowed"
-          }`}
+              ? "bg-indigo-500 hover:bg-indigo-600"
+              : "bg-gray-400 cursor-not-allowed"
+          } focus:outline-none`}
         >
           Submit
         </button>
@@ -338,9 +404,10 @@ const TestCreator = ({ id }) => {
   const [showModal, setShowModal] = useState(1);
   const [numQuestions, setNumQuestions] = useState(null);
   const [time, setTime] = useState(null);
-  const [difficulty, setDifficulty] = useState(null); 
+  const [difficulty, setDifficulty] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [examname, setExamName] = useState("");
+  const [testType, setTestType] = useState(null);
 
   const [selectedChapters, setSelectedChapters] = useState([]);
 
@@ -358,8 +425,15 @@ const TestCreator = ({ id }) => {
         .map((chapterId) => `chapter_ids=${encodeURIComponent(chapterId)}`)
         .join("&");
 
-      const questionApiUrl = `/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
-      //console.log(questionApiUrl);
+      let questionApiUrl = "";
+
+      if (testType === 2) {
+        questionApiUrl = `/api/curated-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
+      } else if (testType === 1) {
+        questionApiUrl = `/api/chapter-questions?difficulty=${difficulty}&total_questions=${numQuestions}&${chapterQueryString}`;
+      }
+
+      console.log(questionApiUrl);
       const questionResponse = await api.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
 
@@ -423,7 +497,6 @@ const TestCreator = ({ id }) => {
     } catch (error) {
       console.error("Error during exam creation process:", error);
     }
-
   };
 
   return (
@@ -450,6 +523,7 @@ const TestCreator = ({ id }) => {
             selectedChapters={selectedChapters}
             setSelectedChapters={setSelectedChapters}
             courseid={id}
+            setTestType={setTestType}
           />
         )}
       </>

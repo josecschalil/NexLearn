@@ -132,7 +132,7 @@ const AnalysisPage = () => {
             Here’s a quick overview of your performance in this test.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 animate-fade-in">
+          <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 animate-fade-in">
             <div className="text-sm sm:text-lg p-3 border border-blue-300 bg-white rounded-lg shadow-md text-center text-blue-700 font-medium">
               📋 Total Questions: {questions.length}
             </div>

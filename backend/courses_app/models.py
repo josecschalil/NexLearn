@@ -268,3 +268,5 @@ class UserWeakConcept(models.Model):
     def update_concept(self, concept_id, weight_increment=1):
         self.concepts[str(concept_id)] = self.concepts.get(str(concept_id), 0) + weight_increment
         self.save()
+
+

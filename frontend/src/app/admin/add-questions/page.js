@@ -109,7 +109,7 @@ const BulkQuestionUpload = () => {
   };
 
   return (
-    <div className="h-[88vh] flex items-center justify-center">
+    <div className="sm:h-[88vh] flex items-center justify-center">
       {loading ? (
         <div className="h-screen flex items-center justify-center">
           Loading...

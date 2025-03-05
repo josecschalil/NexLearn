@@ -696,3 +696,103 @@ class UserWeakConceptViewSet(viewsets.ModelViewSet):
     queryset = UserWeakConcept.objects.all()
     serializer_class = UserWeakConceptSerializer
     permission_classes = [AllowAny]
+    
+
+import random
+from rest_framework.response import Response
+from rest_framework import status
+
+class CuratedQuestionsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user = request.user
+        chapter_ids = request.query_params.getlist("chapter_ids")
+        difficulty = request.query_params.get("difficulty")
+        total_questions = request.query_params.get("total_questions")
+
+        if not chapter_ids or difficulty is None:
+            return Response(
+                {"error": "chapter_ids and difficulty are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        total_questions = int(total_questions) if total_questions else None
+
+        
+        user_weak_concepts = UserWeakConcept.objects.filter(user=user).first()
+        weak_concepts = user_weak_concepts.concepts if user_weak_concepts else {}
+
+        
+        chapter_concept_map = {
+            str(chapter.id): set(chapter.concepts.values_list("id", flat=True))
+            for chapter in Chapter.objects.filter(id__in=chapter_ids)
+        }
+
+        
+        relevant_weak_concepts = {
+            int(concept_id): weight
+            for concept_id, weight in weak_concepts.items()
+            if any(int(concept_id) in concepts for concepts in chapter_concept_map.values())
+        }
+
+        
+        chapter_question_map = {
+            chapter_id: list(
+                Question.objects.filter(
+                    id__in=ChapterQuestion.objects.filter(chapter_id=chapter_id)
+                    .values_list("question_id", flat=True),
+                    level=difficulty,
+                )
+            )
+            for chapter_id in chapter_ids
+        }
+
+        
+        if total_questions is None:
+            selected_questions = [
+                q for qs in chapter_question_map.values() for q in qs
+            ]
+        else:
+            weak_concept_question_count = int(0.4 * total_questions) 
+            remaining_question_count = total_questions - weak_concept_question_count
+
+            weak_concept_questions = []
+            used_weak_concepts = set() 
+
+            for chapter_id, concepts in chapter_concept_map.items():
+                for concept_id in concepts:
+                    if concept_id in relevant_weak_concepts:
+                        concept_questions = [
+                            q
+                            for q in chapter_question_map[chapter_id]
+                            if concept_id in q.concepts.values_list("id", flat=True)
+                        ]
+                        weak_concept_questions.extend(concept_questions)
+                        if concept_questions:
+                            used_weak_concepts.add(concept_id) 
+
+            random.shuffle(weak_concept_questions)
+            selected_questions = weak_concept_questions[:weak_concept_question_count]
+
+            
+            remaining_questions = [
+                q
+                for qs in chapter_question_map.values()
+                for q in qs
+                if q not in selected_questions
+            ]
+
+            random.shuffle(remaining_questions)
+            selected_questions.extend(remaining_questions[:remaining_question_count])
+
+            
+            if user_weak_concepts:
+                for concept_id in used_weak_concepts:
+                    if user_weak_concepts.concepts.get(str(concept_id), 0) > 0:
+                        user_weak_concepts.concepts[str(concept_id)] -= 1
+
+                user_weak_concepts.save()
+
+        serializer = QuestionSerializer(selected_questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
