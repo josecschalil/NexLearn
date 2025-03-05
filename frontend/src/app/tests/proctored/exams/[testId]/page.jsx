@@ -138,7 +138,7 @@ const TestPage = () => {
     answers,
     visited,
     markedForReview,
-
+    timeRemaining,
     isTimerRunning,
     testId,
     isInitialized,
@@ -148,12 +148,27 @@ const TestPage = () => {
   useEffect(() => {
     if (isInitialized && !isSubmitted) {
       const timer = setInterval(() => {
-        setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+        setTimeRemaining((prevTime) => {
+          if (prevTime <= 50) {
+            clearInterval(timer);
+            setIsSubmitted(true); 
+            return 0;
+          }
+          return prevTime - 50;
+        });
       }, 1000);
 
       return () => clearInterval(timer);
     }
   }, [isInitialized, isSubmitted]);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      saveData();
+      toast.success("Exam Submitted, Calcualting Score and Analysis.");
+      router.push(`/analysis/${testId}`);
+    }
+  }, [isSubmitted, router, testId]);
 
   const AttemptLater = () => {
     saveData();

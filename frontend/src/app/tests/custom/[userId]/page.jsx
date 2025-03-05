@@ -171,7 +171,7 @@ const TestsPage = () => {
                           </button>
                         </Link>
                       ) : (
-                        <Link href={`/tests/proctored/exams/${exam.exam_id}`}>
+                        <Link href={`/tests/custom/exams/${exam.exam_id}`}>
                           <button 
                             onClick={() => handleResumeTest(exam.exam_id)}
                             aria-label={`Resume Mock Test ${exam.exam_id}`}

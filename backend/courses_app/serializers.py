@@ -2,9 +2,14 @@ from rest_framework import serializers
 from .models import ( 
     Course, Subject, Chapter, LectureVideo,
     Exam, Question,UserCourseData,UserExamData,
-    ExamQuestion,ChapterQuestion,LectureNote )
+    ExamQuestion,ChapterQuestion,LectureNote,Concept)
 
 import json
+
+class ConceptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Concept
+        fields = ["id", "code", "name"]  
 
 
 class BulkExamQuestionSerializer(serializers.ModelSerializer):
@@ -105,18 +110,28 @@ class ChapterSerializer(serializers.ModelSerializer):
         model = Chapter
         fields =  '__all__'    # Customize fields as needed
 
+
+
 class BulkQuestionUploadSerializer(serializers.Serializer):
-    chapter_id = serializers.ChoiceField(choices=[])  # Dropdown for selecting chapter
-    questions_json = serializers.CharField(write_only=True)  # JSON text input
+    chapter_id = serializers.ChoiceField(choices=[])  
+    concept_codes = serializers.ListField(
+        child=serializers.CharField(), 
+        write_only=True
+    ) 
+    questions_json = serializers.CharField(write_only=True)  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         if "chapters" in self.context:
             self.fields['chapter_id'].choices = [(c["id"], c["name"]) for c in self.context["chapters"]]
+        
+        if "concept_codes" in self.context:
+            self.fields['concept_codes'].child.choices = [
+                (c["code"], c["name"]) for c in self.context["concept_codes"]
+            ]
 
     def validate_questions_json(self, value):
-        """Ensure the provided JSON is valid"""
-      
         try:
             data = json.loads(value)
             if not isinstance(data, list):
@@ -126,8 +141,17 @@ class BulkQuestionUploadSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid JSON format.")
 
     def create(self, validated_data):
+        print("Validated Data:", validated_data)  
         chapter = Chapter.objects.get(id=validated_data['chapter_id'])
+        concept_codes = validated_data['concept_codes']  # Now this is a list of codes
         questions_data = validated_data['questions_json']
+
+        print("Chapter Retrieved:", chapter)  
+        print("Concept Codes Retrieved:", concept_codes)  # Added print statement
+        
+        # Retrieve the concepts based on the codes
+        concepts = Concept.objects.filter(id__in=concept_codes)
+        print("Concepts Retrieved:", concepts)  # Added print statement
         
         created_questions = []
         for question_data in questions_data:
@@ -139,5 +163,17 @@ class BulkQuestionUploadSerializer(serializers.Serializer):
             [ChapterQuestion(chapter=chapter, question=question) for question in created_questions],
             ignore_conflicts=True  # Avoid duplicate entries
         )
+        
+        # Set the concepts to the created questions
+        for question in created_questions:
+            question.concepts.set(concepts)
 
         return validated_data
+
+from rest_framework import serializers
+from .models import UserWeakConcept
+
+class UserWeakConceptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserWeakConcept
+        fields = ['user', 'concepts']

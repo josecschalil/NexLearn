@@ -33,17 +33,8 @@ const AdminExamPage = () => {
     toastMessage: "Login from an admin account to access admin features."
   });
 
-  if (loading2) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>;
-  }
 
-  if (!userDetails?.is_staff) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <p>log as admin to access this page.</p>
-      </div>
-    );
-  }
+
 
   useEffect(() => {
     fetchExams();
@@ -165,6 +156,10 @@ const AdminExamPage = () => {
 
   return (
     <div className="min-h-screen md:py-8 font-jakarta md:px-6  overflow-x-hidden">
+        {loading ? (
+        <div className="h-screen flex items-center justify-center">
+          Loading...
+        </div>):(
     <div className="max-w-6xl mx-auto flex space-x-6 ">
       <div className="flex-1 bg-white py-8 rounded-xl p-6">
       <h3 className="text-xl sm:text-4xl  md:mb-4 font-bold text-gray-800 font-inter">
@@ -360,6 +355,7 @@ const AdminExamPage = () => {
       )}
     </div>
     </div>
+        )}
     </div>
   );
 };

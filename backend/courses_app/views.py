@@ -2,11 +2,11 @@ from rest_framework import viewsets,status
 from .models import (
     Course, Subject, Chapter, LectureVideo,
      Exam, Question,UserCourseData,UserExamData,
-     ExamQuestion,ChapterQuestion,LectureNote )
+     ExamQuestion,ChapterQuestion,LectureNote,Concept,UserWeakConcept )
 from .serializers import (
-    CourseSerializer, SubjectSerializer,ChapterSerializer,
+    CourseSerializer, SubjectSerializer,ChapterSerializer,ConceptSerializer,
     LectureVideoSerializer, ExamSerializer, QuestionSerializer,
-    UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,
+    UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,UserWeakConceptSerializer,
     LectureNoteSerializer,BulkExamQuestionSerializer )
 from rest_framework.decorators import action,api_view,permission_classes
 from rest_framework.response import Response
@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.views import APIView
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 import math
 import random
 from rest_framework.views import APIView
@@ -32,11 +33,12 @@ from django.contrib.auth import get_user_model
 
 class BulkQuestionUploadView(CreateAPIView):
     serializer_class = BulkQuestionUploadSerializer
-    permission_classes = [AllowAny,IsAdminUser]
+    permission_classes = [AllowAny]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["chapters"] = Chapter.objects.values("id", "name") 
+        context["concept_codes"] = Concept.objects.values("code", "name")
 
         return context
 
@@ -130,6 +132,18 @@ def get_all_chapters(request):
     serializer = ChapterSerializer(chapters, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+class ConceptViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = Concept.objects.all()
+    serializer_class = ConceptSerializer 
+    @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
+    def get_concepts_by_chapter(self, request, chapter_id=None):
+        chapter = get_object_or_404(Chapter, id=chapter_id)
+        concepts = Concept.objects.filter(chapters__id=chapter_id)
+        serializer = self.get_serializer(concepts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Course.objects.all()
@@ -140,7 +154,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['subject_id']  
+    filterset_fields = ['subject_id','concepts']  
     search_fields = ['name', 'type']
     ordering_fields = ['name', 'type']
     @action(detail=False, methods=['get'], url_path='subject/(?P<subject_id>[^/.]+)')
@@ -195,14 +209,15 @@ class ExamViewSet(viewsets.ModelViewSet):
     
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    def get_permissions(self):
+    # def get_permissions(self):
 
-        if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
-            return [AllowAny()]
-        return [IsAdminUser()]
+    #     if self.action in ['list', 'retrieve', 'get_questions_by_chapter', 'get_questions_by_exam_id']:
+    #         return [AllowAny()]
+    #     return [IsAdminUser()]
 
     @action(detail=False, methods=['get'], url_path='chapter/(?P<chapter_id>[^/.]+)')
     def get_questions_by_chapter(self, request, chapter_id=None):
@@ -361,41 +376,7 @@ class UserExamDataViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['put'], url_path='update')
-    def update_exam_data(self, request):
-    
-        user_id = request.query_params.get('user', None)
-        exam_id = request.query_params.get('exam_id', None)
 
-        if not user_id or not exam_id:
-            return Response(
-                {"detail": "Both 'user' and 'exam_id' must be provided as query parameters."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            instance = UserExamData.objects.get(user=user_id, exam_id=exam_id)
-        except UserExamData.DoesNotExist:
-            return Response(
-                {"detail": "UserExamData with the given user and exam_id does not exist."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        update_data = request.data.copy()
-
-        
-        update_data.pop('user', None)
-        update_data.pop('exam_id', None)
-
-
-        serializer = self.get_serializer(instance, data=update_data, partial=True)
-
-        if serializer.is_valid():
-         
-            serializer.save()
-            return Response(serializer.data)  
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 class ExamQuestionViewSet(viewsets.ModelViewSet):
     queryset = ExamQuestion.objects.all()
@@ -605,3 +586,213 @@ class FeaturedQuestionViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(questions, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"detail": "No questions found for this exam."}, status=status.HTTP_404_NOT_FOUND)
+    
+from .models import Question, Concept, TestAnalysis
+from django.db.models import Prefetch
+from rest_framework.response import Response
+import json
+from collections import defaultdict
+
+@api_view(['POST'])
+def generate_test_analysis(request, user_id, test_id):
+    try:
+        test_data = UserExamData.objects.filter(user_id=user_id, exam_id=test_id).first()
+        if not test_data:
+            return Response({"error": "Test data not found"}, status=404)
+        
+        if TestAnalysis.objects.filter(user_id=user_id, exam_id=test_id).exists():
+            return Response({"message": "Analysis already generated"}, status=200)
+
+        questions = Question.objects.filter(exams=test_id).prefetch_related('concepts')
+
+        incorrect_concept_ids = defaultdict(int)  # Stores concept_id -> incorrect count
+        categorized_questions = []
+
+        for index, question in enumerate(questions):
+            is_correct = str(test_data.answers.get(str(index))) == question.correct_answer
+            is_answered = str(index) in (test_data.answers or {})
+            is_marked_for_review = str(index) in (test_data.marked_for_review or [])
+
+            if not is_correct:
+                for concept_id in question.concepts.values_list('id', flat=True):
+                    incorrect_concept_ids[concept_id] += 1  
+
+            categorized_questions.append({
+                "id": str(question.id),
+                "question_text": question.question_text,
+                "is_correct": is_correct,
+                "is_answered": is_answered,
+                "is_marked_for_review": is_marked_for_review,
+                "correct_answer_text": getattr(question, f"option_{question.correct_answer.lower()}_text"),
+                "correct_answer": question.correct_answer,
+                "selected_answer": test_data.answers.get(str(index), "Not Answered"),
+                "options": {
+                    "A": question.option_a_text,
+                    "B": question.option_b_text,
+                    "C": question.option_c_text,
+                    "D": question.option_d_text,
+                },
+                "solution_text": question.solution_text,
+                "solution_text_hindi": question.solution_text_hindi,
+            })
+
+        concept_names = Concept.objects.filter(id__in=incorrect_concept_ids.keys()).values("id", "name")
+        incorrect_concept_frequency = {c["name"]: incorrect_concept_ids[c["id"]] for c in concept_names}
+
+        analysis = TestAnalysis.objects.create(
+            user_id=user_id,
+            exam_id=test_id,
+            total_questions=questions.count(),
+            answered=len(test_data.answers or {}),
+            correct_answers=sum(1 for q in categorized_questions if q["is_correct"]),
+            marked_for_review=len(test_data.marked_for_review or []),
+            time_remaining=test_data.time_remaining,
+            incorrect_concept_frequency=incorrect_concept_frequency,  
+            questions_analysis=categorized_questions,
+        )
+        
+        user_weak_concept, created = UserWeakConcept.objects.get_or_create(user_id=user_id, defaults={"concepts": {}})
+
+        for concept_id, weight in incorrect_concept_ids.items():
+            concept_key = str(concept_id)
+            user_weak_concept.concepts[concept_key] = user_weak_concept.concepts.get(concept_key, 0) + weight
+
+        user_weak_concept.save()
+
+        return Response({
+            "message": "Analysis generated successfully",
+            "incorrect_concept_frequency": incorrect_concept_frequency,
+            "total_questions": questions.count(),
+            "answered": len(test_data.answers or {}),
+            "correct_answers": sum(1 for q in categorized_questions if q["is_correct"]),
+            "questions_analysis": categorized_questions
+        }, status=201)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+def get_test_analysis(request, user_id, test_id):
+    try:
+        analysis = TestAnalysis.objects.filter(user_id=user_id, exam_id=test_id).first()
+        if not analysis:
+            return Response({"error": "Analysis not found"}, status=404)
+
+        return Response({
+            "total_questions": analysis.total_questions,
+            "answered": analysis.answered,
+            "correct_answers": analysis.correct_answers,
+            "marked_for_review": analysis.marked_for_review,
+            "time_remaining": analysis.time_remaining,
+            "weak_concepts": analysis.incorrect_concept_frequency   ,
+            "questions": analysis.questions_analysis,
+        })
+        
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+class UserWeakConceptViewSet(viewsets.ModelViewSet):
+    queryset = UserWeakConcept.objects.all()
+    serializer_class = UserWeakConceptSerializer
+    permission_classes = [AllowAny]
+    
+
+import random
+from rest_framework.response import Response
+from rest_framework import status
+
+class CuratedQuestionsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user = request.user
+        chapter_ids = request.query_params.getlist("chapter_ids")
+        difficulty = request.query_params.get("difficulty")
+        total_questions = request.query_params.get("total_questions")
+
+        if not chapter_ids or difficulty is None:
+            return Response(
+                {"error": "chapter_ids and difficulty are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        total_questions = int(total_questions) if total_questions else None
+
+        
+        user_weak_concepts = UserWeakConcept.objects.filter(user=user).first()
+        weak_concepts = user_weak_concepts.concepts if user_weak_concepts else {}
+
+        
+        chapter_concept_map = {
+            str(chapter.id): set(chapter.concepts.values_list("id", flat=True))
+            for chapter in Chapter.objects.filter(id__in=chapter_ids)
+        }
+
+        
+        relevant_weak_concepts = {
+            int(concept_id): weight
+            for concept_id, weight in weak_concepts.items()
+            if any(int(concept_id) in concepts for concepts in chapter_concept_map.values())
+        }
+
+        
+        chapter_question_map = {
+            chapter_id: list(
+                Question.objects.filter(
+                    id__in=ChapterQuestion.objects.filter(chapter_id=chapter_id)
+                    .values_list("question_id", flat=True),
+                    level=difficulty,
+                )
+            )
+            for chapter_id in chapter_ids
+        }
+
+        
+        if total_questions is None:
+            selected_questions = [
+                q for qs in chapter_question_map.values() for q in qs
+            ]
+        else:
+            weak_concept_question_count = int(0.4 * total_questions) 
+            remaining_question_count = total_questions - weak_concept_question_count
+
+            weak_concept_questions = []
+            used_weak_concepts = set() 
+
+            for chapter_id, concepts in chapter_concept_map.items():
+                for concept_id in concepts:
+                    if concept_id in relevant_weak_concepts:
+                        concept_questions = [
+                            q
+                            for q in chapter_question_map[chapter_id]
+                            if concept_id in q.concepts.values_list("id", flat=True)
+                        ]
+                        weak_concept_questions.extend(concept_questions)
+                        if concept_questions:
+                            used_weak_concepts.add(concept_id) 
+
+            random.shuffle(weak_concept_questions)
+            selected_questions = weak_concept_questions[:weak_concept_question_count]
+
+            
+            remaining_questions = [
+                q
+                for qs in chapter_question_map.values()
+                for q in qs
+                if q not in selected_questions
+            ]
+
+            random.shuffle(remaining_questions)
+            selected_questions.extend(remaining_questions[:remaining_question_count])
+
+            
+            if user_weak_concepts:
+                for concept_id in used_weak_concepts:
+                    if user_weak_concepts.concepts.get(str(concept_id), 0) > 0:
+                        user_weak_concepts.concepts[str(concept_id)] -= 1
+
+                user_weak_concepts.save()
+
+        serializer = QuestionSerializer(selected_questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

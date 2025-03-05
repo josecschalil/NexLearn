@@ -7,8 +7,8 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { useRouter } from "next/navigation";
 import api from "../../../../services/api";
+import { toast } from "sonner";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TestPage = () => {
   const router = useRouter();
   const { testId } = useParams();
@@ -26,32 +26,6 @@ const TestPage = () => {
   const [tableId, setTableId] = useState(null);
   const [examdetails, setexamdetails] = useState(null);
   const [Questions, setQuestions] = useState(null);
-
-  // useEffect(() => {
-  //   const fetchQuestions = async () => {
-  //     try {
-  //       const chapterResponse = await axios.get(
-  //         `${apiUrl}/api/exams/${testId}`
-  //       );
-  //       if (chapterResponse.data) {
-  //         console.log("Chapter ID:", chapterResponse.data.chapter);
-  //         const chapterId = chapterResponse.data.chapter;
-
-  //         const questionsResponse = await axios.get(
-  //           `${apiUrl}/api/questions/chapter/${chapterId}`
-  //         );
-  //         if (questionsResponse.data) {
-  //           console.log("Fetched Questions:", questionsResponse.data);
-  //           setQuestions(questionsResponse.data);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchQuestions();
-  //}, [testId]);
 
   const dropdownRef = useRef(null);
 
@@ -73,6 +47,13 @@ const TestPage = () => {
     }
   }, [isopen]);
 
+  // useEffect(() => {
+  //   console.log(isSubmitted);
+  //   if (isSubmitted) {
+  //     router.push(`/`);
+  //   }
+  // }, [isSubmitted, router]);
+
   useEffect(() => {
     const fetchexamDetails = async () => {
       try {
@@ -87,6 +68,20 @@ const TestPage = () => {
 
     fetchexamDetails();
   }, [testId]);
+
+  const generateTestAnalysis = async (userId, testId) => {
+    try {
+      const response = await api.post(`/api/generate-analysis/${userId}/${testId}/`);
+      
+      if (response.data) {
+        console.log("Analysis Generated:", response.data);
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Error generating test analysis:", error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -161,7 +156,7 @@ const TestPage = () => {
     answers,
     visited,
     markedForReview,
-    // timeRemaining,
+    timeRemaining,
     isTimerRunning,
     testId,
     isInitialized,
@@ -171,12 +166,28 @@ const TestPage = () => {
   useEffect(() => {
     if (isInitialized && !isSubmitted) {
       const timer = setInterval(() => {
-        setTimeRemaining((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+        setTimeRemaining((prevTime) => {
+          if (prevTime <= 50) {
+            clearInterval(timer);
+            handleSubmit(false); 
+            return 0;
+          }
+          return prevTime - 10;
+        });
       }, 1000);
-
-      return () => clearInterval(timer);
+  
+      return () => clearInterval(timer); // Cleanup timer on unmount
     }
   }, [isInitialized, isSubmitted]);
+  
+
+  useEffect(() => {
+    if (isSubmitted) {
+      saveData();
+      toast.success("Exam Submitted, Redirecting to Analysis Page.");
+      router.push(`/analysis/${testId}`);
+    }
+  }, [isSubmitted, router, testId]);
 
   const AttemptLater = () => {
     saveData();
@@ -212,16 +223,24 @@ const TestPage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit the test?"
-    );
-    if (confirmSubmit) {
+  const handleSubmit = async (showWarning = true) => {
+    if (showWarning) {
+      const confirmSubmit = window.confirm(
+        "Are you sure you want to submit the test?"
+      );
+      if (!confirmSubmit) return;
+    }
+  
+    try {
       setIsSubmitted(true);
+      await generateTestAnalysis(userId, testId);
       router.push(`/analysis/${testId}`);
-      saveData();
+    } catch (error) {
+      alert(error.message || "An error occurred. Please try again.");
     }
   };
+  ;
+  
 
   const TimerComponent = ({ timeRemaining }) => {
     const formatTime = (time) => {
@@ -234,17 +253,22 @@ const TestPage = () => {
     };
 
     return (
-      <div  className="px-4 flex  pr-0 max-xs:text-sm  bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-xl disabled:text-gray-300 active:border-[2px] transition-all duration-300">
-          <div className="my-2 mr-2 max-xs:w-[40px] w-[60px] text-center"> {formatTime(timeRemaining)}</div> <div onClick={handleSubmit} className="xsm:hidden border-l border-gray-200 pt-2 px-2  rounded-r-xl hover:bg-gray-200 ">  Submit</div>
+      <div className="px-4 flex  pr-0 max-xs:text-sm  bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-xl disabled:text-gray-300 active:border-[2px] transition-all duration-300">
+        <div className="my-2 mr-2 max-xs:w-[40px] w-[60px] text-center">
+          {" "}
+          {formatTime(timeRemaining)}
+        </div>{" "}
+        <div
+          onClick={handleSubmit}
+          className="xsm:hidden border-l border-gray-200 pt-2 px-2  rounded-r-xl hover:bg-gray-200 "
+        >
+          {" "}
+          Submit
         </div>
+      </div>
     );
   };
 
-  const calculateScore = () => {
-    return Questions.filter(
-      (question, index) => answers[index] === question.correct
-    ).length;
-  };
 
   const clearAnswer = () => {
     const updatedAnswers = { ...answers };
@@ -291,64 +315,10 @@ const TestPage = () => {
   // Rendering
   return (
     <div className="h-screen">
-    <header className="md:items-center font-instSansB flex flex-col md:flex-row justify-between text-2xl md:h-[10%] px-4">
-      <div className=" hidden md:flex justify-start items-center">
-        <button
-          className={`mx-4  relative w-20 h-[37px] rounded-full border text-[16px] border-gray-700 flex items-center transition-all duration-300 ${
-            language === "en" ? "bg-black" : "bg-teal-800"
-          }`}
-          onClick={toggleLanguage}
-        >
-          <span
-            className={`absolute left-[6px] top-[5px] w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 transform ${
-              language === "en" ? "translate-x-10" : "translate-x-0"
-            }`}
-          ></span>
-          <span
-            className={`absolute left-4 text-white font-bold transition-all duration-300 ${
-              language === "en" ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            EN
-          </span>
-          <span
-            className={`absolute right-4 text-white font-bold transition-all duration-300 ${
-              language === "en" ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            HI
-          </span>
-        </button>
-      </div>
-
-      <div className="flex  items-center border-b mt-2 md:mt-0 -mx-6 px-7 mb-4 md:pb-0 md:mb-0 md:border-none">
-        <div className="flex justify-start   md:justify-center py-3  md:items-center font-extrabold">
-          <span className="max-xs:text-xl text-gray-800">{examdetails?.exam_title} </span>
-          <span
-            onClick={() => setisopen(!isopen)}
-            className={` transform transition-all duration-300 items-center mx-2 hidden cursor-pointer ${
-              isopen ? "rotate-180" : ""
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              className="transition-transform duration-300"
-            >
-              <path
-                d="M7 10l5 5 5-5z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-            </svg>
-          </span>
-        </div>
-        <div className="ml-auto">
+      <header className="md:items-center font-instSansB flex flex-col md:flex-row justify-between text-2xl md:h-[10%] px-4">
+        <div className=" hidden md:flex justify-start items-center">
           <button
-            className={` md:hidden mx-auto relative w-20 h-[37px] text-sm max-xs:scale-90 rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
+            className={`mx-4  relative w-20 h-[37px] rounded-full border text-[16px] border-gray-700 flex items-center transition-all duration-300 ${
               language === "en" ? "bg-black" : "bg-teal-800"
             }`}
             onClick={toggleLanguage}
@@ -374,188 +344,242 @@ const TestPage = () => {
             </span>
           </button>
         </div>
-      </div>
 
-      <div className="flex justify-center md:justify-end items-center text-sm xs:text-md">
-        <div className="flex  justify-end items-center space-y-0 space-x-4">
-          <button
-            className="px-4 max-xs:text-sm  py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-            onClick={AttemptLater}
-          >
-            Attempt Later
-          </button>
-
-          <TimerComponent timeRemaining={timeRemaining} />
-
-          <button
-            className="px-4 hidden max-xs:text-sm xsm:block py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+        <div className="flex  items-center border-b mt-2 md:mt-0 -mx-6 px-7 mb-4 md:pb-0 md:mb-0 md:border-none">
+          <div className="flex justify-start   md:justify-center py-3  md:items-center font-extrabold">
+            <span className="max-xs:text-xl text-gray-800">
+              {examdetails?.exam_title}{" "}
+            </span>
+            <span
+              onClick={() => setisopen(!isopen)}
+              className={` transform transition-all duration-300 items-center mx-2 hidden cursor-pointer ${
+                isopen ? "rotate-180" : ""
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                className="transition-transform duration-300"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
+          </div>
+          <div className="ml-auto">
+            <button
+              className={` md:hidden mx-auto relative w-20 h-[37px] text-sm max-xs:scale-90 rounded-full border border-gray-700 flex items-center transition-all duration-300 ${
+                language === "en" ? "bg-black" : "bg-teal-800"
+              }`}
+              onClick={toggleLanguage}
+            >
+              <span
+                className={`absolute left-[6px] top-[5px] w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 transform ${
+                  language === "en" ? "translate-x-10" : "translate-x-0"
+                }`}
+              ></span>
+              <span
+                className={`absolute left-4 text-white font-bold transition-all duration-300 ${
+                  language === "en" ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                EN
+              </span>
+              <span
+                className={`absolute right-4 text-white font-bold transition-all duration-300 ${
+                  language === "en" ? "opacity-0" : "opacity-100"
+                }`}
+              >
+                HI
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
 
- 
+        <div className="flex justify-center md:justify-end items-center text-sm xs:text-md">
+          <div className="flex  justify-end items-center space-y-0 space-x-4">
+            <button
+              className="px-4 max-xs:text-sm  py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              onClick={AttemptLater}
+            >
+              Attempt Later
+            </button>
 
-    <div className="flex  bg-white mt-4 md:mt-0 border-t flex-col md:flex-row h-[90%] ">
-      <div className="md:w-[70vw] flex flex-col">
-        <div className="p-6 bg-white rounded-xl font-jakarta">
-          <p className="text-lg max-xs:text-sm  mb-4 text-justify">
-            {currentQuestionIndex + 1}.{" "}
-            {language === "en" ? (
-              <RenderTextWithLatex
-                text={Questions?.[currentQuestionIndex]?.question_text}
-              />
-            ) : (
-              <RenderTextWithLatex
-                text={Questions?.[currentQuestionIndex]?.question_text_hindi}
+            <TimerComponent timeRemaining={timeRemaining} />
+
+            <button
+              className="px-4 hidden max-xs:text-sm xsm:block py-2 bg-gray-100  text-black text-[16px] border shadow border-gray-100 hover:border-gray-600 rounded-2xl disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex  bg-white mt-4 md:mt-0 border-t flex-col md:flex-row h-[90%] ">
+        <div className="md:w-[70vw] flex flex-col">
+          <div className="p-6 bg-white rounded-xl font-jakarta">
+            <p className="text-lg max-xs:text-sm  mb-4 text-justify">
+              {currentQuestionIndex + 1}.{" "}
+              {language === "en" ? (
+                <RenderTextWithLatex
+                  text={Questions?.[currentQuestionIndex]?.question_text}
+                />
+              ) : (
+                <RenderTextWithLatex
+                  text={Questions?.[currentQuestionIndex]?.question_text_hindi}
+                />
+              )}
+            </p>
+            {Questions?.[currentQuestionIndex]?.question_image && (
+              <img
+                src={Questions[currentQuestionIndex].question_image}
+                alt="Question"
+                className="w-full max-w-36 mb-4"
               />
             )}
-          </p>
-          {Questions?.[currentQuestionIndex]?.question_image && (
-            <img
-              src={Questions[currentQuestionIndex].question_image}
-              alt="Question"
-              className="w-full max-w-36 mb-4"
-            />
-          )}
 
-          <div className="grid grid-cols-2 gap-3 md:w-[80%] mt-8 max-xs:text-sm ">
-            {["A", "B", "C", "D"].map((optionKey, index) => {
-              const optionText =
-                language === "en"
-                  ? Questions?.[currentQuestionIndex][
-                      `option_${optionKey.toLowerCase()}_text`
-                    ]
-                  : Questions?.[currentQuestionIndex][
-                      `option_${optionKey.toLowerCase()}_text_hindi`
-                    ];
+            <div className="grid grid-cols-2 gap-3 md:w-[80%] mt-8 max-xs:text-sm ">
+              {["A", "B", "C", "D"].map((optionKey, index) => {
+                const optionText =
+                  language === "en"
+                    ? Questions?.[currentQuestionIndex][
+                        `option_${optionKey.toLowerCase()}_text`
+                      ]
+                    : Questions?.[currentQuestionIndex][
+                        `option_${optionKey.toLowerCase()}_text_hindi`
+                      ];
 
-              const optionImage =
-                Questions?.[currentQuestionIndex][
-                  `option_${optionKey.toLowerCase()}_image`
-                ];
+                const optionImage =
+                  Questions?.[currentQuestionIndex][
+                    `option_${optionKey.toLowerCase()}_image`
+                  ];
 
-              return (
-                <label
-                  key={index}
-                  className={`block p-2 px-4 py-4 rounded-xl transition cursor-pointer border ${
-                    answers[currentQuestionIndex] === optionKey
-                      ? "bg-blue-100 border-blue-500"
-                      : "border-gray-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name={`question-${currentQuestionIndex}`}
-                    checked={answers[currentQuestionIndex] === optionKey}
-                    onChange={() => handleAnswer(optionKey)}
-                    className="hidden"
-                  />
-                  {optionImage && (
-                    <img
-                      src={optionImage}
-                      alt={`Option ${optionKey}`}
-                      className="w-full max-w-36 mb-2"
+                return (
+                  <label
+                    key={index}
+                    className={`block p-2 px-4 py-4 rounded-xl transition cursor-pointer border ${
+                      answers[currentQuestionIndex] === optionKey
+                        ? "bg-blue-100 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={`question-${currentQuestionIndex}`}
+                      checked={answers[currentQuestionIndex] === optionKey}
+                      onChange={() => handleAnswer(optionKey)}
+                      className="hidden"
                     />
-                  )}
+                    {optionImage && (
+                      <img
+                        src={optionImage}
+                        alt={`Option ${optionKey}`}
+                        className="w-full max-w-36 mb-2"
+                      />
+                    )}
 
-                  <RenderTextWithLatex text={optionText} />
-                  <span></span>
-                </label>
-              );
-            })}
+                    <RenderTextWithLatex text={optionText} />
+                    <span></span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
+            <div className="my-5 flex-wrap max-xs:text-sm font-medium flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
+              <button
+                onClick={prevQuestion}
+                disabled={currentQuestionIndex === 0}
+                className="px-4 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Previous
+              </button>
+
+              <button
+                onClick={clearAnswer}
+                className="px-4 py-2   text-white bg-red-500 hover:border-black  flex-1 border  rounded-2xl    active:border-[2px] transition-all duration-300"
+              >
+                Clear
+              </button>
+
+              <button
+                onClick={nextQuestion}
+                disabled={currentQuestionIndex === totalQuestions - 1}
+                className="px-7 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+              >
+                Next
+              </button>
+
+              <button
+                onClick={saveandNext}
+                className="px-4 py-2 h-fit hidden lg:flex text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+              >
+                Save and Next
+              </button>
+
+              <button
+                onClick={markForReview}
+                className="px-4 py-2 h-fit hidden lg:flex  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
+              >
+                Mark and Next
+              </button>
+            </div>{" "}
+            <div className="flex gap-3 md:gap-6 max-xs:text-sm font-medium">
+              <button
+                onClick={saveandNext}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1 text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
+              >
+                Save and Next
+              </button>
+
+              <button
+                onClick={markForReview}
+                className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
+              >
+                Mark and Next
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="border-t flex p-2 px-6 mt-auto flex-row max1:flex-col">
-          <div className="my-5 flex-wrap max-xs:text-sm font-medium flex justify-between md:justify-center gap-3 sm:gap-6 lg:mx-auto font-instSansB  items-center ">
-            <button
-              onClick={prevQuestion}
-              disabled={currentQuestionIndex === 0}
-              className="px-4 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-            >
-              Previous
-            </button>
+        <div className="flex flex-col-reverse md:flex-col p-4 px-6 border-l max-xs:text-sm font-medium md:w-[30vw]">
+          <div className="bg-white rounded-md mb-5">
+            <h3 className="text border-b py-2 mb-2">Legend</h3>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <div className="flex items-center">
+                <div className="w-5 h-5 bg-gray-300 rounded mr-2"></div>
+                <span>Not Visited</span>
+              </div>
 
-            <button
-              onClick={clearAnswer}
-              className="px-4 py-2   text-white bg-red-500 hover:border-black  flex-1 border  rounded-2xl    active:border-[2px] transition-all duration-300"
-            >
-              Clear
-            </button>
+              <div className="flex items-center">
+                <div className="w-5 h-5 bg-red-300 rounded mr-2"></div>
+                <span>Visited</span>
+              </div>
 
-            <button
-              onClick={nextQuestion}
-              disabled={currentQuestionIndex === totalQuestions - 1}
-              className="px-7 py-2 text-black bg-gray-100 shadow h-fit flex-1  border border-gray-100 hover:border-gray-600 rounded-2xl tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
-            >
-              Next
-            </button>
-
-            <button
-              onClick={saveandNext}
-              className="px-4 py-2 h-fit hidden lg:flex text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
-            >
-              Save and Next
-            </button>
-
-            <button
-              onClick={markForReview}
-              className="px-4 py-2 h-fit hidden lg:flex  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
-            >
-              Mark and Next
-            </button>
-          </div>{" "}
-          <div className="flex gap-3 md:gap-6 max-xs:text-sm font-medium">
-            <button
-              onClick={saveandNext}
-              className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1 text-white hover:border-black border    rounded-2xl   active:border-[2px] transition-all duration-300 bg-emerald-500"
-            >
-              Save and Next
-            </button>
-
-            <button
-              onClick={markForReview}
-              className="px-4 py-2 h-fit lg:hidden font-instSansB flex-1  text-white bg-violet-500 hover:border-black border     rounded-2xl   active:border-[2px] transition-all duration-300"
-            >
-              Mark and Next
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col-reverse md:flex-col p-4 px-6 border-l max-xs:text-sm font-medium md:w-[30vw]">
-        <div className="bg-white rounded-md mb-5">
-          <h3 className="text border-b py-2 mb-2">Legend</h3>
-          <div className="flex flex-wrap gap-4 pt-2">
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-gray-300 rounded mr-2"></div>
-              <span>Not Visited</span>
-            </div>
-
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-red-300 rounded mr-2"></div>
-              <span>Visited</span>
-            </div>
-
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-emerald-500 rounded mr-2"></div>
-              <span>Answered</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-violet-300 rounded mr-2"></div>
-              <span>Marked for Review</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-5 h-5 bg-purple-700 rounded mr-2"></div>
-              <span>Answered & Marked for Review</span>
+              <div className="flex items-center">
+                <div className="w-5 h-5 bg-emerald-500 rounded mr-2"></div>
+                <span>Answered</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 bg-violet-300 rounded mr-2"></div>
+                <span>Marked for Review</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 bg-purple-700 rounded mr-2"></div>
+                <span>Answered & Marked for Review</span>
+              </div>
             </div>
           </div>
-        </div>
-        {/* 
+          {/* 
         {["Physics", "Chemistry", "Mathematics"].map((subject) => (
           <div key={subject} className="bg-white rounded-md mb-5">
             <div className="border-b mb-4 py-2">{subject}</div>
@@ -587,36 +611,36 @@ const TestPage = () => {
           </div>
         ))} */}
 
-        {/*myr thattip code need to make it read*/}
-        <div className="bg-white rounded-md mb-5">
-          <div className="border-b mb-4 py-2">Questions</div>
-          <div className="flex flex-wrap gap-3  ">
-            {Questions?.map((question, overallIndex) => {
-              const index = Questions.indexOf(question);
-              // Define background colors for buttons
-              let bgColor = "bg-gray-300"; // Default: Not Visited
-              if (visited.has(index)) bgColor = "bg-orange-300"; // Visited
-              if (answers[index]) bgColor = "bg-emerald-500"; // Answered
-              if (markedForReview.has(index)) bgColor = "bg-violet-300"; // Marked for Review
+          {/*myr thattip code need to make it read*/}
+          <div className="bg-white rounded-md mb-5">
+            <div className="border-b mb-4 py-2">Questions</div>
+            <div className="flex flex-wrap gap-3  ">
+              {Questions?.map((question, overallIndex) => {
+                const index = Questions.indexOf(question);
+                // Define background colors for buttons
+                let bgColor = "bg-gray-300"; // Default: Not Visited
+                if (visited.has(index)) bgColor = "bg-orange-300"; // Visited
+                if (answers[index]) bgColor = "bg-emerald-500"; // Answered
+                if (markedForReview.has(index)) bgColor = "bg-violet-300"; // Marked for Review
 
-              if (markedForReview.has(index) && answers[index])
-                bgColor = "bg-violet-500"; // Marked for Review
+                if (markedForReview.has(index) && answers[index])
+                  bgColor = "bg-violet-500"; // Marked for Review
 
-              return (
-                <button
-                  key={index}
-                  className={`w-10 h-10 rounded-xl text-white font-instSansB font-semibold ${bgColor}`}
-                  onClick={() => goToQuestion(index)}
-                >
-                  {index + 1}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={index}
+                    className={`w-10 h-10 rounded-xl text-white font-instSansB font-semibold ${bgColor}`}
+                    onClick={() => goToQuestion(index)}
+                  >
+                    {index + 1}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 
