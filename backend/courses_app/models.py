@@ -159,11 +159,11 @@ class Question(models.Model):
 
 class UserCourseData(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='purchases')
-    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='purchased_courses')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='purchased_courses') 
     progress = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user.name} - {self.course.title} - {self.progress}%"
+        return f"{self.user.name} - {self.course.title} - {self.weak_concepts}"
 
     class Meta:
         
@@ -238,3 +238,33 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.razorpay_order_id} - {self.status}"
+    
+from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
+class TestAnalysis(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    exam = models.ForeignKey("Exam", on_delete=models.CASCADE)
+    total_questions = models.IntegerField()
+    answered = models.IntegerField()
+    correct_answers = models.IntegerField()
+    marked_for_review = models.IntegerField()
+    time_remaining = models.IntegerField()
+    incorrect_concept_frequency = models.JSONField(default=dict)
+    questions_analysis=  ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    
+    def __str__(self):
+        return f"Analysis for {self.user} - Exam {self.exam_id}"
+    
+
+class UserWeakConcept(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    concepts = models.JSONField(default=dict) 
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("user",) 
+
+    def update_concept(self, concept_id, weight_increment=1):
+        self.concepts[str(concept_id)] = self.concepts.get(str(concept_id), 0) + weight_increment
+        self.save()

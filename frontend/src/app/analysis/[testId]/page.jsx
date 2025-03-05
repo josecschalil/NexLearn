@@ -1,24 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RenderTextWithMathJax from "@/app/components/RenderWithMathJax";
 import RenderTextWithLatex from "@/app/components/RenderWithLatex";
 import { useParams, useRouter } from "next/navigation";
-import axios from "axios";
 import api from "../../services/api";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const AnalysisPage = () => {
   const { testId } = useParams();
@@ -26,17 +11,17 @@ const AnalysisPage = () => {
   const [testData, setTestData] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [expandedQuestions, setExpandedQuestions] = useState({});
+  const [weakConcepts, setWeakConcepts] = useState([]);
 
   useEffect(() => {
     const fetchTestDataAndQuestions = async () => {
       try {
-        const userId = localStorage.getItem("user_id"); // Replace with context or global state if available
+        const userId = localStorage.getItem("user_id");
         if (!userId || !testId) {
           console.error("Missing user ID or test ID.");
           return;
         }
 
-        // Fetch Test Data
         const testResponse = await api.get(
           `/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
         );
@@ -61,6 +46,40 @@ const AnalysisPage = () => {
     fetchTestDataAndQuestions();
   }, [testId]);
 
+  useEffect(() => {
+    const fetchWeakConcepts = async () => {
+      if (!testData || questions.length === 0) return;
+
+      const incorrectConceptIds = new Set();
+
+      questions.forEach((question, index) => {
+        const isCorrect = testData.answers?.[index] === question.correct_answer;
+        if (!isCorrect) {
+          question.concepts.forEach((conceptId) =>
+            incorrectConceptIds.add(conceptId)
+          );
+        }
+      });
+
+      const conceptPromises = [...incorrectConceptIds].map(
+        async (conceptId) => {
+          try {
+            const response = await api.get(`/api/concepts/${conceptId}`);
+            return response.data.name; // Extract concept name
+          } catch (error) {
+            console.error(`Error fetching concept ${conceptId}:`, error);
+            return null;
+          }
+        }
+      );
+
+      const conceptsFetched = await Promise.all(conceptPromises);
+      setWeakConcepts(conceptsFetched.filter(Boolean)); // Remove null values
+    };
+
+    fetchWeakConcepts();
+  }, [testData, questions]);
+
   if (!testData) return <div>Loading...</div>;
 
   const { answers, marked_for_review, time_remaining, is_submitted } = testData;
@@ -78,44 +97,7 @@ const AnalysisPage = () => {
     };
   });
 
-  // Subject Data
-  const subjects = ["Physics", "Chemistry", "Mathematics"];
-  const subjectData = subjects.map((subject) => {
-    const subjectQuestions = categorizedQuestions.filter(
-      (question) => question.subject === subject
-    );
-
-    return {
-      subject,
-      total: subjectQuestions.length,
-      correct: subjectQuestions.filter((q) => q.isCorrect).length,
-      answered: subjectQuestions.filter((q) => q.isAnswered).length,
-      review: subjectQuestions.filter((q) => q.isMarkedForReview).length,
-    };
-  });
-
   const totalCorrect = categorizedQuestions.filter((q) => q.isCorrect).length;
-
-  const barData = {
-    labels: subjects,
-    datasets: [
-      {
-        label: "Correct Answers",
-        data: subjectData.map((data) => data.correct),
-        backgroundColor: "rgba(75, 192, 192, 0.8)",
-      },
-      {
-        label: "Answered",
-        data: subjectData.map((data) => data.answered),
-        backgroundColor: "rgba(255, 159, 64, 0.8)",
-      },
-      {
-        label: "Marked for Review",
-        data: subjectData.map((data) => data.review),
-        backgroundColor: "rgba(255, 99, 132, 0.8)",
-      },
-    ],
-  };
 
   const toggleQuestionDetails = (index) => {
     setExpandedQuestions((prev) => ({
@@ -142,22 +124,36 @@ const AnalysisPage = () => {
         </div>
         <hr className=" -mr-[100vw]  h-[1px] bg-gray-300 mb-2"></hr>
 
-        <section className="mb-10 bg-white  pt-4 ">
-          <ul className="list-none  font-semibold sm:text-lg text-gray-700 space-y-2">
-            <li>Total Questions: {questions.length}</li>
-            <li>Answered: {Object.keys(answers || {}).length}</li>
-            <li>Correct Answers: {totalCorrect}</li>
-            <li>Marked for Review: {marked_for_review.length}</li>
-            <li>
-              Time Remaining: {Math.floor(time_remaining / 60)}m{" "}
+        <section className="mb-10 bg-teal-50 border mt-8 border-teal-300 p-6 rounded-xl shadow-md">
+          <h2 className="text-teal-600 text-xl sm:text-2xl font-bold text-center">
+            Your Test Summary 📊
+          </h2>
+          <p className="text-teal-500 text-sm sm:text-base text-center mt-2">
+            Here’s a quick overview of your performance in this test.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 animate-fade-in">
+            <div className="text-sm sm:text-lg p-3 border border-blue-300 bg-white rounded-lg shadow-md text-center text-blue-700 font-medium">
+              📋 Total Questions: {questions.length}
+            </div>
+            <div className="text-sm sm:text-lg p-3 border border-green-300 bg-white rounded-lg shadow-md text-center text-green-700 font-medium">
+              ✅ Answered: {Object.keys(answers || {}).length}
+            </div>
+            <div className="text-sm sm:text-lg p-3 border border-green-300 bg-white rounded-lg shadow-md text-center text-green-700 font-medium">
+              🎯 Correct Answers: {totalCorrect}
+            </div>
+            <div className="text-sm sm:text-lg p-3 border border-yellow-300 bg-white rounded-lg shadow-md text-center text-yellow-700 font-medium">
+              ⚠️ Marked for Review: {marked_for_review.length}
+            </div>
+            <div className="text-sm sm:text-lg p-3 border border-red-300 bg-white rounded-lg shadow-md text-center text-red-700 font-medium">
+              ⏳ Time Remaining: {Math.floor(time_remaining / 60)}m{" "}
               {time_remaining % 60}s
-            </li>
-          </ul>
+            </div>
+          </div>
         </section>
 
-        {/* Question-wise Analysis Section */}
         <section className="">
-          <h2 className="max-xs:text-lg text-2xl font-semibold text-gray-800 mb-4">
+          <h2 className="max-xs:text-lg text-2xl font-bold text-gray-800 mb-4">
             Question-wise Analysis
           </h2>
           <div className="">
@@ -171,7 +167,7 @@ const AnalysisPage = () => {
               return (
                 <div
                   key={index}
-                  className="border-b py-3 max-xs:text-sm hover:bg-gray-50  transition duration-300"
+                  className="border mt-2 rounded-xl px-3 py-3 max-xs:text-sm hover:bg-gray-50  transition duration-300"
                 >
                   <div
                     className="flex justify-between items-center cursor-pointer"
@@ -251,6 +247,43 @@ const AnalysisPage = () => {
               );
             })}
           </div>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="max-xs:text-lg text-2xl font-bold my-4 text-gray-800 mb-4">
+            Concept-wise Analysis
+          </h2>
+          {weakConcepts.length > 0 ? (
+            <div className="bg-red-50 border border-red-400 p-6 rounded-xl shadow-md">
+              <h2 className="text-red-600 text-xl sm:text-2xl font-bold text-center">
+                We found some weak areas! 🚀
+              </h2>
+              <p className="text-red-500 text-sm sm:text-base text-center mt-2">
+                Keep practicing these topics to strengthen your understanding.
+                💪
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 animate-fade-in">
+                {weakConcepts.map((concept, index) => (
+                  <div
+                    key={index}
+                    className="text-sm sm:text-lg p-3 border border-red-300 bg-white rounded-lg shadow-md text-center text-red-700 font-medium"
+                  >
+                    {concept}
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-center text-gray-600 text-sm mt-4">
+                Consistency is key! Keep practicing and you’ll see improvement.
+                📈
+              </p>
+            </div>
+          ) : (
+            <p className="text-green-600 font-semibold text-lg text-center">
+              🎉 Great job! No weak concepts detected. Keep up the good work!
+            </p>
+          )}
         </section>
       </div>
     </div>

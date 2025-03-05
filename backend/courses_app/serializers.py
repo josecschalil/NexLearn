@@ -169,3 +169,11 @@ class BulkQuestionUploadSerializer(serializers.Serializer):
             question.concepts.set(concepts)
 
         return validated_data
+
+from rest_framework import serializers
+from .models import UserWeakConcept
+
+class UserWeakConceptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserWeakConcept
+        fields = ['user', 'concepts']

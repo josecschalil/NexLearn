@@ -69,6 +69,20 @@ const TestPage = () => {
     fetchexamDetails();
   }, [testId]);
 
+  const generateTestAnalysis = async (userId, testId) => {
+    try {
+      const response = await api.post(`/api/generate-analysis/${userId}/${testId}/`);
+      
+      if (response.data) {
+        console.log("Analysis Generated:", response.data);
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Error generating test analysis:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -155,21 +169,22 @@ const TestPage = () => {
         setTimeRemaining((prevTime) => {
           if (prevTime <= 50) {
             clearInterval(timer);
-            setIsSubmitted(true); 
+            handleSubmit(false); 
             return 0;
           }
-          return prevTime - 50;
+          return prevTime - 10;
         });
       }, 1000);
-
-      return () => clearInterval(timer);
+  
+      return () => clearInterval(timer); // Cleanup timer on unmount
     }
   }, [isInitialized, isSubmitted]);
+  
 
   useEffect(() => {
     if (isSubmitted) {
       saveData();
-      toast.success("Exam Submitted, Calcualting Score and Analysis.");
+      toast.success("Exam Submitted, Redirecting to Analysis Page.");
       router.push(`/analysis/${testId}`);
     }
   }, [isSubmitted, router, testId]);
@@ -208,16 +223,24 @@ const TestPage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit the test?"
-    );
-    if (confirmSubmit) {
+  const handleSubmit = async (showWarning = true) => {
+    if (showWarning) {
+      const confirmSubmit = window.confirm(
+        "Are you sure you want to submit the test?"
+      );
+      if (!confirmSubmit) return;
+    }
+  
+    try {
       setIsSubmitted(true);
+      await generateTestAnalysis(userId, testId);
       router.push(`/analysis/${testId}`);
-      saveData();
+    } catch (error) {
+      alert(error.message || "An error occurred. Please try again.");
     }
   };
+  ;
+  
 
   const TimerComponent = ({ timeRemaining }) => {
     const formatTime = (time) => {

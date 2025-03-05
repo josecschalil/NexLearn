@@ -2,11 +2,11 @@ from rest_framework import viewsets,status
 from .models import (
     Course, Subject, Chapter, LectureVideo,
      Exam, Question,UserCourseData,UserExamData,
-     ExamQuestion,ChapterQuestion,LectureNote,Concept )
+     ExamQuestion,ChapterQuestion,LectureNote,Concept,UserWeakConcept )
 from .serializers import (
     CourseSerializer, SubjectSerializer,ChapterSerializer,ConceptSerializer,
     LectureVideoSerializer, ExamSerializer, QuestionSerializer,
-    UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,
+    UserCourseDataSerializer,UserExamDataSerializer,ExamQuestionSerializer,ChapterQuestionSerializer,BulkQuestionUploadSerializer,UserWeakConceptSerializer,
     LectureNoteSerializer,BulkExamQuestionSerializer )
 from rest_framework.decorators import action,api_view,permission_classes
 from rest_framework.response import Response
@@ -586,3 +586,113 @@ class FeaturedQuestionViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(questions, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"detail": "No questions found for this exam."}, status=status.HTTP_404_NOT_FOUND)
+    
+from .models import Question, Concept, TestAnalysis
+from django.db.models import Prefetch
+from rest_framework.response import Response
+import json
+from collections import defaultdict
+
+@api_view(['POST'])
+def generate_test_analysis(request, user_id, test_id):
+    try:
+        test_data = UserExamData.objects.filter(user_id=user_id, exam_id=test_id).first()
+        if not test_data:
+            return Response({"error": "Test data not found"}, status=404)
+        
+        if TestAnalysis.objects.filter(user_id=user_id, exam_id=test_id).exists():
+            return Response({"message": "Analysis already generated"}, status=200)
+
+        questions = Question.objects.filter(exams=test_id).prefetch_related('concepts')
+
+        incorrect_concept_ids = defaultdict(int)  # Stores concept_id -> incorrect count
+        categorized_questions = []
+
+        for index, question in enumerate(questions):
+            is_correct = str(test_data.answers.get(str(index))) == question.correct_answer
+            is_answered = str(index) in (test_data.answers or {})
+            is_marked_for_review = str(index) in (test_data.marked_for_review or [])
+
+            if not is_correct:
+                for concept_id in question.concepts.values_list('id', flat=True):
+                    incorrect_concept_ids[concept_id] += 1  
+
+            categorized_questions.append({
+                "id": str(question.id),
+                "question_text": question.question_text,
+                "is_correct": is_correct,
+                "is_answered": is_answered,
+                "is_marked_for_review": is_marked_for_review,
+                "correct_answer_text": getattr(question, f"option_{question.correct_answer.lower()}_text"),
+                "correct_answer": question.correct_answer,
+                "selected_answer": test_data.answers.get(str(index), "Not Answered"),
+                "options": {
+                    "A": question.option_a_text,
+                    "B": question.option_b_text,
+                    "C": question.option_c_text,
+                    "D": question.option_d_text,
+                },
+                "solution_text": question.solution_text,
+                "solution_text_hindi": question.solution_text_hindi,
+            })
+
+        concept_names = Concept.objects.filter(id__in=incorrect_concept_ids.keys()).values("id", "name")
+        incorrect_concept_frequency = {c["name"]: incorrect_concept_ids[c["id"]] for c in concept_names}
+
+        analysis = TestAnalysis.objects.create(
+            user_id=user_id,
+            exam_id=test_id,
+            total_questions=questions.count(),
+            answered=len(test_data.answers or {}),
+            correct_answers=sum(1 for q in categorized_questions if q["is_correct"]),
+            marked_for_review=len(test_data.marked_for_review or []),
+            time_remaining=test_data.time_remaining,
+            incorrect_concept_frequency=incorrect_concept_frequency,  
+            questions_analysis=categorized_questions,
+        )
+        
+        user_weak_concept, created = UserWeakConcept.objects.get_or_create(user_id=user_id, defaults={"concepts": {}})
+
+        for concept_id, weight in incorrect_concept_ids.items():
+            concept_key = str(concept_id)
+            user_weak_concept.concepts[concept_key] = user_weak_concept.concepts.get(concept_key, 0) + weight
+
+        user_weak_concept.save()
+
+        return Response({
+            "message": "Analysis generated successfully",
+            "incorrect_concept_frequency": incorrect_concept_frequency,
+            "total_questions": questions.count(),
+            "answered": len(test_data.answers or {}),
+            "correct_answers": sum(1 for q in categorized_questions if q["is_correct"]),
+            "questions_analysis": categorized_questions
+        }, status=201)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+def get_test_analysis(request, user_id, test_id):
+    try:
+        analysis = TestAnalysis.objects.filter(user_id=user_id, exam_id=test_id).first()
+        if not analysis:
+            return Response({"error": "Analysis not found"}, status=404)
+
+        return Response({
+            "total_questions": analysis.total_questions,
+            "answered": analysis.answered,
+            "correct_answers": analysis.correct_answers,
+            "marked_for_review": analysis.marked_for_review,
+            "time_remaining": analysis.time_remaining,
+            "weak_concepts": analysis.incorrect_concept_frequency   ,
+            "questions": analysis.questions_analysis,
+        })
+        
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+class UserWeakConceptViewSet(viewsets.ModelViewSet):
+    queryset = UserWeakConcept.objects.all()
+    serializer_class = UserWeakConceptSerializer
+    permission_classes = [AllowAny]
