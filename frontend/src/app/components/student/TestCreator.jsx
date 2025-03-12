@@ -108,18 +108,27 @@ const DifficultySelector = ({ difficulty, setDifficulty }) => {
 const ChapterSelector = ({
   selectedChapters,
   setSelectedChapters,
+  selectedChaptersName,
+  setSelectedChaptersName,
   courseid,
 }) => {
   const [EachSubjectDetails, setEachSubjectDetails] = useState([]);
   const [activeSubjectId, setActiveSubjectId] = useState(null); // Store only one active subject
 
-  const toggleChapter = (chapterId) => {
+  const toggleChapter = (chapter) => {
     setSelectedChapters((prev) =>
-      prev.includes(chapterId)
-        ? prev.filter((id) => id !== chapterId)
-        : [...prev, chapterId]
+      prev.includes(chapter.id)
+        ? prev.filter((id) => id !== chapter.id)
+        : [...prev, chapter.id]
+    );
+  
+    setSelectedChaptersName((prev) =>
+      prev.includes(chapter.name)
+        ? prev.filter((name) => name !== chapter.name) 
+        : [...prev, chapter.name]
     );
   };
+  
 
   const toggleSubject = (subjectId) => {
     setActiveSubjectId((prev) => (prev === subjectId ? null : subjectId)); // Collapse if same subject is clicked
@@ -161,18 +170,16 @@ const ChapterSelector = ({
     <div>
       <div className=" grid grid-cols-1 xsm:grid-cols-2 md:flex font-istok  md:flex-row gap-2 md:gap-6 mb-6">
         {EachSubjectDetails.map((subject) => (
-          <div
+          <button
             key={subject.id}
-            className={`p-4 border  flex  transition-all duration-100 hover:border-gray-500 rounded-2xl cursor-pointer ${
+            className={`px-4 py-3 text-black flex bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-lg tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300 ${
               activeSubjectId === subject.id
-                ? "border-teal-800 border-1"
-                : "border-gray-300 border-1"
+                ? "border-gray-900"
+                : "text-gray-700 hover:border-gray-900"
             }`}
             onClick={() => toggleSubject(subject.id)}
           >
-            <h3 className="max-xs:text-sm text-gray-800 mr-2">
-              {subject.name}
-            </h3>
+            <h3 className="text-sm text-gray-800 mr-2">{subject.name}</h3>
             <span
               className={`transform transition-all duration-300 ${
                 activeSubjectId === subject.id ? "rotate-180" : ""
@@ -193,7 +200,7 @@ const ChapterSelector = ({
                 />
               </svg>
             </span>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -210,12 +217,12 @@ const ChapterSelector = ({
                     {subject.chapters.map((chapter) => (
                       <div
                         key={chapter.id}
-                        className={`p-4 border flex items-center transition-all duration-100 hover:border-gray-500 hover:shadow rounded-2xl cursor-pointer ${
+                        className={`px-4 py-3 text-black bg-gray-100 shadow  text-[16px] border border-gray-100 hover:border-gray-600 rounded-lg tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300 ${
                           selectedChapters.includes(chapter.id)
                             ? "border-teal-800"
                             : "border-gray-300"
                         }`}
-                        onClick={() => toggleChapter(chapter.id)}
+                        onClick={() => toggleChapter(chapter)}
                       >
                         <h4 className="text-sm text-gray-800 line-clamp-2">
                           {chapter.name}
@@ -233,9 +240,8 @@ const ChapterSelector = ({
 };
 
 const ModalTimeQuestions = ({
-  examname,
-  setExamName,
   onNext,
+  onBack,
   setNumQuestions,
   setTime,
   setDifficulty,
@@ -243,27 +249,10 @@ const ModalTimeQuestions = ({
   time,
   difficulty,
 }) => {
-  const isNextEnabled =
-    examname?.trim() !== " " && time && numQuestions && difficulty;
+  const isNextEnabled = time && numQuestions && difficulty;
 
   return (
     <div className="px-2 modal w-fit rounded-lg  mx-auto font-istok  font-semibold">
-      <div className="mb-4">
-        <label className="xs:text-lg  text-left block sm:mb-2">
-          Exam Name:
-        </label>
-        <input
-          type="text"
-          value={examname}
-          onChange={(e) => {
-            console.log("New Exam Name:", e.target.value); // Debugging
-            setExamName(e.target.value || "custom test");
-          }}
-          placeholder="enter exam name."
-          className="w-full border-b placeholder:max-xs:text-sm font-semibold  placeholder: border-gray-400 focus:outline-none focus:border-gray-800 transition-all text-gray-700 text-lg py-1 px-2 bg-transparent"
-        />
-      </div>
-
       <h2 className="xs:text-lg  text-left mb-4">Set Duration</h2>
       <TimeSelector time={time} setTime={setTime} />
 
@@ -279,7 +268,14 @@ const ModalTimeQuestions = ({
         setDifficulty={setDifficulty}
       />
 
-      <div className="text-left mt-6">
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={onBack}
+          className="px-4 py-1 text-black bg-gray-100 shadow h-fit text-[16px] border border-gray-100 hover:border-gray-600 rounded-full tracking-wider disabled:text-gray-300 active:border-[2px] transition-all duration-300"
+        >
+          Back
+        </button>
+
         <button
           disabled={!isNextEnabled}
           onClick={onNext}
@@ -298,7 +294,6 @@ const ModalTimeQuestions = ({
 
 const ModalSubjects = ({
   onNext,
-  onBack,
   setSubjects,
   subjects,
   selectedChapters,
@@ -306,32 +301,36 @@ const ModalSubjects = ({
   courseid,
   setTestType,
 }) => {
-  const isNextEnabled = selectedChapters.length > 0;
   const [selectedTestType, setSelectedTestType] = useState(null);
+  const [selectedChaptersName, setSelectedChaptersName] = useState([]); // Ensure it's always an array
+
   const handleTestTypeSelection = (type) => {
     setTestType(type);
     setSelectedTestType(type);
   };
 
+  const isNextEnabled = selectedChapters.length > 0 && selectedTestType != null;
+
   return (
-    <div className="px-6 py-4 modal bg-white rounded-lg w-full mx-auto font-istok font-semibold font-sem">
- <div
+    <div className="px-6 py-4 modal bg-white rounded-lg w-full mx-auto font-istok font-semibold">
+      <h2 className="xs:text-xl text-left mb-4 font-bold text-gray-800">
+        Select Exam Type
+      </h2>
+
+      {/* Test Type Selection */}
+      <div
         onClick={() => handleTestTypeSelection(1)}
-        className={`flex transition-all duration-100 hover:shadow hover:border-gray-500 rounded-2xl items-center justify-between p-4 border mb-4 ${
-          selectedTestType === 1 ? 'border-teal-500' : 'border-gray-300'
+        className={`px-4 py-3 text-black bg-gray-100 shadow text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl active:border-[2px] transition-all duration-300 ${
+          selectedTestType === 1 ? "border-gray-900" : "hover:border-gray-900"
         }`}
       >
         <div className="flex items-center space-x-4">
-          <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
-            <span role="img" aria-label="icon" className="text-xl">
-              🎲 {/* Random icon */}
-            </span>
-          </div>
+          <span role="img" aria-label="icon" className="text-xl">
+            🎲
+          </span>
           <div>
-            <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
-              Random Choice Questions
-            </h3>
-            <p className="text-[12px] hidden sm:block xs:text-sm font-inter font-normal sm:text-sm text-gray-500 mt-1">
+            <h3 className="font-bold text-gray-800">Random Choice Questions</h3>
+            <p className="text-[12px] hidden sm:block xs:text-sm font-normal sm:text-sm mt-1">
               Questions will be randomly allocated based on the selected chapters.
             </p>
           </div>
@@ -340,29 +339,28 @@ const ModalSubjects = ({
 
       <div
         onClick={() => handleTestTypeSelection(2)}
-        className={`flex transition-all duration-100 hover:shadow hover:border-gray-500 rounded-2xl items-center justify-between p-4 border mb-4 ${
-          selectedTestType === 2 ? 'border-teal-500' : 'border-gray-300'
+        className={`px-4 py-3 text-black bg-gray-100 my-4 shadow text-[16px] border border-gray-100 hover:border-gray-600 rounded-2xl active:border-[2px] transition-all duration-300 ${
+          selectedTestType === 2 ? "border-gray-900" : "hover:border-gray-900"
         }`}
       >
         <div className="flex items-center space-x-4">
-          <div className="h-10 w-10 bg-none flex items-center justify-center rounded-full">
-            <span role="img" aria-label="icon" className="text-xl">
-              🧠
-            </span>
-          </div>
+          <span role="img" aria-label="icon" className="text-xl">
+            🧠
+          </span>
           <div>
-            <h3 className="text-[14px] xs:text-lg sm:text-lg font-bold font-inter text-gray-800">
-              Curated Questions
-            </h3>
-            <p className="text-[12px] xs:text-sm hidden sm:block font-inter font-normal sm:text-sm text-gray-500 mt-1">
+            <h3 className="font-bold text-gray-800">Curated Questions</h3>
+            <p className="text-[12px] xs:text-sm hidden sm:block font-normal sm:text-sm mt-1">
               Curated and designed questions based on your weak concepts from the selected chapters.
             </p>
           </div>
         </div>
       </div>
 
-      <h2 className="xs:text-xl text-left mb-6 font-bold text-gray-800">
-        Select Chapters
+      {/* Selected Chapters */}
+      <h2 className="xs:text-xl text-left mb-4 pt-4 font-bold text-gray-800">
+        {selectedChaptersName.length > 0
+          ? `Selected Chapters: ${selectedChaptersName.join(", ")}`
+          : "Select Chapters:"}
       </h2>
 
       <ChapterSelector
@@ -370,32 +368,29 @@ const ModalSubjects = ({
         subjects={subjects}
         selectedChapters={selectedChapters}
         setSelectedChapters={setSelectedChapters}
+        selectedChaptersName={selectedChaptersName}
+        setSelectedChaptersName={setSelectedChaptersName}
         courseid={courseid}
       />
 
+      {/* Next Button */}
       <div className="flex justify-between mt-6">
         <button
-          onClick={onBack}
-          className="border px-6 py-3 text-gray-700 rounded-lg transition-all hover:border-gray-900 focus:outline-none"
-        >
-          Back
-        </button>
-
-        <button
-          onClick={onNext}
           disabled={!isNextEnabled}
-          className={`border px-6 py-3 text-white rounded-lg transition-all ${
-            isNextEnabled
-              ? "bg-indigo-500 hover:bg-indigo-600"
-              : "bg-gray-400 cursor-not-allowed"
-          } focus:outline-none`}
+          onClick={onNext}
+          className={`px-4 py-1 text-black bg-gray-100 shadow text-[16px] border border-gray-100 rounded-full transition-all duration-300 ${
+            isNextEnabled ? "hover:border-gray-500" : "text-gray-500 cursor-not-allowed"
+          }`}
         >
-          Submit
+          Next
         </button>
       </div>
     </div>
   );
 };
+
+
+
 
 const TestCreator = ({ id }) => {
   const router = useRouter();
@@ -405,6 +400,8 @@ const TestCreator = ({ id }) => {
   const [numQuestions, setNumQuestions] = useState(null);
   const [time, setTime] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [examname, setExamName] = useState("");
   const [testType, setTestType] = useState(null);
@@ -413,6 +410,25 @@ const TestCreator = ({ id }) => {
 
   const handleNext = () => setShowModal((prev) => prev + 1);
   const handleBack = () => setShowModal((prev) => prev - 1);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/api/exams/?user_id=${userId}`);
+        const examCount = response.data.length;
+        const newExamName = `Practice Test ${examCount + 1}`;
+
+        setExamName(newExamName);
+      } catch (err) {
+        setError("Failed to fetch exams.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchExams();
+  }, [userId]);
 
   const handleSubmit = async () => {
     if (!numQuestions || !difficulty || selectedChapters.length === 0) {
@@ -436,8 +452,6 @@ const TestCreator = ({ id }) => {
       console.log(questionApiUrl);
       const questionResponse = await api.get(questionApiUrl);
       const questionIds = questionResponse.data.map((q) => q.id);
-
-      //console.log("Fetched Questions:", questionIds);
 
       const examPayload = {
         exam_title: examname,
@@ -502,11 +516,11 @@ const TestCreator = ({ id }) => {
   return (
     <div className="py-4 relative">
       <>
-        {showModal === 1 && (
+        {showModal === 2 && (
           <ModalTimeQuestions
-            onNext={handleNext}
+            onNext={handleSubmit}
+            onBack={handleBack}
             setNumQuestions={setNumQuestions}
-            setExamName={setExamName}
             setTime={setTime}
             setDifficulty={setDifficulty}
             numQuestions={numQuestions}
@@ -514,10 +528,9 @@ const TestCreator = ({ id }) => {
             difficulty={difficulty}
           />
         )}
-        {showModal === 2 && (
+        {showModal === 1 && (
           <ModalSubjects
-            onNext={handleSubmit}
-            onBack={handleBack}
+            onNext={handleNext}
             setSubjects={setSubjects}
             subjects={subjects}
             selectedChapters={selectedChapters}

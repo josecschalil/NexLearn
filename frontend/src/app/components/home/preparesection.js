@@ -24,10 +24,10 @@ const PrepareSection = () => {
               link: "/courses",
             },
             {
-              title: "Questions",
+              title: "Why Us?",
               icon: "💡",
-              desc: "Practice questions to boost accuracy and confidence.",
-              link: "/questions",
+              desc: "Perfectly Curated Questions for each individual.",
+              link: "/about",
             },
             {
               title: "Test Series",

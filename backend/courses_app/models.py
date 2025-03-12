@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 class Course(models.Model):
     course_type = models.CharField(max_length=100)
+    exam_type =models.CharField(max_length=100,null=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  

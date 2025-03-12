@@ -54,7 +54,6 @@ ASGI_APPLICATION = 'backend.asgi.application'
 SECRET_KEY = "django-insecure-igt2(drbd-j!9174r@skyw1p%&f53i3q5dhlpp7o$!(4t$7ko0"
 DEBUG = True
 
-# Allow All Hosts & CORS (Temporary for Development)
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -63,7 +62,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.jeeneetpulse.com",
 ]
 
-# CORS Allowed Origins - Must have full URLs
 CORS_ALLOWED_ORIGINS = [
     "https://api.jeeneetpulse.com",
     "https://jeeneetpulse.com",
@@ -72,7 +70,6 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True  # Required for Django-CORS-Headers
 
 
-# Authentication & Permissions
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',

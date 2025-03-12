@@ -17,11 +17,11 @@ export default function Footer() {
               <a href="#" aria-label="Instagram">
                 <img src="/Instagram.svg" alt="Instagram" className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Facebook">
-                <img src="/Facebook.svg" alt="Facebook" className="h-6 w-6" />
+              <a href="#" aria-label="Telegram">
+                <img src="/telegram.png" alt="Telegram" className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Twitter">
-                <img src="/Twitter.svg" alt="Twitter" className="h-6 w-6" />
+              <a href="#" aria-label="Youtube">
+                <img src="/youtube.png" alt="Youtube" className="h-6 w-6" />
               </a>
             </div>
           </div>
@@ -62,18 +62,17 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Social Section */}
           <div className="hidden sm:block">
             <h4 className="font-bold mb-2 text-lg ">Social</h4>
-            <div className="flex space-x-4 mt-2">
+            <div className=" flex gap-6 ">
               <a href="#" aria-label="Instagram">
                 <img src="/Instagram.svg" alt="Instagram" className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Facebook">
-                <img src="/Facebook.svg" alt="Facebook" className="h-6 w-6" />
+              <a href="https://t.me/shivvishnoiphysics" aria-label="Telegram">
+                <img src="/telegram.png" alt="Telegram" className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Twitter">
-                <img src="/Twitter.svg" alt="Twitter" className="h-6 w-6" />
+              <a href="https://www.youtube.com/@JEE-NEETPULSE" aria-label="Youtube">
+                <img src="/youtube.png" alt="Youtube" className="h-9 w-9 relative -top-1" />
               </a>
             </div>
           </div>
