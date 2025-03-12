@@ -35,7 +35,7 @@ const Contents = () => {
             {Videos?.map((video, index) => (
               <Link
                 key={index}
-                href={`/learn/video/${video.id}`}
+                href={video.video_path}
                 className="group"
               >
                 <div className="cursor-pointer">
@@ -46,9 +46,9 @@ const Contents = () => {
                       src={video.thumbnail}
                       alt={video.video_title}
                     />
-                    <span className="absolute bottom-2 right-4 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
+                    {/* <span className="absolute bottom-2 right-4 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
                       {video.duration || "10:00"}
-                    </span>
+                    </span> */}
                     </div>
                    
             
