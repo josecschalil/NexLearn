@@ -14,7 +14,7 @@ const FeaturedPage = () => {
           {/* <Exams id={courseId} /> */}
           {/* <PracticeQuestions id={courseId} /> */}
           <Classes />
-          <FeaturedTests/>
+          {/* <FeaturedTests/> */}
           <StudyMaterials/>
           
         </div>
