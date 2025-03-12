@@ -9,11 +9,10 @@ const AboutPage = () => {
       {/* Header Section */}
       <div className="bg-teal-900 text-white py-20 text-center px-4">
         <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-inter">
-        ©  JEENEETPULSE 
-        
+          © JEENEETPULSE
         </h1>
         <p className="text-md sm:text-lg font-medium max-w-3xl px-3 mx-auto">
-          The ultimate platform  for aspiring students preparing for JEE and
+          The ultimate platform for aspiring students preparing for JEE and
           NEET. Test your skills, practice questions, and watch expert-led
           classes.
         </p>
@@ -22,8 +21,6 @@ const AboutPage = () => {
       <section className="py-16 bg-white px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid  gap-8">
-    
-
             <div className="">
               <h3 className="text-3xl font-bold text-teal-900 mb-4 font-instSansB">
                 Who We Are
@@ -32,11 +29,11 @@ const AboutPage = () => {
                 Jeeneetpulse is a leading platform dedicated to helping students
                 excel in competitive exams like JEE and NEET. Our mission is to
                 provide high-quality resources, expert guidance, and an
-                intuitive learning experience and some other stuff.
-                Jeeneetpulse is a leading platform dedicated to helping students
-                excel in competitive exams like JEE and NEET. Our mission is to
-                provide high-quality resources, expert guidance, and an
-                intuitive learning experience and some other stuff. 
+                intuitive learning experience and some other stuff. Jeeneetpulse
+                is a leading platform dedicated to helping students excel in
+                competitive exams like JEE and NEET. Our mission is to provide
+                high-quality resources, expert guidance, and an intuitive
+                learning experience and some other stuff.
               </p>
             </div>
 
@@ -49,10 +46,11 @@ const AboutPage = () => {
                 by integrating technology, personalized learning, and expert
                 resources. We aspire to be the one-stop solution for all
                 academic needs, fostering success and confidence in our
-                learners. Jeeneetpulse is a leading platform dedicated to helping students
-                excel in competitive exams like JEE and NEET. Our mission is to
-                provide high-quality resources, expert guidance, and an
-                intuitive learning experience and some other stuff.
+                learners. Jeeneetpulse is a leading platform dedicated to
+                helping students excel in competitive exams like JEE and NEET.
+                Our mission is to provide high-quality resources, expert
+                guidance, and an intuitive learning experience and some other
+                stuff.
               </p>
             </div>
           </div>
@@ -110,11 +108,12 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3  md:gap-16">
             {[
               {
-                image: "/test-prep.svg", // Replace with your image paths
-                title: "Test Preparation",
+                image: "/personalized-practice.svg", // Replace with your image path
+                title: "Personalized Practice",
                 description:
-                  "Prepare for your exams with our extensive question bank, designed to simulate real test conditions. Dive into a wide range of questions across multiple difficulty levels and subjects, tailored to JEE and NEET. Each question is accompanied by detailed solutions to enhance your understanding. Track your performance and pinpoint areas for improvement with advanced analytics.",
-              },
+                  "Enhance your learning with our AI-driven personalized practice sessions. Our unique algorithm identifies your weak concepts and curates question sets tailored to your needs. With each session, you get dynamically adjusted questions, ensuring continuous improvement. Track your progress with detailed analytics and master concepts efficiently.",
+              }
+,              
               {
                 image: "/classes.svg",
                 title: "Expert-Led Classes",
@@ -169,7 +168,10 @@ const AboutPage = () => {
                   "Simulate real test environments with our adaptive test series. Identify your strengths and work on your weaknesses to stay ahead.",
               },
             ].map((step, index) => (
-              <div key={index} className="py-3 md:py-6 text-justify font-instSansN">
+              <div
+                key={index}
+                className="py-3 md:py-6 text-justify font-instSansN"
+              >
                 <h3 className="text-xl font-bold text-teal-900 mb-4 font-instSansB">
                   {step.title}
                 </h3>
@@ -186,39 +188,30 @@ const AboutPage = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center fo">
             Meet the Team
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="flex sm:flex-row flex-col  justify-center items-center gap-8">
             {[
               {
-                image: "/boy.png",
-                name: "John Doe",
+                image: "/sir.jpg",
+                name: "Shiv Narayan Vishnoi",
                 role: "CEO",
               },
+
               {
-                image: "/boy.png",
-                name: "Jane Smith",
-                role: "Lead Instructor",
-              },
-              {
-                image: "/boy.png",
-                name: "Alice John",
-                role: "Content Strategist",
-              },
-              {
-                image: "/boy.png",
-                name: "Bob Brown",
+                image: "/richie1.jpg",
+                name: "Richie James",
                 role: "Technical Lead",
               },
             ].map((member, index) => (
               <div
                 key={index}
-                className="bg-gray-50 border-b-gray-300 border hover:border-gray-600 transition-all duration-200 hover:shadow-md rounded-2xl p-6 text-center"
+                className="bg-gray-50 border-b-gray-300 border w-[300px] font-inter hover:border-gray-600 transition-all duration-200 hover:shadow-md rounded-2xl p-6 text-center"
               >
                 <div className="relative w-24 h-24 mx-auto mb-4">
                   <Image
                     src={member.image}
                     alt={member.name}
                     layout="fill"
-                    className="rounded-full"
+                    className="rounded-full object-cover"
                   />
                 </div>
                 <h3 className="text-xl font-bold text-teal-900">
@@ -233,14 +226,16 @@ const AboutPage = () => {
 
       {/* Call to Action */}
       <section className="py-16 bg-teal-900 text-white text-center">
-        <h2 className="text-3xl font-bold mb-4 font-instSansB">Join Jeeneetpulse Today!</h2>
+        <h2 className="text-3xl font-bold mb-4 font-instSansB">
+          Join Jeeneetpulse Today!
+        </h2>
         <p className="mb-8">
           Transform your preparation journey with expert guidance and tools.
         </p>
         <Link href={`/`}>
-        <button className="py-2 px-4  bg-white text-black font-bold rounded-lg shadow-md ">
-          Get Started
-        </button>
+          <button className="py-2 px-4  bg-white text-black font-bold rounded-lg shadow-md ">
+            Get Started
+          </button>
         </Link>
       </section>
     </div>
