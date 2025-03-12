@@ -54,7 +54,6 @@ ASGI_APPLICATION = 'backend.asgi.application'
 SECRET_KEY = "django-insecure-igt2(drbd-j!9174r@skyw1p%&f53i3q5dhlpp7o$!(4t$7ko0"
 DEBUG = True
 
-# Allow All Hosts & CORS (Temporary for Development)
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -62,7 +61,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1"
 ]
 
-# CORS Allowed Origins - Must have full URLs
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # If frontend runs on a different port
     "http://127.0.0.1:3000"
@@ -71,7 +69,6 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = False  # Restrict to specific origins for security
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies/auth headers in requests
 
-# Authentication & Permissions
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
