@@ -42,7 +42,7 @@ const CoursesPage = () => {
     <div className="min-h-screen md:pb-8 font-jakarta md:pr-6 overflow-x-hidden">
 
     <div className="flex flex-col sm:flex-row">
-      <div className="sm:w-64 sm:min-h-[100vh]  pl-8 pt-16 border-r ">
+      <div className="sm:w-64 sm:min-h-[100vh]  pl-8 pt-16 hidden md:block border-r ">
         <h3 className="text-xl font-bold font-inter text-gray-800 mb-4 border-b pb-4">Filters</h3>
   
         <h4 className="font-semibold  mb-4">Exam</h4>
