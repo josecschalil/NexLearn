@@ -120,40 +120,58 @@ class Question(models.Model):
         (2, 'Level 2'),
         (3, 'Level 3'),
     ]
+    QUESTION_TYPES = [
+        ('MCQ', 'Multiple Choice Question'),
+        ('NUM', 'Numerical Question'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chapters = models.ManyToManyField('Chapter', through='ChapterQuestion', related_name='chapters')
     exams = models.ManyToManyField('Exam', through='ExamQuestion', related_name='exams')
     concepts = models.ManyToManyField("Concept", related_name="questions")
 
+    question_type = models.CharField(max_length=3, choices=QUESTION_TYPES, default='MCQ')
 
+    # Common Fields
     question_text = models.TextField(blank=True, null=True)
     question_text_hindi = models.TextField(blank=True, null=True)
     question_image = models.ImageField(upload_to='question_images/', blank=True, null=True)
+    level = models.IntegerField(choices=LEVEL_CHOICES, default=1)
+
+    # MCQ Fields
     option_a_text = models.TextField(blank=True, null=True)
     option_a_text_hindi = models.TextField(blank=True, null=True)
     option_a_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
+
     option_b_text = models.TextField(blank=True, null=True)
     option_b_text_hindi = models.TextField(blank=True, null=True)
     option_b_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
+
     option_c_text = models.TextField(blank=True, null=True)
     option_c_text_hindi = models.TextField(blank=True, null=True)
     option_c_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
+
     option_d_text = models.TextField(blank=True, null=True)
     option_d_text_hindi = models.TextField(blank=True, null=True)
     option_d_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
+
     correct_answer = models.CharField(
-        max_length=1, 
-        choices=[('A', 'Option A'), ('B', 'Option B'), ('C', 'Option C'), ('D', 'Option D')]
+        max_length=1,
+        choices=[('A', 'Option A'), ('B', 'Option B'), ('C', 'Option C'), ('D', 'Option D')],
+        blank=True,
+        null=True
     )
-    concept_involved = models.CharField(max_length=255, blank=True, null=True)
+
+    # Numerical Field
+    numerical_answer = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    # Solution
     solution_text = models.TextField(blank=True, null=True)
     solution_text_hindi = models.TextField(blank=True, null=True)
     diagram_image = models.ImageField(upload_to='question_diagrams/', blank=True, null=True)
-    level = models.IntegerField(choices=LEVEL_CHOICES, default=1)
 
     class Meta:
         ordering = ['id']
-        
 
     def __str__(self):
         return f"{self.question_text}"
