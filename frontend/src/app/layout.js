@@ -1,6 +1,7 @@
 import Navbar from "./components/navbar";
 import "./globals.css";
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
   title: "Jee Neet Pulse",
@@ -15,6 +16,8 @@ export default function RootLayout({ children }) {
       <Navbar />
       
       {children}
+              <Analytics />
+
       <Toaster /> 
       </body>
     </html>
