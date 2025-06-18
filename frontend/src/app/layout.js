@@ -1,7 +1,7 @@
 import Navbar from "./components/navbar";
 import "./globals.css";
 import { Toaster } from 'sonner';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: "Jee Neet Pulse",
