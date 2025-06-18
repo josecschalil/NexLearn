@@ -1,32 +1,33 @@
 import React from "react";
 
 const SuccessStories = () => {
-  const stories = [
-    {
-      quote:
-        "Joining JeeNeetPulse was the best decision I made for my NEET preparation. Their detailed video lectures and regular practice tests boosted my confidence and helped me achieve a top rank in my state!",
-      name: "Priya Sharma",
-      designation: "Topper, NEET 2023",
-      img: "/img2.svg",
-      image: "/boy.png",
-    },
-    {
-      quote:
-        "I struggled with Physics until I joined JeeNeetPulse. Their conceptual clarity and problem-solving techniques made a huge difference. I'm now pursuing my dream engineering course at IIT Bombay!",
-      name: "Rahul Mehta",
-      designation: "JEE Advanced Rank 67, 2023",
-      img: "/img.svg",
-      image: "/boy.png",
-    },
-    {
-      quote:
-        "JeeNeetPulse's personalized mentorship program kept me on track during my JEE preparation. Their detailed performance analysis helped me identify and improve my weak areas.",
-      name: "Sneha Kapoor",
-      designation: "JEE Main Percentile 99.8, 2023",
-      image: "/boy.png",
-      img: "/img2.svg",
-    },
-  ];
+const stories = [
+  {
+    quote:
+   `Shiv Sir's guidance transformed my approach to physics and problem-solving. I highly recommend him to any JEE aspirant. His teaching style is truly exceptional. His ability to make complex topics simple was invaluable during my preparation.`,
+    name: "Ojas",
+    designation: "IIT Bombay, Electrical Engineering",
+    img: "/img.svg",
+    image: "/testimony/ojas.png",
+  },
+  {
+    quote:
+      "Mr. Shiv Narayan Bishnoi's patient guidance and clear explanations made even the most complex topics simple. I owe much of my success to his unwavering belief in me. His dedication to his students is unparalleled.",
+    name: "Rahul Chauhan",
+    designation: "NIT Calicut, CSE",
+    img: "/img2.svg",
+    image: "/testimony/rahul.png",
+  },
+  {
+    quote:
+      "I am incredibly grateful to have had Shiv Sir as my physics teacher. His passion for teaching and unwavering support helped me succeed. I will always be thankful for the knowledge and confidence he instilled in me.",
+    name: "Sejal",
+    designation: "IIT Delhi",
+    img: "/img2.svg",
+    image: "/testimony/sejal.png",
+  },
+];
+
 
   return (
     <section className="w-full bg-gradient-to-r from-teal-500 to-green-100 py-16 font-jakarta">

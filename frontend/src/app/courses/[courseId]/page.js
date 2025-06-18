@@ -106,15 +106,13 @@ const CoursePage = () => {
   }
 
   return (
-    <div className="min-h-screen md:py-8 bg-gray-50 font-jakarta md:px-6 overflow-x-hidden">
+   <div className="min-h-screen md:py-8 bg-gray-50 font-jakarta md:px-6 overflow-x-hidden">
       <div className="max-w-4xl mx-auto bg-white py-8 rounded-xl border-g p-6 border">
-        {/* Course Title */}
         <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
           {course.title}
         </h3>
         <hr className="mt-2 -mr-[40vw] md:mr-0 mb-4 md:mb-8" />
 
-        {/* Price & Buy Section */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="text-md xs:text-xl sm:text-3xl font-bold text-gray-800">
             ₹{course.current_price}{" "}
@@ -125,28 +123,25 @@ const CoursePage = () => {
               {Math.round(((course.price - course.current_price) / course.price) * 100)}% off
             </span>
           </div>
-       
-            <button
-                onClick={handleBuyNowClick}
-              className={`px-6 max-xs:px-3 py-2 sm:py-2.5 text-xs xs:text-sm sm:text-lg font-semibold rounded-full transition-all 
-                ${isEnrolled ? "bg-gray-400 cursor-not-allowed text-white" : "bg-teal-600 hover:bg-teal-700 text-white"}`}
-              disabled={isEnrolled}
-            >
-              {isEnrolled ? "Already Enrolled" : "Buy Now"}
-            </button>
+
+          <button
+            onClick={handleBuyNowClick}
+            className={`px-6 max-xs:px-3 py-2 sm:py-2.5 text-xs xs:text-sm sm:text-lg font-semibold rounded-full transition-all ${isEnrolled ? "bg-gray-400 cursor-not-allowed text-white" : "bg-teal-600 hover:bg-teal-700 text-white"}`}
+            disabled={isEnrolled}
+          >
+            {isEnrolled ? "Already Enrolled" : "Buy Now"}
+          </button>
         </div>
 
-        <p className="max-xs:text-sm text-md  leading-relaxed mt-4 mb-6 text-gray-600">{course.description}</p>
+        <p className="max-xs:text-sm text-md leading-relaxed mt-4 mb-6 text-gray-600">{course.description}</p>
 
-        {/* Portions Covered */}
         <div className="mt-2">
           <h4 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-2">Portions Covered</h4>
-          <p className="max-xs:text-sm text-md text-gray-600  text-justify font-jakarta2">{course.portions}</p>
+          <p className="max-xs:text-sm text-md text-gray-600 text-justify font-jakarta2">{course.portions}</p>
         </div>
 
-        {/* What's Included */}
-        <div className="mt-4 pt-6 ">
-          <h3 className="text-md xs:text-xl sm:text-2xl font-bold  text-gray-700 mb-4">What's Included</h3>
+        <div className="mt-4 pt-6">
+          <h3 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-4">What's Included</h3>
           <hr className="mt-2 -mr-[40vw] md:mr-0 mb-4 md:mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {[
@@ -163,46 +158,45 @@ const CoursePage = () => {
           </div>
         </div>
 
-        {/* Examinations and Video Classes */}
-        <div className="mt-4 sm:mt-8  pt-6">
+        <div className="mt-4 sm:mt-8 pt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <h4 className="xs:text-xl sm:text-2xl font-bold  mb-2 text-gray-700 sm:mb-5">Examinations</h4>
-              <ul className="list-disc pl-4  space-y-1 sm:space-y-4 text-sm text-justify xs:text-md sm:text-[15px] font-jakarta2   text-gray-800">
-                {course.content_left_1 && <li>{course.content_left_1}</li>}
-                {course.content_left_2 && <li>{course.content_left_2}</li>}
-                {course.content_left_3 && <li>{course.content_left_3}</li>}
-                {course.content_left_4 && <li>{course.content_left_4}</li>}
+              <h4 className="xs:text-xl sm:text-2xl font-bold mb-2 text-gray-700 sm:mb-5">Examinations</h4>
+              <ul className="list-disc pl-4 space-y-1 sm:space-y-4 text-sm text-justify xs:text-md sm:text-[15px] font-jakarta2 text-gray-800">
+                {[course.content_left_1, course.content_left_2, course.content_left_3, course.content_left_4].map(
+                  (item, index) => item && <li key={index}>{item}</li>
+                )}
               </ul>
             </div>
 
-            {/* Right Column - Videos */}
             <div>
-              <h4 className="text-md xs:text-xl sm:text-2xl font-bold  mb-2 sm:mb-5 text-gray-700 ">Video Classes</h4>
-              <ul className="list-disc pl-4  space-y-1 text-sm  sm:space-y-4  text-justify max-xs:text-md sm:text-[15px]   font-jakarta2   text-gray-800">
-                {course.content_right_1 && <li>{course.content_right_1}</li>}
-                {course.content_right_2 && <li>{course.content_right_2}</li>}
-                {course.content_right_3 && <li>{course.content_right_3}</li>}
-                {course.content_right_4 && <li>{course.content_right_4}</li>}
+              <h4 className="text-md xs:text-xl sm:text-2xl font-bold mb-2 sm:mb-5 text-gray-700">Video Classes</h4>
+              <ul className="list-disc pl-4 space-y-1 text-sm sm:space-y-4 text-justify max-xs:text-md sm:text-[15px] font-jakarta2 text-gray-800">
+                {[course.content_right_1, course.content_right_2, course.content_right_3, course.content_right_4].map(
+                  (item, index) => item && <li key={index}>{item}</li>
+                )}
               </ul>
             </div>
           </div>
         </div>
-
       </div>
-      {/* Other Courses */}
-      <div className="hidden bg-white py-8 p-6">
-        <h3 className="text-lg xs:text-3xl sm:text-3xl font-bold font-inter text-gray-800">
-          Other Courses
-        </h3>
-        <hr className="mt-2 -mr-[40vw] md:mr-0 mb-4 md:mb-8" />
 
-        <div className="gap-4 mb-8">
-          {courses.map((course) => (
-            <ProductCard key={course.id} course={course} />
-          ))}
+      <div className="md:hidden fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="bg-teal-600 text-white px-4 py-2 rounded-full shadow-lg"
+        >
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </button>
+      </div>
+
+      {showFilters && (
+        <div className="fixed inset-0 bg-white z-40 p-6 shadow-lg overflow-y-auto">
+          <h3 className="text-lg font-bold mb-4">Filters</h3>
+          {/* Add filter options here */}
+          <button onClick={() => setShowFilters(false)} className="text-teal-600 underline">Close</button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
