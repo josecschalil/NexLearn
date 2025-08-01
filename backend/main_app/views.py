@@ -83,11 +83,9 @@ class ResetPasswordView(APIView):
         try:
             user = CustomUser.objects.get(email=email)
 
-            # Generate a secure token and UID
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
 
-            # Use frontend URL for reset link
             reset_link = f"https://jeeneetpulse.com/reset-password/{uidb64}/{token}/"
 
             subject = "Reset Your Password"
@@ -137,13 +135,14 @@ class ResetPasswordConfirmView(APIView):
             if new_password != confirm_password:
                 return Response({'message': 'Passwords do not match!'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Update the user's password securely
             user.password = make_password(new_password)
             user.save()
 
             return Response({'message': 'Password reset successfully!'}, status=status.HTTP_200_OK)
         except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class SignupView(APIView):
     """Handles user registration."""
     permission_classes = [AllowAny]

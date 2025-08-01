@@ -5,21 +5,18 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Profile
 
 
-# Custom user creation form
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'password')
 
 
-# Custom user change form
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'name', 'password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
 
 
-# Custom user admin
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     add_form = CustomUserCreationForm
@@ -45,11 +42,9 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-# Register the custom user model with the admin
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-# Profile admin
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'bio')

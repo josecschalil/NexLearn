@@ -384,9 +384,9 @@ class ExamQuestionViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        exam_id = self.request.query_params.get("exam")  # Get exam ID from query
+        exam_id = self.request.query_params.get("exam") 
         if exam_id:
-            return self.queryset.filter(exam_id=exam_id)  # Filter by exam ID
+            return self.queryset.filter(exam_id=exam_id)  
         return self.queryset
 
     @action(detail=False, methods=["delete"], url_path="(?P<exam_id>[0-9a-fA-F-]+)/(?P<question_id>[0-9a-fA-F-]+)")
@@ -414,11 +414,9 @@ class ExamQuestionViewSet(viewsets.ModelViewSet):
                 question = item["question"]
 
                 try:
-                    # Try inserting new ExamQuestion entry
                     ExamQuestion.objects.create(exam=exam, question=question)
                     inserted_count += 1
                 except IntegrityError:
-                    # If duplicate, ignore it and count it
                     duplicates_ignored += 1
 
             return Response({
@@ -476,7 +474,6 @@ def get_questions(request):
         if not chapter_ids:
             return JsonResponse({"questions": []})
 
-        # Fetch questions linked to these chapters
         question_ids = ChapterQuestion.objects.filter(chapter_id__in=chapter_ids).values_list("question_id", flat=True)
 
         return JsonResponse({"questions": list(question_ids)})
