@@ -1,74 +1,109 @@
-import React from "react";
+"use client";
 
-const SuccessStories = () => {
 const stories = [
-  {
-    quote:
-   `Shiv Sir's guidance transformed my approach to physics and problem-solving. I highly recommend him to any JEE aspirant. His teaching style is truly exceptional. His ability to make complex topics simple was invaluable during my preparation.`,
-    name: "Ojas",
-    designation: "IIT Bombay, Electrical Engineering",
-    img: "/img.svg",
-    image: "/testimony/ojas.png",
-  },
-  {
-    quote:
-      "Mr. Shiv Narayan Bishnoi's patient guidance and clear explanations made even the most complex topics simple. I owe much of my success to his unwavering belief in me. His dedication to his students is unparalleled.",
-    name: "Rahul Chauhan",
-    designation: "NIT Calicut, CSE",
-    img: "/img2.svg",
-    image: "/testimony/rahul.png",
-  },
-  {
-    quote:
-      "I am incredibly grateful to have had Shiv Sir as my physics teacher. His passion for teaching and unwavering support helped me succeed. I will always be thankful for the knowledge and confidence he instilled in me.",
-    name: "Sejal",
-    designation: "IIT Delhi",
-    img: "/img2.svg",
-    image: "/testimony/sejal.png",
-  },
+{
+quote:
+"Shiv Sir’s guidance transformed how I approached Physics. Complex ideas became simple, and my problem-solving confidence improved with every class.",
+name: "Ojas",
+designation: "IIT Bombay · Electrical Engineering",
+image: "/testimony/ojas.png",
+result: "IIT Bombay",
+},
+{
+quote:
+"The patient guidance and clear explanations made even the toughest topics manageable. That consistency played a huge role in my result.",
+name: "Rahul Chauhan",
+designation: "NIT Calicut · Computer Science",
+image: "/testimony/rahul.png",
+result: "NIT Calicut",
+},
+{
+quote:
+"The teaching gave me more than knowledge—it gave me the confidence to keep going. I always knew what to improve next.",
+name: "Sejal",
+designation: "IIT Delhi",
+image: "/testimony/sejal.png",
+result: "IIT Delhi",
+},
 ];
 
-
+export default function SuccessStories() {
   return (
-    <section className="w-full bg-gradient-to-r from-teal-500 to-green-100 py-16 font-jakarta">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-black font-instSansB">
-          Our Success Stories
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 px-6 items-stretch">
-          {stories.map((story, idx) => (
-            <div key={idx} className="items-stretch ">
-              <div
-                className={`${
-                  idx % 2 === 1 ? "bg-gray-800 text-white bg-opacity-75" : "bg-white"
-                } p-6 py-6 pb-10 text-center relative rounded-3xl shadow-md md:h-2/3 `}
-              >
-                <img
-                  className="h-5 w-5 mb-4 mx-auto"
-                  src={story.img}
-                  alt={story.name}
-                />
-                <blockquote className=" text-sm">
-                  “{story.quote}”
-                </blockquote>
-              </div>
-              <div className="mt-4 flex flex-col items-center text-center gap-1">
-                <img
-                  className="w-12 h-12 rounded-full border-2 hidden md:block border-gray-900 object-cover"
-                  src={story.image}
-                  alt={story.name}
-                />
-                <div>
-                  <h4 className="font-bold text-sm mb-1">{story.name}</h4>
-                  <p className="text-gray-600 text-sm">{story.designation}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+    <section className="overflow-hidden bg-white pt-16">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="mb-20 px-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-600">
+            Student Success Stories
+          </p>
+
+          <h2 className="mt-5 text-balance text-4xl font-semibold tracking-[-0.035em] text-slate-950 sm:text-5xl md:text-6xl">
+            Don't take our word for it.
+            <br />
+            Hear it from <span className="text-emerald-600">our students.</span>
+          </h2>
+
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-slate-600">
+            Real stories from students who achieved their goals through
+            disciplined preparation, mentorship, and focused learning.
+          </p>
+        </div>
+
+        {/* Testimonial Grid */}
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {stories.map((story, idx) => {
+              const subDesignation = story.designation
+                .replace(story.result, "")
+                .replace("·", "")
+                .trim();
+
+              return (
+                <article
+                  key={idx}
+                  className="flex w-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:p-10"
+                >
+                  <div>
+                    {/* Big Green Quote Icon */}
+                    <svg
+                      className="mb-6 h-4 w-6 text-emerald-700"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z" />
+                    </svg>
+
+                    <p className="text-[15px] font-medium leading-[1.6] text-slate-700">
+                      {story.quote}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-4 ">
+                    <img
+                      src={story.image}
+                      alt={story.name}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                    <div className="flex flex-col">
+                      <h4 className="text-[12px] font-bold text-slate-900">
+                        {story.name}
+                      </h4>
+                      <p className="text-[12px] font-medium text-emerald-700 mt-0.5">
+                        {story.result}
+                      </p>
+                      {subDesignation && (
+                        <p className="text-[12px] text-slate-500 mt-0.5">
+                          {subDesignation}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default SuccessStories;
+}

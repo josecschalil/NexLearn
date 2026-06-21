@@ -1,23 +1,82 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "gsap";
-import { usePathname } from "next/navigation";
-import useAuthentication from "@/hooks/useAuthentication";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-const Navbar = () => {
+import useAuthentication from "@/hooks/useAuthentication";
+
+const navLinks = [
+  ["Home", "/"],
+  ["Portal", "/student-portal"],
+  ["Courses", "/courses"],
+  ["Resources", "/featured"],
+  ["About", "/about"],
+  ["Contact", "/contact"],
+];
+
+const isActiveRoute = (pathname, href) => {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
+
+export default function Navbar() {
   const pathname = usePathname();
-  const [user_id, setUserId] = useState(null);
+  const router = useRouter();
   const { isAuthenticated, userDetails } = useAuthentication();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const [isRotated, setIsRotated] = useState(false);
-  const navbarRef = useRef(null);
-  const linksRef = useRef([]);
 
-  const router = useRouter();
+  const navbarRef = useRef(null);
+  const menuRef = useRef(null);
+  const accountRef = useRef(null);
+
+  const isTestPage =
+    pathname.startsWith("/tests/custom/exams/") ||
+    pathname.startsWith("/tests/proctored/exams/");
+
+  useEffect(() => {
+    const context = gsap.context(() => {
+      gsap.from(navbarRef.current, {
+        y: -22,
+        opacity: 0,
+        duration: 0.65,
+        ease: "power3.out",
+      });
+    });
+
+    return () => context.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!menuRef.current) return;
+
+    if (menuOpen) {
+      gsap.fromTo(
+        menuRef.current,
+        { opacity: 0, y: -10, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power3.out" }
+      );
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setDropdownOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleProfileRedirect = () => {
     const userId = localStorage.getItem("user_id");
@@ -27,98 +86,17 @@ const Navbar = () => {
     } else {
       toast.error("Log in to access your Profile.");
     }
+
     setMenuOpen(false);
     setDropdownOpen(false);
-    setIsRotated(false);
   };
-
-  useEffect(() => {
-    gsap.from(navbarRef.current, {
-      y: -60,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power2.out",
-    });
-
-    gsap.from(linksRef.current, {
-      opacity: 0,
-      y: 20,
-      duration: 0.8,
-      ease: "power3.out",
-      stagger: 0.1,
-    });
-  }, []);
-
-  const menuRef = useRef(null);
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-
-    if (menuRef.current) {
-      gsap.set(menuRef.current, {
-        opacity: 0,
-        y: -20,
-        maxHeight: 0,
-        visibility: "hidden",
-      });
-
-      if (menuOpen) {
-        gsap.to(menuRef.current, {
-          opacity: 1,
-          y: 0,
-          maxHeight: 600,
-          visibility: "visible",
-          duration: 0.2,
-          ease: "power3.out",
-        });
-      } else {
-        gsap.to(menuRef.current, {
-          opacity: 0,
-          y: -20,
-          maxHeight: 0,
-          duration: 0.5,
-          ease: "power2.in",
-          onComplete: () => {
-            gsap.set(menuRef.current, { visibility: "hidden" });
-          },
-        });
-      }
-    }
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUserId = localStorage.getItem("user_id");
-      setUserId(storedUserId);
-    }
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_id");
-  
-    // Navigate to home page and refresh
-    window.location.replace('/');  // This will navigate to the home page and refresh
+    window.location.replace("/");
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-        setIsRotated(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside); 
-    };
-  }, []);
-
-  const isTestPage =
-    pathname.startsWith("/tests/custom/exams/") ||
-    pathname.startsWith("/tests/proctored/exams/");
 
   if (isTestPage) return null;
 
@@ -126,171 +104,186 @@ const Navbar = () => {
     <>
       <nav
         ref={navbarRef}
-        className="font-jakarta border-b sticky top-0 border-b-gray-400 shadow-sm backdrop-blur-2xl z-50 bg-opacity-5 transition-all duration-300 font-medium items-center pt-4 mx-auto py-5 bg-white w-screen"
+        className="sticky top-0 z-50 border-b border-white/70 bg-white/75 font-inter shadow-[0_1px_0_rgba(15,23,42,.04)] backdrop-blur-2xl"
       >
-        <div className="flex flex-row max-w-7xl px-3 pr-5 md:px-6 items-center justify-between gap-14 mx-auto">
-          <div
-            className="basis-auto flex lg:hidden mr-4"
-            onClick={() => {
-              setMenuOpen(!menuOpen);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
+        <div className="mx-auto grid h-16 max-w-7xl grid-cols-[auto_auto] items-center gap-4 px-5 sm:px-8 md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr_auto]">
+          <Link
+            href="/"
+            className="flex shrink-0 items-center"
+            aria-label="JeeNeetPulse home"
           >
-            <img src="/menu.png" className="h-[25px]" alt="Menu" />
-          </div>
+            <img src="/logo.svg" className="h-4 w-auto sm:h-[px]" alt="JeeNeetPulse" />
+          </Link>
 
-          <div className="flex">
-            <img src="/logo.svg" className="h-[12px] mr-5  mt-2" alt="Logo" />
-          </div>
+          <div className="hidden min-w-0 justify-center md:flex">
+            <div className="flex max-w-full items-center rounded-full border border-slate-200/75 bg-white/90 p-1 shadow-[0_10px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
+              {navLinks.map(([text, href]) => {
+                const active = isActiveRoute(pathname, href);
 
-          <div className="hidden text-sm uppercase font-instSansB text-black lg:flex gap-4 items-center mt-2">
-            {[
-              "Home",
-              "Student Portal",
-              "Courses",
-              "Featured",
-              "About",
-              "Contact",
-            ].map((text, index) => (
-              <Link
-                key={index}
-                href={`/${text
-                  .toLowerCase()
-                  .replace(/\s/g, "-")
-                  .replace(/home/g, "/")}`}
-                passHref
-              >
-                <div
-                  ref={(el) => (linksRef.current[index] = el)}
-                  className="hover:text-teal-800 px-3 p-1 rounded-full"
-                >
-                  {text}
-                </div>
-              </Link>
-            ))}
-
-            <div
-              className="flex items-center space-x-4 font-semibold"
-              ref={(el) => (linksRef.current[6] = el)}
-            >
-              {!isAuthenticated ? (
-                <Link href="/signin" passHref>
-                  <button className="border border-black font-instSansB py-2 px-4 uppercase rounded-md hover:rounded-2xl transition-all duration-300">
-                    Sign In
-                  </button>
-                </Link>
-              ) : (
-                <div className="relative">
-                  <div
-                    className="flex items-center gap-2 bg py-2 font-instSansB  cursor-pointer transition-transform duration-150 ease-in-out active:scale-95"
-                    onClick={() => {
-                      setDropdownOpen(!dropdownOpen);
-                      setIsRotated(!isRotated);
-                    }}
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[12px] font-semibold transition xl:px-3.5 xl:py-2 xl:text-[13px] ${
+                      active
+                        ? "bg-slate-950 text-white shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
+                    }`}
                   >
-                    {userDetails?.name}
-                    <span
-                      className={`transform transition-all duration-200 ${isRotated ? "rotate-180" : ""}`}
-                    >
-                      {/* Down arrow icon */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="18"
-                        height="18"
-                        className="transition-transform duration-300"
-                      >
-                        <path
-                          d="M7 10l5 5 5-5z"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                    </span>
-                  </div>
+                    {text}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
 
-                  {dropdownOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10"
-                      ref={dropdownRef}
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  href="/signin"
+                  className="rounded-full px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-slate-950"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white  transition hover:-translate-y-0.5 hover:bg-orange-600 xl:px-5 xl:py-2.5"
+                >
+                  <span className="hidden xl:inline">Get started</span>
+                  <span className="xl:hidden">Start</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </>
+            ) : (
+              <div ref={accountRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((open) => !open)}
+                  className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 py-1.5 pl-2 pr-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50/50"
+                  aria-expanded={dropdownOpen}
+                  aria-haspopup="menu"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text-xs font-bold uppercase text-white">
+                    {userDetails?.name?.charAt(0) || "J"}
+                  </span>
+                  <span className="max-w-32 truncate">{userDetails?.name || "Student"}</span>
+                  <svg
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    className={`h-4 w-4 text-slate-500 transition ${dropdownOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  >
+                    <path d="m5 8 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_22px_60px_rgba(15,23,42,.16)]" role="menu">
+                    <button
+                      type="button"
+                      onClick={handleProfileRedirect}
+                      className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                     >
-                      <ul className="text-sm text-gray-800">
-                        <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"  onClick={handleProfileRedirect}>
-                          <button
-                          >
-                            PROFILE
-                          </button>
-                        </li>
-                        <li  onClick={() => {
-                              handleLogout();
-                            }}>
-                          <button
-                           
-                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                          >
-                            SIGN OUT
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+                      Profile <span className="text-slate-300">→</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="mt-1 flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                    >
+                      Sign out <span className="text-red-200">→</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            className="inline-flex h-11 w-11 justify-self-end items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-slate-50 md:hidden"
+          >
+            <span className="sr-only">Menu</span>
+            <span className="relative block h-4 w-5">
+              <span className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-[7px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`absolute left-0 top-[14px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+            </span>
+          </button>
+        </div>
+      </nav>
+
+      {menuOpen && (
+        <div className="fixed inset-x-0 top-16 z-40 px-4 md:hidden">
+          <div
+            ref={menuRef}
+            className="mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-white/95 p-3 font-inter shadow-[0_24px_70px_rgba(15,23,42,.18)] backdrop-blur-2xl"
+          >
+            <div className="mb-2 rounded-3xl bg-gradient-to-br from-emerald-50 to-orange-50 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">JeeNeetPulse</p>
+              <p className="mt-1 text-sm font-medium text-slate-600">Your lessons, practice, and progress in one focused workspace.</p>
+            </div>
+            <div className="grid gap-1">
+              {navLinks.map(([text, href]) => {
+                const active = isActiveRoute(pathname, href);
+
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                      active ? "bg-emerald-50 text-emerald-800" : "text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    {text}
+                    <span className="text-slate-300">→</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 border-t border-slate-100 pt-3">
+              {!isAuthenticated ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    href="/signin"
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-slate-200 text-sm font-semibold text-slate-800"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="inline-flex min-h-11 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white"
+                  >
+                    Get started
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid gap-2">
+                  <button
+                    type="button"
+                    onClick={handleProfileRedirect}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-700 text-sm font-semibold text-white"
+                  >
+                    Open profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-red-100 bg-red-50 text-sm font-semibold text-red-600"
+                  >
+                    Sign out
+                  </button>
                 </div>
               )}
             </div>
           </div>
         </div>
-      </nav>
-
-      {isMounted && menuOpen && (
-        <div
-          ref={menuRef}
-          className="transition-all lg:hidden bg-teal-900 duration-300 ease-in-out overflow-hidden"
-        >
-          <div className="text-white pt-2 font-inter">
-            <ul className="flex flex-col max-xs:text-sm text-lg font-instSansB pl-6 uppercase font-bold">
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1 mt-4">
-                <a href="/">Home</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/student-portal">Student Portal</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/courses">Courses</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/featured">Featured</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/about">About</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/contact">Contact</a>
-              </li>
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                {!isAuthenticated ? (
-                  <a href="/signin">SIGN IN</a>
-                ) : (
-                  <a href="/">
-                    <button onClick={handleLogout}>SIGN OUT</button>
-                  </a>
-                )}
-              </li>
-
-              <li className="border-b mb-4 max-xs:mb-3 hover:translate-x-4 transition-all py-1">
-                <a href="/signup">Register</a>
-              </li>
-              
-               <li className="pb-2 mb-4">
-               <a   onClick={handleProfileRedirect}>Profile</a>
-             </li>
-             
-            </ul>
-          </div>
-        </div>
       )}
     </>
   );
-};
-
-export default Navbar;
+}

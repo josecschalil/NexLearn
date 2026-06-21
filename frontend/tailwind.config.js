@@ -17,7 +17,6 @@ module.exports = {
         'range1': { min: '500px', max: '640px'  }, // Custom media query for max-width 1280px
       },
       fontFamily: {
-      
         poppins: ['Poppins', 'Sans'],
         hindi:['Hindi','Poppins'],
         jakarta:['Jakarta','Sans'], 
@@ -28,8 +27,9 @@ module.exports = {
         instSans: ['instrumentSans', 'Sans'],
         instSansN: ['instrumentSansnorm', 'Sans'],  
         instSansB: ['instrumentSansBold', 'Sans'], 
-        inter: ['Inter', 'Sans'],
+        inter: ['var(--font-inter)', 'sans-serif'],
         interi: ['InterI', 'Sans'],
+        geist: ['var(--font-geist-sans)', 'sans-serif'],
       },
       colors: {
         background: "var(--background)",
