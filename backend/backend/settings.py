@@ -5,8 +5,8 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-RAZORPAY_KEY_ID = "rzp_test_MMtbyq8sHx2QaO"
-RAZORPAY_KEY_SECRET = "bQWcQjJUwScgrNiKkCTmsJG4"
+RAZORPAY_KEY_ID = "rzp_test_T4smH0ioF1lPpp"
+RAZORPAY_KEY_SECRET = "AzFmjhSxc6zliISNQ1K1T4iy"
 
 
 # Media & Static Files
@@ -151,7 +151,7 @@ DATABASES = {
         "NAME": "jeeneetpulse",
         "USER": "postgres",
         "PASSWORD": "1234",
-        "HOST": "db",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }

@@ -5,7 +5,6 @@ import ProductCard from "@/app/components/productCard";
 import { useParams, useRouter } from "next/navigation";
 import api from "../../services/api";
 
-
 const CoursePage = () => {
   const { courseId } = useParams();
   const router = useRouter();
@@ -15,11 +14,12 @@ const CoursePage = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [userId, setUserId] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await api.get("/api/courses"); 
+        const response = await api.get("/api/courses");
         setCourses(response.data);
       } catch (error) {
         console.error("Failed to fetch courses", error);
@@ -60,7 +60,7 @@ const CoursePage = () => {
         .get(`/api/userCourses/${userId}`)
         .then((response) => {
           const isEnrolled = response?.data.courses.some(
-            (course) => course.course_id === courseId
+            (course) => course.course_id === courseId,
           );
 
           if (isEnrolled) {
@@ -106,7 +106,7 @@ const CoursePage = () => {
   }
 
   return (
-   <div className="min-h-screen md:py-8 bg-gray-50 font-jakarta md:px-6 overflow-x-hidden">
+    <div className="min-h-screen md:py-8 bg-gray-50 font-jakarta md:px-6 overflow-x-hidden">
       <div className="max-w-4xl mx-auto bg-white py-8 rounded-xl border-g p-6 border">
         <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
           {course.title}
@@ -120,7 +120,10 @@ const CoursePage = () => {
               ₹{course.price}
             </span>
             <span className=" text-teal-700 text-sm xs:text-lg sm:text-xl font-semibold ml-1 md:ml-2">
-              {Math.round(((course.price - course.current_price) / course.price) * 100)}% off
+              {Math.round(
+                ((course.price - course.current_price) / course.price) * 100,
+              )}
+              % off
             </span>
           </div>
 
@@ -133,15 +136,23 @@ const CoursePage = () => {
           </button>
         </div>
 
-        <p className="max-xs:text-sm text-md leading-relaxed mt-4 mb-6 text-gray-600">{course.description}</p>
+        <p className="max-xs:text-sm text-md leading-relaxed mt-4 mb-6 text-gray-600">
+          {course.description}
+        </p>
 
         <div className="mt-2">
-          <h4 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-2">Portions Covered</h4>
-          <p className="max-xs:text-sm text-md text-gray-600 text-justify font-jakarta2">{course.portions}</p>
+          <h4 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-2">
+            Portions Covered
+          </h4>
+          <p className="max-xs:text-sm text-md text-gray-600 text-justify font-jakarta2">
+            {course.portions}
+          </p>
         </div>
 
         <div className="mt-4 pt-6">
-          <h3 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-4">What's Included</h3>
+          <h3 className="text-md xs:text-xl sm:text-2xl font-bold text-gray-700 mb-4">
+            What's Included
+          </h3>
           <hr className="mt-2 -mr-[40vw] md:mr-0 mb-4 md:mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {[
@@ -150,9 +161,16 @@ const CoursePage = () => {
               { label: "Test Series", value: course.chapters },
               { label: "Videos", value: course.classes },
             ].map((item, index) => (
-              <div key={index} className="text-center bg-gray-50 border-2 border-t-4 border-teal-700 rounded-2xl py-4 shadow-md">
-                <span className="text-md xs:text-xl sm:text-2xl font-bold text-gray-800">{item.value}+</span>
-                <p className="text-md max-xs:text-xs text-gray-500">{item.label}</p>
+              <div
+                key={index}
+                className="text-center bg-gray-50 border-2 border-t-4 border-teal-700 rounded-2xl py-4 shadow-md"
+              >
+                <span className="text-md xs:text-xl sm:text-2xl font-bold text-gray-800">
+                  {item.value}+
+                </span>
+                <p className="text-md max-xs:text-xs text-gray-500">
+                  {item.label}
+                </p>
               </div>
             ))}
           </div>
@@ -161,20 +179,30 @@ const CoursePage = () => {
         <div className="mt-4 sm:mt-8 pt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <h4 className="xs:text-xl sm:text-2xl font-bold mb-2 text-gray-700 sm:mb-5">Examinations</h4>
+              <h4 className="xs:text-xl sm:text-2xl font-bold mb-2 text-gray-700 sm:mb-5">
+                Examinations
+              </h4>
               <ul className="list-disc pl-4 space-y-1 sm:space-y-4 text-sm text-justify xs:text-md sm:text-[15px] font-jakarta2 text-gray-800">
-                {[course.content_left_1, course.content_left_2, course.content_left_3, course.content_left_4].map(
-                  (item, index) => item && <li key={index}>{item}</li>
-                )}
+                {[
+                  course.content_left_1,
+                  course.content_left_2,
+                  course.content_left_3,
+                  course.content_left_4,
+                ].map((item, index) => item && <li key={index}>{item}</li>)}
               </ul>
             </div>
 
             <div>
-              <h4 className="text-md xs:text-xl sm:text-2xl font-bold mb-2 sm:mb-5 text-gray-700">Video Classes</h4>
+              <h4 className="text-md xs:text-xl sm:text-2xl font-bold mb-2 sm:mb-5 text-gray-700">
+                Video Classes
+              </h4>
               <ul className="list-disc pl-4 space-y-1 text-sm sm:space-y-4 text-justify max-xs:text-md sm:text-[15px] font-jakarta2 text-gray-800">
-                {[course.content_right_1, course.content_right_2, course.content_right_3, course.content_right_4].map(
-                  (item, index) => item && <li key={index}>{item}</li>
-                )}
+                {[
+                  course.content_right_1,
+                  course.content_right_2,
+                  course.content_right_3,
+                  course.content_right_4,
+                ].map((item, index) => item && <li key={index}>{item}</li>)}
               </ul>
             </div>
           </div>
@@ -194,7 +222,12 @@ const CoursePage = () => {
         <div className="fixed inset-0 bg-white z-40 p-6 shadow-lg overflow-y-auto">
           <h3 className="text-lg font-bold mb-4">Filters</h3>
           {/* Add filter options here */}
-          <button onClick={() => setShowFilters(false)} className="text-teal-600 underline">Close</button>
+          <button
+            onClick={() => setShowFilters(false)}
+            className="text-teal-600 underline"
+          >
+            Close
+          </button>
         </div>
       )}
     </div>

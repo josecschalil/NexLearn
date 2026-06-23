@@ -28,10 +28,32 @@ export default function Navbar() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(true);
 
   const navbarRef = useRef(null);
   const menuRef = useRef(null);
   const accountRef = useRef(null);
+
+  const isHomePage = pathname === "/";
+
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
 
   const isTestPage =
     pathname.startsWith("/tests/custom/exams/") ||
@@ -57,7 +79,7 @@ export default function Navbar() {
       gsap.fromTo(
         menuRef.current,
         { opacity: 0, y: -10, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power3.out" }
+        { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power3.out" },
       );
     }
   }, [menuOpen]);
@@ -104,7 +126,11 @@ export default function Navbar() {
     <>
       <nav
         ref={navbarRef}
-        className="sticky top-0 z-50 border-b border-white/70 bg-white/75 font-inter shadow-[0_1px_0_rgba(15,23,42,.04)] backdrop-blur-2xl"
+        className={`sticky top-0 z-50 font-inter transition-all duration-300 ease-in-out ${
+          isHomePage && !isScrolled && !menuOpen
+            ? "border-b border-white/0 bg-white/0 shadow-none backdrop-blur-none"
+            : "border-b border-white/70 bg-white/75 shadow-[0_1px_0_rgba(15,23,42,.04)] backdrop-blur-2xl"
+        }`}
       >
         <div className="mx-auto grid h-16 max-w-7xl grid-cols-[auto_auto] items-center gap-4 px-5 sm:px-8 md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr_auto]">
           <Link
@@ -112,11 +138,15 @@ export default function Navbar() {
             className="flex shrink-0 items-center"
             aria-label="JeeNeetPulse home"
           >
-            <img src="/logo.svg" className="h-4 w-auto sm:h-[px]" alt="JeeNeetPulse" />
+            <img
+              src="/logo.svg"
+              className="h-4 w-auto sm:h-[px]"
+              alt="JeeNeetPulse"
+            />
           </Link>
 
           <div className="hidden min-w-0 justify-center md:flex">
-            <div className="flex max-w-full items-center rounded-full border border-slate-200/75 bg-white/90 p-1 shadow-[0_10px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
+            <div className="flex max-w-full items-center px-5 py-2 rounded-full border border-slate-200/75 bg-white/90 p-1 shadow-[0_10px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
               {navLinks.map(([text, href]) => {
                 const active = isActiveRoute(pathname, href);
 
@@ -167,19 +197,30 @@ export default function Navbar() {
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text-xs font-bold uppercase text-white">
                     {userDetails?.name?.charAt(0) || "J"}
                   </span>
-                  <span className="max-w-32 truncate">{userDetails?.name || "Student"}</span>
+                  <span className="max-w-32 truncate">
+                    {userDetails?.name || "Student"}
+                  </span>
                   <svg
                     viewBox="0 0 20 20"
                     fill="none"
                     className={`h-4 w-4 text-slate-500 transition ${dropdownOpen ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   >
-                    <path d="m5 8 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="m5 8 5 5 5-5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_22px_60px_rgba(15,23,42,.16)]" role="menu">
+                  <div
+                    className="absolute right-0 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_22px_60px_rgba(15,23,42,.16)]"
+                    role="menu"
+                  >
                     <button
                       type="button"
                       onClick={handleProfileRedirect}
@@ -209,9 +250,15 @@ export default function Navbar() {
           >
             <span className="sr-only">Menu</span>
             <span className="relative block h-4 w-5">
-              <span className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`} />
-              <span className={`absolute left-0 top-[7px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`absolute left-0 top-[14px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+              <span
+                className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`}
+              />
+              <span
+                className={`absolute left-0 top-[7px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`absolute left-0 top-[14px] h-0.5 w-5 rounded-full bg-current transition ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
+              />
             </span>
           </button>
         </div>
@@ -224,8 +271,12 @@ export default function Navbar() {
             className="mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-white/95 p-3 font-inter shadow-[0_24px_70px_rgba(15,23,42,.18)] backdrop-blur-2xl"
           >
             <div className="mb-2 rounded-3xl bg-gradient-to-br from-emerald-50 to-orange-50 px-4 py-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">JeeNeetPulse</p>
-              <p className="mt-1 text-sm font-medium text-slate-600">Your lessons, practice, and progress in one focused workspace.</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
+                JeeNeetPulse
+              </p>
+              <p className="mt-1 text-sm font-medium text-slate-600">
+                Your lessons, practice, and progress in one focused workspace.
+              </p>
             </div>
             <div className="grid gap-1">
               {navLinks.map(([text, href]) => {
@@ -236,7 +287,9 @@ export default function Navbar() {
                     key={href}
                     href={href}
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition ${
-                      active ? "bg-emerald-50 text-emerald-800" : "text-slate-700 hover:bg-slate-50"
+                      active
+                        ? "bg-emerald-50 text-emerald-800"
+                        : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
                     {text}

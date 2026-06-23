@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import api from "../../services/api";
-
 
 const StudyMaterials = () => {
   const [studyMaterials, setStudyMaterials] = useState(null);
@@ -9,7 +8,7 @@ const StudyMaterials = () => {
   useEffect(() => {
     const fetchStudyMaterials = async () => {
       try {
-        const response = await api.get(`/api/lecture-notes/?is_featured=true`);
+        const response = await api.get("/api/lecture-notes/?is_featured=true");
         setStudyMaterials(response.data);
       } catch (error) {
         console.error("Failed to fetch study materials:", error);
@@ -20,57 +19,69 @@ const StudyMaterials = () => {
   }, []);
 
   return (
-    <div className="my-10 ">
-                 <h3 className="text-xl xs:text-3xl sm:text-4xl font-bold font-inter text-gray-800">
-          Featured Notes
-        </h3>
-        <hr className="mt-2 -mr-[40vw] mb-5 md:mb-8 "></hr>
-      {studyMaterials?.length === 0 ? (
-        <p className="text-gray-600 mt-4">No lecture notes available.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 gap-y-4 md:gap-y-6 mt-4">
-          {studyMaterials?.map((note, index) => {
-            const hasPdf = !!note.pdf_file; // Check if pdf_file exists
+    <div className="mt-8 font-inter">
+      <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
+            Notes and revision
+          </p>
+          <h3 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+            Featured study materials
+          </h3>
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            Curated notes and PDFs for faster revision across high-impact topics.
+          </p>
+        </div>
 
-            return hasPdf ? (
-              <Link
-                key={index}
-                href={note.pdf_file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <div className="border border-gray-300 rounded-2xl shadow-sm transition-all hover:shadow-md overflow-hidden flex items-center p-4">
-                  <span className="text-2xl">🗂️</span>
-                  <div className="ml-4 flex-1">
-                    <h4 className="font-inter max-xs:text-sm font-semibold text-gray-900 truncate">
+        {studyMaterials?.length === 0 ? (
+          <p className="mt-6 text-sm text-slate-500">
+            No lecture notes available.
+          </p>
+        ) : (
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {studyMaterials?.map((note, index) => {
+              const hasPdf = Boolean(note.pdf_file);
+
+              const card = (
+                <div
+                  className={`flex h-full items-start gap-4 rounded-[1.5rem] border p-5 transition ${
+                    hasPdf
+                      ? "border-slate-200 bg-[#f8faf9] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,.08)]"
+                      : "cursor-not-allowed border-slate-100 bg-slate-50"
+                  }`}
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[11px] font-bold tracking-[0.16em] text-orange-600 shadow-sm">
+                    PDF
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate text-lg font-semibold tracking-tight text-slate-950">
                       {note.pdf_title}
                     </h4>
-                    <p className="text-sm max-xs:text-xs text-gray-500 mt-1 font-istok">
-                      {note.pdf_type}
+                    <p className="mt-2 text-sm text-slate-500">{note.pdf_type}</p>
+                    <p className="mt-4 text-sm font-semibold text-orange-700">
+                      {hasPdf ? "Open material" : "Unavailable"}
                     </p>
                   </div>
                 </div>
-              </Link>
-            ) : (
-              <div
-                key={index}
-                className="border border-gray-300 rounded-lg shadow-sm overflow-hidden flex items-center p-4 bg-gray-50 cursor-not-allowed"
-              >
-                <span className="text-2xl">🗂️</span>
-                <div className="ml-4 flex-1">
-                  <h4 className="font-inter max-xs:text-sm font-semibold text-gray-900 truncate">
-                    {note.pdf_title}
-                  </h4>
-                  <p className="text-sm max-xs:text-xs text-gray-500 mt-1 font-istok">
-                    {note.pdf_type}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+
+              return hasPdf ? (
+                <Link
+                  key={index}
+                  href={note.pdf_file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  {card}
+                </Link>
+              ) : (
+                <div key={index}>{card}</div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

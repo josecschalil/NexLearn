@@ -2,244 +2,195 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Footer from "../components/Footer";
+import { MarketingPage, SectionHeading } from "../components/marketing/PageScaffold";
 
-const AboutPage = () => {
+const values = [
+  {
+    title: "Clarity over clutter",
+    description:
+      "We design every lesson, note, and test around what helps students move forward with confidence.",
+  },
+  {
+    title: "Practice with purpose",
+    description:
+      "Strong preparation comes from targeted repetition, chapter-level feedback, and consistent review.",
+  },
+  {
+    title: "Progress you can feel",
+    description:
+      "From concept learning to mock tests, the platform is built to make improvement visible and actionable.",
+  },
+];
+
+const offers = [
+  "Structured courses aligned with exam preparation patterns.",
+  "Featured video lessons for quick understanding and revision.",
+  "Curated study notes and resources for focused review.",
+  "Performance-led workflows that keep preparation intentional.",
+];
+
+const team = [
+  {
+    image: "/sir.jpg",
+    name: "Shiv Narayan Vishnoi",
+    role: "Founder and Academic Lead",
+  },
+  {
+    image: "/richie1.jpg",
+    name: "Richie James",
+    role: "Technical Lead",
+  },
+];
+
+export default function AboutPage() {
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Header Section */}
-      <div className="bg-teal-900 text-white py-20 text-center px-4">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 font-inter">
-          © JEENEETPULSE
-        </h1>
-        <p className="text-md sm:text-lg font-medium max-w-3xl px-3 mx-auto">
-          The ultimate platform for aspiring students preparing for JEE and
-          NEET. Test your skills, practice questions, and watch expert-led
-          classes.
-        </p>
-      </div>
-
-      <section className="py-16 bg-white px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid  gap-8">
-            <div className="">
-              <h3 className="text-3xl font-bold text-teal-900 mb-4 font-instSansB">
-                Who We Are
-              </h3>
-              <p className="text-gray-900">
-                Jeeneetpulse is a leading platform dedicated to helping students
-                excel in competitive exams like JEE and NEET. Our mission is to
-                provide high-quality resources, expert guidance, and an
-                intuitive learning experience and some other stuff. Jeeneetpulse
-                is a leading platform dedicated to helping students excel in
-                competitive exams like JEE and NEET. Our mission is to provide
-                high-quality resources, expert guidance, and an intuitive
-                learning experience and some other stuff.
+    <MarketingPage
+      eyebrow="About JeeNeetPulse"
+      title="Built to make serious exam preparation feel more focused."
+      description="JeeNeetPulse brings together lessons, guided practice, revision resources, and progress tracking so JEE and NEET aspirants can prepare with structure instead of stress."
+      accent="emerald"
+      actions={[
+        { href: "/courses", label: "Explore courses" },
+        { href: "/contact", label: "Talk to us", variant: "secondary" },
+      ]}
+      stats={[
+        { value: "All-in-one", label: "Lessons, resources, and practice in one place" },
+        { value: "JEE + NEET", label: "Preparation designed for competitive exam flow" },
+        { value: "Student-first", label: "Simple experiences that reduce friction" },
+      ]}
+      footer={<Footer />}
+    >
+      <section className="pt-4 sm:pt-8">
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <SectionHeading
+              eyebrow="Who we are"
+              title="A learning platform shaped around momentum."
+              description="We focus on helping ambitious students move from scattered preparation to a more deliberate routine with cleaner content, sharper practice, and better visibility into their next step."
+            />
+            <div className="mt-8 space-y-5 text-sm leading-7 text-slate-600">
+              <p>
+                Our mission is to support exam aspirants with high-quality
+                academic resources, intuitive workflows, and a calmer
+                preparation experience.
               </p>
-            </div>
-
-            <div>
-              <h3 className="text-3xl font-bold  text-teal-900 mb-4 font-instSansB">
-                Our Vision
-              </h3>
-              <p className="text-gray-900 ">
-                Our vision is to transform how students prepare for their exams
-                by integrating technology, personalized learning, and expert
-                resources. We aspire to be the one-stop solution for all
-                academic needs, fostering success and confidence in our
-                learners. Jeeneetpulse is a leading platform dedicated to
-                helping students excel in competitive exams like JEE and NEET.
-                Our mission is to provide high-quality resources, expert
-                guidance, and an intuitive learning experience and some other
-                stuff.
+              <p>
+                Instead of treating learning, revision, and testing as separate
+                journeys, JeeNeetPulse connects them into one system that feels
+                easier to return to every day.
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Core Values Section */}
-      {/* <section className="py-16 px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center font-instSansB">
-            Our Core Values
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Excellence",
-                description:
-                  "We are dedicated to providing the highest quality content for your success.",
-              },
-              {
-                title: "Innovation",
-                description:
-                  "We strive to make learning accessible and engaging through innovative methods.",
-              },
-              {
-                title: "Commitment",
-                description:
-                  "Our mission is to ensure students achieve their academic dreams.",
-              },
-            ].map((value, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 border border-b-4 rounded-b-md border-teal-900  p-6 text-center"
-              >
-                <h3 className="text-xl font-bold text-teal-900 mb-4 font-instSansB">
-                  {value.title}
-                </h3>
-                <p className="text-gray-600">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* Features  */}
-      <section className="py-6 md:py-16 bg-gray-100 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex  mb-8 gap-3 md:gap-6">
-            <div className="flex-1 h-[1px] bg-green-900 rounded-full mt-4"></div>
-            <h2 className="text-3xl font-bold text-gray-800  font-instSansB">
-              What We Offer
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3  md:gap-16">
-            {[
-              {
-                image: "/personalized-practice.svg", // Replace with your image path
-                title: "Personalized Practice",
-                description:
-                  "Enhance your learning with our AI-driven personalized practice sessions. Our unique algorithm identifies your weak concepts and curates question sets tailored to your needs. With each session, you get dynamically adjusted questions, ensuring continuous improvement. Track your progress with detailed analytics and master concepts efficiently.",
-              }
-,              
-              {
-                image: "/classes.svg",
-                title: "Expert-Led Classes",
-                description:
-                  "Learn from the best instructors in the field through interactive, on-demand classes. Our videos cover concepts in-depth, making even the most challenging topics easy to grasp. Stay engaged with clear explanations, real-life examples, and tips for exam success. Whether you're studying at your own pace or following a structured plan, our classes are built to support you.",
-              },
-              {
-                image: "/progress.svg",
-                title: "Progress Tracking",
-                description:
-                  "Monitor your academic journey with our comprehensive progress tracking tools. Get detailed insights into your strengths and areas needing improvement. Visualize your growth with performance graphs and compare yourself to peers. Regular feedback and adaptive recommendations ensure that you stay on the path to success.",
-              },
-            ].map((feature, index) => (
-              <div key={index} className=" py-6 text-justify font-instSansN">
-                <h3 className="text-xl font-bold text-teal-900 mb-4 font-instSansB">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-900">{feature.description}</p>
-              </div>
-            ))}
+          <div className="rounded-[2rem] bg-[#063f39] p-6 text-white shadow-[0_24px_60px_rgba(6,78,69,.18)] sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+              What we offer
+            </p>
+            <div className="mt-6 space-y-4">
+              {offers.map((offer) => (
+                <div
+                  key={offer}
+                  className="rounded-[1.4rem] border border-white/10 bg-white/10 px-4 py-4 text-sm leading-6 text-emerald-50/85"
+                >
+                  {offer}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How it Works */}
-      <section className="pb-6 md:py-16 bg-gray-100 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex mb-8 gap-2 md:gap-6">
-            <h2 className="text-3xl font-bold text-gray-800 font-instSansB">
-              How It Works
-            </h2>
-            <div className="flex-1 h-[1px] bg-green-900 rounded-full mt-4"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-16">
-            {[
-              {
-                image: "/register.svg", // Replace with your image paths
-                title: "Register",
-                description:
-                  "Sign up on our platform to gain access to a world of resources. Create a personalized profile and select your target exam to get started.",
-              },
-              {
-                image: "/learn.svg",
-                title: "Learn & Practice",
-                description:
-                  "Dive into expert-led classes, practice questions, and in-depth materials. Track your progress and enhance your understanding through interactive tools.",
-              },
-              {
-                image: "/test.svg",
-                title: "Take Tests",
-                description:
-                  "Simulate real test environments with our adaptive test series. Identify your strengths and work on your weaknesses to stay ahead.",
-              },
-            ].map((step, index) => (
-              <div
-                key={index}
-                className="py-3 md:py-6 text-justify font-instSansN"
-              >
-                <h3 className="text-xl font-bold text-teal-900 mb-4 font-instSansB">
-                  {step.title}
-                </h3>
-                <p className="text-gray-900">{step.description}</p>
-              </div>
-            ))}
-          </div>
+      <section className="pt-8 sm:pt-12">
+        <SectionHeading
+          eyebrow="Principles"
+          title="The values behind the product."
+          description="A few core ideas guide how we design the learning experience."
+          align="center"
+        />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {values.map((value, index) => (
+            <div
+              key={value.title}
+              className={`rounded-[2rem] border p-6 shadow-sm ${
+                index === 1
+                  ? "border-emerald-200 bg-emerald-50/70"
+                  : "border-slate-200 bg-white"
+              }`}
+            >
+              <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                0{index + 1}
+              </span>
+              <h3 className="mt-5 text-2xl font-semibold tracking-tight text-slate-950">
+                {value.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                {value.description}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-16 bg-white font-instSansB px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center fo">
-            Meet the Team
-          </h2>
-          <div className="flex sm:flex-row flex-col  justify-center items-center gap-8">
-            {[
-              {
-                image: "/sir.jpg",
-                name: "Shiv Narayan Vishnoi",
-                role: "CEO",
-              },
-
-              {
-                image: "/richie1.jpg",
-                name: "Richie James",
-                role: "Technical Lead",
-              },
-            ].map((member, index) => (
+      <section className="pt-8 sm:pt-12">
+        <div className="rounded-[2.25rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <SectionHeading
+            eyebrow="Team"
+            title="The people building the experience."
+            description="A small team blending academic direction with product and platform design."
+          />
+          <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:justify-center">
+            {team.map((member) => (
               <div
-                key={index}
-                className="bg-gray-50 border-b-gray-300 border w-[300px] font-inter hover:border-gray-600 transition-all duration-200 hover:shadow-md rounded-2xl p-6 text-center"
+                key={member.name}
+                className="w-full rounded-[1.75rem] border border-slate-200 bg-[#f8faf9] p-5 text-center shadow-sm sm:max-w-sm"
               >
-                <div className="relative w-24 h-24 mx-auto mb-4">
+                <div className="relative mx-auto h-24 w-24 overflow-hidden rounded-full">
                   <Image
                     src={member.image}
                     alt={member.name}
-                    layout="fill"
-                    className="rounded-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-bold text-teal-900">
+                <h3 className="mt-5 text-xl font-semibold text-slate-950">
                   {member.name}
                 </h3>
-                <p className="text-gray-600 font-jakarta">{member.role}</p>
+                <p className="mt-1 text-sm text-slate-500">{member.role}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-16 bg-teal-900 text-white text-center">
-        <h2 className="text-3xl font-bold mb-4 font-instSansB">
-          Join Jeeneetpulse Today!
-        </h2>
-        <p className="mb-8">
-          Transform your preparation journey with expert guidance and tools.
-        </p>
-        <Link href={`/`}>
-          <button className="py-2 px-4  bg-white text-black font-bold rounded-lg shadow-md ">
-            Get Started
-          </button>
-        </Link>
+      <section className="pt-8 sm:pt-12">
+        <div className="rounded-[2.25rem] bg-[#063f39] px-6 py-10 text-center text-white shadow-[0_24px_60px_rgba(6,78,69,.2)] sm:px-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+            Start here
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+            Join a more intentional preparation routine.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-emerald-100/75">
+            Explore the platform, discover the right course path, and bring your
+            preparation into one place.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href="/signup"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-7 text-sm font-semibold text-white transition hover:bg-orange-600"
+            >
+              Create free account
+            </Link>
+            <Link
+              href="/courses"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-semibold text-white transition hover:bg-white/15"
+            >
+              Browse courses
+            </Link>
+          </div>
+        </div>
       </section>
-    </div>
+    </MarketingPage>
   );
-};
-
-export default AboutPage;
+}

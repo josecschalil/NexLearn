@@ -1,4 +1,6 @@
 from rest_framework import viewsets,status
+import traceback
+
 from .models import (
     Course, Subject, Chapter, LectureVideo,
      Exam, Question,UserCourseData,UserExamData,
@@ -518,9 +520,10 @@ def create_order(request):
         )
 
         return Response(order)
-
     except Exception as e:
-        return Response({"error": str(e)}, status=400)
+        traceback.print_exc()
+        print("ERROR:", str(e))
+        return Response({"error": str(e)}, status=500)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
