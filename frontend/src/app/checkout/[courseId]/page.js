@@ -1,24 +1,56 @@
 "use client";
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import PaymentButton from "@/app/components/PaymentButton";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import useAuthentication from "@/hooks/useAuthentication";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import axios from "axios";
+import PaymentButton from "@/app/components/PaymentButton";
+import useAuthentication from "@/hooks/useAuthentication";
 import api from "../../services/api";
-import { useRouter } from "next/navigation";
+
+const getCourseVisual = (course) => {
+  if (!course) {
+    return "https://images.unsplash.com/photo-1508830524289-0adcbe822b40?q=80&w=1125";
+  }
+
+  const isNeet = course.exam_type === "NEET";
+  const isChapterwise = course.course_type === "Chapter-wise";
+
+  if (isNeet && isChapterwise) {
+    return "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1170";
+  }
+
+  if (isNeet) {
+    return "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1070";
+  }
+
+  if (isChapterwise) {
+    return "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1170";
+  }
+
+  return "https://images.unsplash.com/photo-1508830524289-0adcbe822b40?q=80&w=1125";
+};
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+
+const statItems = (course) => [
+  { label: "Hours", value: course.watch_hours },
+  { label: "Classes", value: course.classes },
+  { label: "Chapters", value: course.chapters },
+  { label: "Tests", value: course.tests },
+];
 
 const CheckoutPage = () => {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { isAuthenticated, userDetails } = useAuthentication();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [userId, setUserId] = useState(null);
-
-  const router = useRouter();
+  const { isAuthenticated, userDetails } = useAuthentication();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -26,31 +58,8 @@ const CheckoutPage = () => {
       if (storedUserId) {
         setUserId(storedUserId);
       }
-      setLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (userId) {
-      api
-        .get(`/api/userCourses/${userId}`)
-        .then((response) => {
-          console.log(response?.data.courses);
-          const isEnrolled = response?.data.courses.some(
-            (course) => course.course_id === courseId
-          );
-
-          if (isEnrolled) {
-            setIsEnrolled(true);
-          } else {
-            setIsEnrolled(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user courses:", error);
-        });
-    }
-  }, [userId]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -67,17 +76,35 @@ const CheckoutPage = () => {
     fetchCourse();
   }, [courseId]);
 
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
+    api
+      .get(`/api/userCourses/${userId}`)
+      .then((response) => {
+        const enrolled = response?.data.courses.some(
+          (item) => item.course_id === courseId,
+        );
+        setIsEnrolled(Boolean(enrolled));
+      })
+      .catch((fetchError) => {
+        console.error("Error fetching user courses:", fetchError);
+      });
+  }, [courseId, userId]);
+
   if (loading) {
     return (
-      <div className="text-center mt-20 text-2xl  font-bold text-gray-700">
-        Loading...
+      <div className="px-4 py-20 text-center text-xl font-semibold text-slate-500">
+        Loading checkout...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center mt-20 text-2xl font-bold text-red-500">
+      <div className="px-4 py-20 text-center text-xl font-semibold text-red-500">
         {error}
       </div>
     );
@@ -85,153 +112,204 @@ const CheckoutPage = () => {
 
   if (!course) {
     return (
-      <div className="text-center mt-20 text-2xl font-bold text-gray-700">
-        Course Not Found
+      <div className="px-4 py-20 text-center text-xl font-semibold text-slate-500">
+        Course not found.
       </div>
     );
   }
 
-  const handlePayment = () => {
-    if (isAuthenticated) {
-      alert(
-        `Payment through PhonePe for ${course.title} will be processed. Now adding to userCourses.`
-      );
-      addCourseToUser();
-    } else showPopup("User not Logged In. Log In to enroll for Courses.");
-  };
-
-  const addCourseToUser = () => {
-    const userId = localStorage.getItem("user_id");
-
-    const data = {
-      user: userId,
-      course: courseId,
-    };
-
-    api
-      .post(`/api/userCourses/`, data)
-      .then((response) => {
-        console.log("Course added to user successfully:", response.data);
-      })
-      .catch((error) => {
-        console.error(
-          "There was an error adding the course to the user:",
-          error
-        );
-      });
-  };
+  const visual = getCourseVisual(course);
+  const discount =
+    course.price > 0
+      ? Math.round(((course.price - course.current_price) / course.price) * 100)
+      : 0;
 
   return (
-    <div className=" min-h-screen md:bg-gray-100 py-10 font-jakarta overflow-x-hidden">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 md:gap-8">
-        <div className="md:col-span-2 bg-white md:shadow-md md:rounded-2xl p-6 py-2 md:p-8">
-          <div className=" pb-4  flex justify-between items-center md:border-b md:mb-4">
-            <h1 className="text-2xl max-xs:text-xl md:text-4xl font-bold text-gray-800">
-              {course.title}
-            </h1>
-          </div>
-          <hr className="md:hidden -mr-[40vw] mb-6 md:mb-8"></hr>
-
-          <Link href={`/courses/${course.id}`}>
-            <button className="bg-teal-800 mb-4 text-white px-4 py-2 max-xs:text-xs text-sm font-semibold rounded-md shadow hover:bg-teal-600 transition">
-              View Details
-            </button>
-          </Link>
-          <p className="max-xs:text-sm  text-md md:text-lg text-justify text-gray-600 leading-relaxed">
-            {course.description}
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-2xl shadow-md">
-              <span className="max-xs:text-xl text-2xl font-bold text-gray-800">
-                {course.watch_hours}+
-              </span>
-              <p className="text-gray-500 max-xs:text-xs text-sm">
-                Watch Hours
-              </p>
-            </div>
-            <div className="text-center border-t-4 border-teal-700 py-3 bg-gray-50 rounded-2xl shadow-md">
-              <span className="max-xs:text-xl text-2xl font-bold text-gray-800">
-                {course.classes}+
-              </span>
-              <p className="text-gray-500 max-xs:text-xs text-sm">Classes</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white md:shadow-md md:rounded-2xl p-6 flex flex-col sm:gap-6">
-          <div className="md:border-b mb-4 md:pb-4 ">
-            <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-2">
-              Price Details
-            </h2>
-            <hr className="md:hidden -mr-[40vw] mb-2 "></hr>
-            <div className="text-lg max-xs:text-[15px] font-semibold text-gray-800">
-              ₹{course.current_price}{" "}
-              <span className="text-gray-500 line-through text-xl max-xs:text-[15px]">
-                ₹{course.price}
-              </span>
-              <span className="ml-2 text-teal-500 text-xl max-xs:text-[15px]">
-                ({" "}
-                {Math.round(
-                  ((course.price - course.current_price) / course.price) * 100
-                )}
-                % off)
-              </span>
-            </div>
-          </div>
-
-          {!userId && (
-            <button
-              onClick={()=>{toast.error("Sign In to finish Enrollment.")}}
-              className="bg-teal-800 mb-4 text-white px-4 py-2 max-xs:text-xs text-sm font-semibold rounded-md shadow  transition"
+    <main className="bg-[#faf8f4] font-inter text-slate-950">
+      <section className="px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-5 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+            <Link
+              href={`/courses/${course.id}`}
+              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              Buy Now
-            </button>
-          )}
+              Back to course
+            </Link>
+            <span>Checkout</span>
+            <span>/</span>
+            <span className="truncate text-slate-400">{course.title}</span>
+          </div>
 
-          {userId && (
-            <div>
-              <div className="md:border-b mb-4 md:pb-4">
-                <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-2">
-                  User Details
-                </h2>
-                <hr className="md:hidden -mr-[40vw] mb-2 "></hr>
-                <div className="text-gray-600 font-jakarta2 text-md max-xs:text-sm md:text-lg">
-                  <p>
-                    Name:{" "}
-                    <span className="font-semibold">{userDetails?.name}</span>
-                  </p>
-                  <p>
-                    Email:{" "}
-                    <span className="font-semibold">{userDetails?.email}</span>
-                  </p>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="space-y-6">
+              <div className="overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-sm">
+                <div className="grid gap-0 xl:grid-cols-[380px_minmax(0,1fr)]">
+                  <div className="bg-[#f2ede6]">
+                    <img
+                      src={visual}
+                      alt={course.title}
+                      className="aspect-[5/4] w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="p-5 sm:p-7">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                        {course.exam_type}
+                      </span>
+                      <span className="rounded-full bg-[#f4efe7] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                        {course.course_type}
+                      </span>
+                      {discount > 0 ? (
+                        <span className="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+                          {discount}% off
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <h1 className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-slate-950 sm:text-4xl">
+                      Checkout for {course.title}
+                    </h1>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-700 sm:text-base">
+                      Review the course summary and complete your enrollment in one secure step.
+                    </p>
+
+                    <div className="mt-6 border-t border-slate-100 pt-5">
+                      <div className="grid grid-cols-4 divide-x divide-slate-200">
+                        {statItems(course).map((item) => (
+                          <div
+                            key={item.label}
+                            className="flex min-w-0 flex-col items-center justify-start px-1.5 text-center sm:px-3"
+                          >
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-[11px]">
+                              {item.label}
+                            </p>
+                            <p className="mt-1 w-full text-center text-sm font-semibold tracking-tight text-slate-950 sm:text-xl">
+                              {item.value}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <h2 className="text-xl max-xs:text-lg md:text-2xl font-bold text-gray-800 md:mb-4">
-                  Payment Options
-                </h2>
-                <hr className="md:hidden -mr-[40vw] mb-6 md:mb-8"></hr>
-                <div className="flex items-center gap-3">
-                  {isEnrolled ? (
-                    <div className="text-teal-800 font-semibold">
-                      Already Enrolled
+              <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      What you are enrolling in
+                    </p>
+                    <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-slate-950">
+                      Course overview
+                    </h2>
+                    <p className="mt-4 text-sm leading-7 text-slate-600">
+                      {course.description}
+                    </p>
+                  </div>
+
+                  <div className="rounded-[1.3rem] border border-slate-200 bg-[#fcfbf8] p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Access
+                    </p>
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Validity</p>
+                        <p className="mt-1 text-sm text-slate-600">
+                          {course.validity} days
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Materials</p>
+                        <p className="mt-1 text-sm text-slate-600">
+                          {course.studymaterials} study assets
+                        </p>
+                      </div>
                     </div>
-                  ) : (
-                    <PaymentButton
-                      course={course}
-                      userId={userId}
-                      userDetails={userDetails}
-                      isAuthenticated={isAuthenticated}
-                    />
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
-          )}
+
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Price details
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-end gap-3">
+                  <p className="text-3xl font-semibold tracking-tight text-slate-950">
+                    Rs.{formatCurrency(course.current_price)}
+                  </p>
+                  <p className="text-base text-slate-400 line-through">
+                    Rs.{formatCurrency(course.price)}
+                  </p>
+                </div>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  One-time enrollment with access added to your student portal after payment.
+                </p>
+
+                {!userId ? (
+                  <button
+                    onClick={() => {
+                      toast.error("Sign in to finish enrollment.");
+                    }}
+                    className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  >
+                    Sign in to continue
+                  </button>
+                ) : (
+                  <div className="mt-6 space-y-5">
+                    <div className="rounded-[1.2rem] bg-[#fcfbf8] p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        User details
+                      </p>
+                      <div className="mt-3 space-y-2 text-sm text-slate-600">
+                        <p>
+                          Name:{" "}
+                          <span className="font-semibold text-slate-900">
+                            {userDetails?.name}
+                          </span>
+                        </p>
+                        <p>
+                          Email:{" "}
+                          <span className="font-semibold text-slate-900">
+                            {userDetails?.email}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Payment
+                      </p>
+                      <div className="mt-3">
+                        {isEnrolled ? (
+                          <div className="rounded-[1rem] bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+                            Already enrolled
+                          </div>
+                        ) : (
+                          <PaymentButton
+                            course={course}
+                            userId={userId}
+                            userDetails={userDetails}
+                            isAuthenticated={isAuthenticated}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

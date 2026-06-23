@@ -1,18 +1,19 @@
 "use client";
+
 import axios from "axios";
-import { toast} from "sonner";
-import api from "../services/api";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import api from "../services/api";
 
 const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
   if (!course || !userId) {
     return null;
   }
 
-    const router = useRouter();
+  const router = useRouter();
 
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
+  const loadRazorpayScript = () =>
+    new Promise((resolve) => {
       if (window.Razorpay) {
         resolve(true);
         return;
@@ -25,17 +26,21 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
     });
-  };
 
   const addCourseToUser = async () => {
     try {
       const data = { user: userId, course: course.id };
-      const response = await api.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/userCourses/`, data);
+      const response = await api.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/userCourses/`,
+        data,
+      );
       console.log("Course added to user successfully:", response.data);
-      router.push(`/student-portal`)
-      
+      router.push(`/student-portal`);
     } catch (error) {
-      console.error("Error adding course to user:", error.response?.data || error.message);
+      console.error(
+        "Error adding course to user:",
+        error.response?.data || error.message,
+      );
       toast.error("Failed to add course. Please contact support.");
     }
   };
@@ -61,7 +66,7 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
           amount: course.current_price * 100,
           currency: "INR",
           receipt: `receipt_${userId}_${course.id}`,
-        }
+        },
       );
 
       const { id: orderId } = orderResponse.data;
@@ -85,14 +90,17 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-              }
+              },
             );
 
             console.log("Payment verification successful:", verifyResponse.data);
             toast.success("Payment Successful! Course Enrolled.");
-            await addCourseToUser(); 
+            await addCourseToUser();
           } catch (error) {
-            console.error("Payment verification failed:", error.response?.data || error.message);
+            console.error(
+              "Payment verification failed:",
+              error.response?.data || error.message,
+            );
             toast.error("Payment verification failed. Please try again.");
           }
         },
@@ -101,7 +109,7 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
           email: userDetails?.email || "user@example.com",
           contact: userDetails?.phone || "",
         },
-        theme: { color: "#115e59" },
+        theme: { color: "#0f172a" },
       };
 
       const rzp = new window.Razorpay(options);
@@ -112,17 +120,20 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
 
       rzp.open();
     } catch (error) {
-      console.error("Error initializing payment:", error.response?.data || error.message);
+      console.error(
+        "Error initializing payment:",
+        error.response?.data || error.message,
+      );
       alert("Failed to initiate payment. Please try again.");
     }
   };
 
   return (
     <button
-      className="bg-teal-700 text-white px-4 py-2 max-xs:text-xs font-semibold rounded-md hover:bg-teal-900 transition"
+      className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
       onClick={handlePayment}
     >
-      Pay ₹{course.current_price} with Razorpay
+      Pay Rs.{course.current_price} with Razorpay
     </button>
   );
 };

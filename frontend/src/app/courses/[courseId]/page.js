@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import ProductCard from "@/app/components/productCard";
+import PaymentButton from "@/app/components/PaymentButton";
 import Footer from "@/app/components/Footer";
+import useAuthentication from "@/hooks/useAuthentication";
 import api from "../../services/api";
 
 const getCourseVisual = (course) => {
@@ -60,13 +62,14 @@ const rightFeatures = (course) =>
 
 const CoursePage = () => {
   const { courseId } = useParams();
-  const router = useRouter();
   const [course, setCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const { isAuthenticated, userDetails } = useAuthentication();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -132,7 +135,7 @@ const CoursePage = () => {
 
   const handleBuyNowClick = () => {
     if (!isEnrolled) {
-      router.push(`/checkout/${courseId}`);
+      setIsCheckoutModalOpen(true);
     }
   };
 
@@ -165,6 +168,11 @@ const CoursePage = () => {
     course.price > 0
       ? Math.round(((course.price - course.current_price) / course.price) * 100)
       : 0;
+  const accessItems = [
+    { label: "Exam", value: course.exam_type },
+    { label: "Format", value: course.course_type },
+    { label: "Validity", value: `${course.validity} days` },
+  ];
 
   return (
     <main className="bg-[#faf8f4] font-inter text-slate-950">
@@ -247,24 +255,17 @@ const CoursePage = () => {
                 </div>
 
                 <div className="mt-5 space-y-3 text-sm text-slate-600">
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Exam</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.exam_type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Format</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.course_type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Validity</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.validity} days
-                    </span>
-                  </div>
+                  {accessItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3"
+                    >
+                      <span>{item.label}</span>
+                      <span className="font-semibold text-slate-900">
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 <button
@@ -383,24 +384,17 @@ const CoursePage = () => {
                 </div>
 
                 <div className="mt-5 space-y-3 text-sm text-slate-600">
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Exam</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.exam_type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Format</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.course_type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
-                    <span>Validity</span>
-                    <span className="font-semibold text-slate-900">
-                      {course.validity} days
-                    </span>
-                  </div>
+                  {accessItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3"
+                    >
+                      <span>{item.label}</span>
+                      <span className="font-semibold text-slate-900">
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 <button
@@ -449,6 +443,113 @@ const CoursePage = () => {
           </div>
         </div>
       </section>
+
+      {isCheckoutModalOpen ? (
+        <div className="fixed inset-0 z-50 flex items-end bg-slate-950/45 p-4 sm:items-center sm:justify-center sm:p-6">
+          <div
+            className="absolute inset-0"
+            onClick={() => setIsCheckoutModalOpen(false)}
+          />
+
+          <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-2xl">
+            <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Confirm enrollment
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-slate-950">
+                    Continue with payment?
+                  </h3>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsCheckoutModalOpen(false)}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-lg text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
+                  aria-label="Close payment dialog"
+                >
+                  X
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-5 px-5 py-5 sm:px-6 sm:py-6">
+              <div className="flex gap-4 rounded-[1.4rem] bg-[#fcfbf8] p-3">
+                <img
+                  src={visual}
+                  alt={course.title}
+                  className="h-24 w-24 rounded-[1rem] object-cover"
+                />
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    {course.exam_type} | {course.course_type}
+                  </p>
+                  <h4 className="mt-2 line-clamp-2 text-lg font-semibold tracking-[-0.03em] text-slate-950">
+                    {course.title}
+                  </h4>
+                  <div className="mt-3 flex items-end gap-3">
+                    <p className="text-2xl font-semibold tracking-tight text-slate-950">
+                      Rs.{formatCurrency(course.current_price)}
+                    </p>
+                    <p className="text-sm text-slate-400 line-through">
+                      Rs.{formatCurrency(course.price)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 text-sm text-slate-600">
+                {accessItems.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-[1rem] border border-slate-200 px-3 py-3"
+                  >
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 font-semibold text-slate-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {userId ? (
+                <div className="space-y-3">
+                  <PaymentButton
+                    course={course}
+                    userId={userId}
+                    userDetails={userDetails}
+                    isAuthenticated={isAuthenticated}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsCheckoutModalOpen(false)}
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="rounded-[1.2rem] bg-[#fcfbf8] px-4 py-4 text-sm leading-6 text-slate-600">
+                    Sign in first to continue with course fee payment and link
+                    access to your student portal.
+                  </p>
+                  <Link
+                    href="/signin"
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  >
+                    Sign in to continue
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <Footer />
     </main>
