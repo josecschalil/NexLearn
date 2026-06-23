@@ -16,11 +16,14 @@ export default function Home() {
     <main className="overflow-hidden bg-white font-inter text-slate-950">
       <Hero />
       <Sections />
+
       <PrepareSection />
+        <FeaturedCourses />
       <Features_1 />
-      <FeaturedCourses />
-      <SuccessStories />
+    
+    
       <VideoHighlights />
+        <SuccessStories />
       <FAQ />
       <StartLearning />
       <Footer />
