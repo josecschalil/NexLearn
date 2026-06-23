@@ -176,15 +176,15 @@ const CoursePage = () => {
             <span className="truncate text-slate-400">{course.title}</span>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="space-y-6">
               <div className="overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-sm">
-                <div className="grid gap-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,.95fr)]">
+                <div className="grid gap-0 xl:grid-cols-[380px_minmax(0,1fr)]">
                   <div className="bg-[#f2ede6]">
                     <img
                       src={visual}
                       alt={course.title}
-                      className="h-full min-h-[18rem] w-full object-cover sm:min-h-[24rem] lg:min-h-[30rem]"
+                      className="aspect-[5/4] w-full object-cover"
                     />
                   </div>
 
@@ -197,37 +197,91 @@ const CoursePage = () => {
                         {course.course_type}
                       </span>
                       {discount > 0 ? (
-                        <span className="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+                        <span className="rounded-full bg-orange-50 px-1 md:px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
                           {discount}% off
                         </span>
                       ) : null}
                     </div>
 
-                    <h1 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-slate-950 sm:text-4xl">
+                    <h1 className="mt-4 text-xl font-semibold tracking-[-0.05em] text-slate-950 sm:text-4xl">
                       {course.title}
                     </h1>
 
-                    <p className="mt-4 text-base leading-8 text-slate-600">
+                    <p className="mt-3 text-sm leading-7 text-slate-700 sm:text-standard">
                       {course.description}
                     </p>
 
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      {statItems(course).map((item) => (
-                        <div
-                          key={item.label}
-                          className="rounded-[1.15rem] border border-slate-200 bg-[#fcfbf8] px-4 py-4"
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                            {item.label}
-                          </p>
-                          <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                            {item.value}
-                          </p>
-                        </div>
-                      ))}
+                    <div className="mt-6 border-t border-slate-100 pt-5">
+                      <div className="grid grid-cols-4 divide-x divide-slate-200">
+                        {statItems(course).map((item) => (
+                          <div
+                            key={item.label}
+                            className="flex min-w-0 flex-col items-center justify-start px-1.5 text-center sm:px-3"
+                          >
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-[11px]">
+                              {item.label}
+                            </p>
+                            <p className="mt-1 w-full text-center text-sm font-semibold tracking-tight text-slate-950 sm:text-xl">
+                              {item.value}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:hidden">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Enrollment
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-end gap-3">
+                  <p className="text-3xl font-semibold tracking-tight text-slate-950">
+                    Rs.{formatCurrency(course.current_price)}
+                  </p>
+                  <p className="text-base text-slate-400 line-through">
+                    Rs.{formatCurrency(course.price)}
+                  </p>
+                </div>
+
+                <div className="mt-5 space-y-3 text-sm text-slate-600">
+                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
+                    <span>Exam</span>
+                    <span className="font-semibold text-slate-900">
+                      {course.exam_type}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
+                    <span>Format</span>
+                    <span className="font-semibold text-slate-900">
+                      {course.course_type}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-[1rem] bg-[#fcfbf8] px-4 py-3">
+                    <span>Validity</span>
+                    <span className="font-semibold text-slate-900">
+                      {course.validity} days
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleBuyNowClick}
+                  className={`mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-semibold transition ${
+                    isEnrolled
+                      ? "cursor-not-allowed bg-slate-200 text-slate-500"
+                      : "bg-slate-950 text-white hover:bg-slate-800"
+                  }`}
+                  disabled={isEnrolled}
+                >
+                  {isEnrolled ? "Already enrolled" : "Continue to checkout"}
+                </button>
+
+                <p className="mt-3 text-center text-xs text-slate-500">
+                  Secure enrollment flow with access linked to your student portal.
+                </p>
               </div>
 
               <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -248,7 +302,7 @@ const CoursePage = () => {
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Access
                     </p>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <div className="mt-4 grid grid-cols-2 gap-3">
                       <div>
                         <p className="text-sm font-semibold text-slate-900">
                           Validity
@@ -283,7 +337,7 @@ const CoursePage = () => {
                       {leftFeatures(course).map((item) => (
                         <li
                           key={item}
-                          className="rounded-[1rem] bg-[#fcfbf8] px-4 py-3"
+                          className="rounded-[1rem] bg-[#fcfbf8] px-1 py-1"
                         >
                           {item}
                         </li>
@@ -302,7 +356,7 @@ const CoursePage = () => {
                       {rightFeatures(course).map((item) => (
                         <li
                           key={item}
-                          className="rounded-[1rem] bg-[#fcfbf8] px-4 py-3"
+                          className="rounded-[1rem] bg-[#fcfbf8] px-1 py-1"
                         >
                           {item}
                         </li>
@@ -313,7 +367,7 @@ const CoursePage = () => {
               </div>
             </div>
 
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
               <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                   Enrollment
