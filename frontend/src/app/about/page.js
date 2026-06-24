@@ -4,317 +4,261 @@ import Image from "next/image";
 import Link from "next/link";
 import Footer from "../components/Footer";
 
-const principles = [
-  {
-    id: "01",
-    title: "Less friction, more focus",
-    description:
-      "Students should spend less time figuring out where to study and more time actually improving.",
-  },
-  {
-    id: "02",
-    title: "Preparation with structure",
-    description:
-      "Courses, revision, tests, and study resources work better when they support one clear routine.",
-  },
-  {
-    id: "03",
-    title: "Progress that stays visible",
-    description:
-      "Small gains matter. The platform is built to make momentum easier to notice and repeat.",
-  },
-];
-
-const highlights = [
-  "Recorded and structured courses for JEE and NEET preparation",
-  "Study materials and revision assets organized for faster review",
-  "Test-led workflows that support practice, retention, and confidence",
-  "A cleaner student experience designed to reduce preparation noise",
-];
-
-const workflow = [
-  {
-    step: "Start with clarity",
-    body: "Choose the right course path, understand what is included, and begin with a more guided plan.",
-  },
-  {
-    step: "Build consistency",
-    body: "Move between lessons, study support, and practice without the usual platform clutter.",
-  },
-  {
-    step: "Track improvement",
-    body: "Use feedback loops and repeated revision to turn effort into measurable exam readiness.",
-  },
-];
-
-const team = [
-  {
-    image: "/sir.jpg",
-    name: "Shiv Narayan Vishnoi",
-    role: "Founder and Academic Lead",
-    summary:
-      "Shapes the academic direction with a focus on clear explanation, exam-fit coverage, and reliable preparation systems.",
-  },
-  {
-    image: "/richie1.jpg",
-    name: "Richie James",
-    role: "Technical Lead",
-    summary:
-      "Builds the product experience to keep learning flows clean, responsive, and easy to return to every day.",
-  },
+const metrics = [
+  { value: "JEE + NEET", label: "exam-focused ecosystem" },
+  { value: "Courses", label: "structured academic tracks" },
+  { value: "Practice", label: "revision and testing support" },
 ];
 
 export default function AboutPage() {
   return (
     <main className="bg-white font-inter text-slate-950">
-      <section className="relative overflow-hidden border-b border-slate-100 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.10),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.08),_transparent_28%),linear-gradient(180deg,_#ffffff_0%,_#f8fbfa_100%)] px-5 py-10 sm:px-8 sm:py-14">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_360px]">
-            <div className="max-w-3xl">
-              <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">
-                About JeeNeetPulse
-              </span>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-white px-5 pb-16 pt-20 sm:px-8 sm:pb-24 lg:pt-28">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.06),_transparent_45%)]" />
+        
+        <div className="relative mx-auto max-w-5xl text-center">
+          <span className="inline-flex rounded-full bg-emerald-50 border border-emerald-200/60 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">
+            Our Story & Mission
+          </span>
+          
+          <h1 className="mx-auto mt-6 max-w-4xl text-[2.5rem] font-bold leading-[1.1] tracking-tight text-slate-950 sm:text-[3.5rem]">
+            Educating with{" "}
+            <span className="relative inline-block">
+              clarity
+              <svg className="absolute -bottom-1 left-0 w-full text-emerald-500/80" viewBox="0 0 100 10" fill="none" preserveAspectRatio="none">
+                <path d="M2 7.5C25.5 3.5 65 -1.5 98 7.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+            </span>
+            , preparing with{" "}
+            <span className="relative inline-block">
+              purpose
+              <svg className="absolute -bottom-1 left-0 w-full text-emerald-500/80" viewBox="0 0 100 10" fill="none" preserveAspectRatio="none">
+                <path d="M2 7.5C30 2 70 2 98 7.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+              </svg>
+            </span>
+            .
+          </h1>
 
-              <h1 className="mt-5 max-w-2xl text-4xl font-semibold tracking-[-0.06em] text-slate-950 sm:text-5xl">
-                A calmer, cleaner way to prepare for serious exams.
-              </h1>
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-[1.05rem] sm:leading-8">
+            JeeNeetPulse was founded on a simple belief: high-stakes exam preparation shouldn't be chaotic. We design tools and courses that cultivate focus, academic discipline, and deep understanding.
+          </p>
 
-              <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-                JeeNeetPulse brings courses, study support, and exam-focused
-                practice into one more intentional workspace for JEE and NEET
-                aspirants.
-              </p>
-
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/courses"
-                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                  Explore courses
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
-                >
-                  Talk to us
-                </Link>
-              </div>
-
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white/90 px-4 py-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Built for
-                  </p>
-                  <p className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
-                    JEE + NEET
-                  </p>
-                </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white/90 px-4 py-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Designed around
-                  </p>
-                  <p className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
-                    Focused routines
-                  </p>
-                </div>
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white/90 px-4 py-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Experience
-                  </p>
-                  <p className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
-                    Student-first
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-4">
-              <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  What we do
-                </p>
-                <div className="mt-4 space-y-3">
-                  {highlights.map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-[1.1rem] bg-[#f8faf9] px-4 py-3 text-sm leading-6 text-slate-600"
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[1.75rem] border border-emerald-200 bg-emerald-50/70 p-5 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">
-                  Why it matters
-                </p>
-                <p className="mt-3 text-sm leading-7 text-emerald-950/80">
-                  Good preparation is not only about content quality. It is
-                  also about keeping the path clear enough that students can
-                  stay consistent for months, not just days.
-                </p>
-              </div>
-            </div>
+          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href="/courses"
+              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-emerald-500 px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600"
+            >
+              Explore Video Courses
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Contact Academic Lead
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="px-5 py-10 sm:px-8 sm:py-14">
+      {/* Philosophy Section */}
+      <section className="px-5 py-12 sm:px-8 sm:py-20 bg-white border-t border-slate-100">
         <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Principles
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
-              The product stays modest on purpose.
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              We try to remove noise, keep choices understandable, and make the
-              next step feel obvious.
-            </p>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {principles.map((item, index) => (
-              <div
-                key={item.id}
-                className={`rounded-[1.75rem] border p-5 shadow-sm ${
-                  index === 1
-                    ? "border-emerald-200 bg-emerald-50/60"
-                    : "border-slate-200 bg-white"
-                }`}
-              >
-                <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-                  {item.id}
-                </span>
-                <h3 className="mt-4 text-xl font-semibold tracking-tight text-slate-950">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-2 sm:px-8 sm:py-4">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200 bg-[#fcfcfb] p-6 shadow-sm sm:p-7">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                How it works
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
-                One preparation loop, not disconnected tools.
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Academic Philosophy</span>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                Preparation is a marathon, not a sprint.
               </h2>
+              <p className="mt-6 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+                The journey to cracking JEE and NEET demands more than just memorizing formulas. It requires cognitive stamina, clear mental frameworks, and a calm space to practice.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+                Many platforms overwhelm students with infinite dashboards, noisy notifications, and uncurated material. We take a different route: we build a quiet, concept-first ecosystem that respects your focus and helps you stay consistent.
+              </p>
             </div>
-            <p className="max-w-xl text-sm leading-7 text-slate-600">
-              The experience is designed to move naturally from learning to
-              revision to practice without feeling crowded.
-            </p>
-          </div>
-
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {workflow.map((item) => (
-              <div
-                key={item.step}
-                className="rounded-[1.5rem] border border-slate-200 bg-white p-5"
-              >
-                <div className="h-2 w-16 rounded-full bg-gradient-to-r from-emerald-500 to-orange-400" />
-                <h3 className="mt-4 text-lg font-semibold text-slate-950">
-                  {item.step}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  {item.body}
-                </p>
+            
+            <div className="relative rounded-[2rem] border border-slate-200 bg-[#f8faf9] p-8 shadow-sm">
+              <div className="absolute -right-2 -top-4 h-12 w-12 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 font-serif text-3xl select-none">
+                “
               </div>
-            ))}
+              <p className="text-base font-medium italic leading-8 text-slate-800">
+                "We want to build a platform where a student feels in control. Our design filters out the noise, providing a structured flow of video lectures, well-engineered notes, and adaptive question sets that build core understanding step-by-step."
+              </p>
+              <div className="mt-6 border-t border-slate-200/60 pt-4 flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">The JeeNeetPulse Team</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="px-5 py-10 sm:px-8 sm:py-14">
+      {/* Bento Grid (Pillars & Metrics) */}
+      <section className="bg-[#f8faf9] px-5 py-16 sm:px-8 sm:py-24 border-t border-b border-slate-100">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Team
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Core Foundations</span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Designed for Academic Excellence</h2>
+            <p className="mt-4 text-sm text-slate-600 sm:text-base">The three pillars that guide everything we build at JeeNeetPulse.</p>
+          </div>
+
+          <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {/* Pillar 1: Focused Learning */}
+            <div className="group rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm transition hover:shadow-md lg:col-span-2">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 text-sm font-bold border border-emerald-100/60">1</span>
+                <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700 uppercase tracking-wider">Methodology</span>
+              </div>
+              <h3 className="mt-6 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Focused Learning Paths</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base sm:leading-7">
+                Our curricula are mapped detail-by-detail to current JEE & NEET blueprints. We organize video courses chronologically by sub-topics, ensuring you master foundational concepts before climbing to complex applications.
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-slate-950">
-                Built by people who care about clarity.
-              </h2>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Syllabus Mapped", "Structured Modules", "Expert Pedagogy"].map((tag) => (
+                  <span key={tag} className="rounded-full bg-[#f8faf9] border border-slate-100 px-3 py-1 text-xs text-slate-600 font-medium">{tag}</span>
+                ))}
+              </div>
             </div>
-            <p className="max-w-xl text-sm leading-7 text-slate-600">
-              A compact team combining academic direction and product design to
-              make preparation feel more dependable.
+
+            {/* Pillar 2: Smart Revision */}
+            <div className="group rounded-[2rem] border border-emerald-100 bg-emerald-50/30 p-8 shadow-sm transition hover:shadow-md">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-emerald-600 text-xl shadow-sm border border-emerald-100/40">✦</span>
+              <h3 className="mt-6 text-xl font-bold tracking-tight text-slate-950">Smart Revision</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Resources are organized for immediate recall. Revisit key equations, view formula summary cards, and practice marked questions directly from your dashboard.
+              </p>
+              <span className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 uppercase tracking-wider">Optimized for Recall</span>
+            </div>
+
+            {/* Pillar 3: Visible Progress */}
+            <div className="group rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm transition hover:shadow-md">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-xl text-orange-600 border border-orange-100/40">◎</span>
+              <h3 className="mt-6 text-xl font-bold tracking-tight text-slate-950">Visible Progress</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                A calm, metrics-focused dashboard that showcases accuracy trends, time spent per subject, and daily practice targets, keeping your momentum positive.
+              </p>
+              <span className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-orange-700 uppercase tracking-wider">No Vanity Metrics</span>
+            </div>
+
+            {/* Stats Row Bento Card */}
+            <div className="group rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm transition hover:shadow-md lg:col-span-2">
+              <div className="grid gap-4 sm:grid-cols-3">
+                {metrics.map((item) => (
+                  <div key={item.value} className="rounded-2xl bg-[#f8faf9] p-5 border border-slate-200/40">
+                    <p className="text-xl font-bold tracking-tight text-[#063f39]">{item.value}</p>
+                    <p className="mt-2 text-xs font-medium uppercase tracking-[0.1em] text-slate-500 leading-snug">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership / Faculty Section */}
+      <section className="px-5 py-16 sm:px-8 sm:py-24 bg-white">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-slate-100 pb-10">
+            <div className="max-w-xl">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">The Minds Behind NexLearn</span>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Small team, academic focus.</h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-slate-600 sm:text-base">
+              NexLearn (JeeNeetPulse) is engineered by academic directors and product specialists who care deeply about educational efficiency and student well-being.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {team.map((member) => (
-              <div
-                key={member.name}
-                className="rounded-[1.85rem] border border-slate-200 bg-white p-5 shadow-sm"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[1.25rem] bg-slate-100">
+          <div className="mt-16 grid gap-8 md:grid-cols-2">
+            {/* Shiv Narayan Vishnoi Card */}
+            <div className="rounded-[2.5rem] border border-slate-200/80 bg-[#f8faf9] p-6 sm:p-8 flex flex-col justify-between transition hover:-translate-y-0.5 hover:shadow-md duration-300">
+              <div>
+                <div className="flex items-center gap-5">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
                     <Image
-                      src={member.image}
-                      alt={member.name}
+                      src="/sir.jpg"
+                      alt="Shiv Narayan Vishnoi"
                       fill
                       className="object-cover"
                     />
                   </div>
-
-                  <div className="min-w-0">
-                    <h3 className="text-xl font-semibold tracking-tight text-slate-950">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-sm font-medium text-emerald-700">
-                      {member.role}
-                    </p>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                      {member.summary}
-                    </p>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-950">Shiv Narayan Vishnoi</h3>
+                    <p className="mt-1 text-sm font-semibold text-emerald-800">Founder & Academic Lead</p>
+                    <p className="mt-1 text-xs text-slate-500">20+ Years JEE/NEET Coaching Experience</p>
                   </div>
                 </div>
+                <p className="mt-8 text-sm leading-8 text-slate-600 italic font-medium">
+                  "Education is not about pushing students into high-stress silos; it is about clarifying concepts so that they learn to reason. JeeNeetPulse is designed to make standard-class lectures and structured practice sets accessible to every aspirant."
+                </p>
               </div>
-            ))}
+              <div className="mt-8 border-t border-slate-200/60 pt-4 flex items-center justify-between text-xs text-slate-500">
+                <span>Focus: Curricular Design & Pedagogy</span>
+                <span className="font-semibold text-slate-700">Academic Director</span>
+              </div>
+            </div>
+
+            {/* Richie James Card */}
+            <div className="rounded-[2.5rem] border border-slate-200/80 bg-[#f8faf9] p-6 sm:p-8 flex flex-col justify-between transition hover:-translate-y-0.5 hover:shadow-md duration-300">
+              <div>
+                <div className="flex items-center gap-5">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+                    <Image
+                      src="/richie1.jpg"
+                      alt="Richie James"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-950">Richie James</h3>
+                    <p className="mt-1 text-sm font-semibold text-emerald-800">Technical Lead</p>
+                    <p className="mt-1 text-xs text-slate-500">Full-Stack Architect & Product Developer</p>
+                  </div>
+                </div>
+                <p className="mt-8 text-sm leading-8 text-slate-600 italic font-medium">
+                  "A student’s digital workspace should be fast, highly responsive, and quiet. I focus on building standard-compliant testing tools, adaptive performance analyses, and seamless lecture-streaming engines that minimize distraction."
+                </p>
+              </div>
+              <div className="mt-8 border-t border-slate-200/60 pt-4 flex items-center justify-between text-xs text-slate-500">
+                <span>Focus: System Engineering & UX</span>
+                <span className="font-semibold text-slate-700">Tech Lead</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="px-5 pb-10 sm:px-8 sm:pb-14">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200 bg-[linear-gradient(135deg,_#062f2f_0%,_#0b3f3c_55%,_#14524a_100%)] px-6 py-8 text-white shadow-[0_24px_60px_rgba(6,47,47,.18)] sm:px-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
-                Start learning
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em]">
-                Explore a more focused way to prepare.
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-emerald-50/80">
-                Browse the course catalog, find the right path, and study in a
-                cleaner environment that respects your attention.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/courses"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
-              >
-                Browse courses
-              </Link>
+      {/* Adaptive Bottom CTA Section (replicates the landing page's StartLearning styling) */}
+      <section className="bg-[#f8faf9] px-5 pb-16 sm:px-8 sm:pb-24">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-[#063f39] px-6 py-12 text-center text-white shadow-[0_24px_60px_rgba(6,78,69,.2)] sm:px-12 sm:py-16">
+          {/* Circular decorations replicating the home page */}
+          <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full border-[42px] border-emerald-300/10" />
+          <div className="absolute -bottom-28 -right-20 h-72 w-72 rounded-full border-[50px] border-orange-400/10" />
+          
+          <div className="relative mx-auto max-w-3xl">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+              Your next chapter starts here
+            </span>
+            <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+              Build the preparation rhythm your goal deserves.
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-emerald-100/70 sm:text-base">
+              Join JeeNeetPulse and bring your lessons, practice, tests, and progress together.
+            </p>
+            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/signup"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 text-sm font-semibold text-white transition hover:bg-white/15"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-7 text-sm font-semibold shadow-lg transition hover:-translate-y-0.5 hover:bg-orange-600"
               >
-                Create account
+                Create free account →
+              </Link>
+              <Link
+                href="/courses"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-semibold backdrop-blur transition hover:bg-white/15"
+              >
+                Explore courses
               </Link>
             </div>
           </div>
