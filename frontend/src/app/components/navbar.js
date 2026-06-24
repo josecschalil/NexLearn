@@ -11,7 +11,6 @@ const navLinks = [
   ["Home", "/"],
   ["Portal", "/student-portal"],
   ["Courses", "/courses"],
-  ["Resources", "/featured"],
   ["About", "/about"],
   ["Contact", "/contact"],
 ];

@@ -286,7 +286,7 @@ const CoursePage = () => {
               </div>
 
               <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid items-start gap-6 lg:grid-cols-2">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Portions
@@ -299,7 +299,7 @@ const CoursePage = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-[1.3rem] border border-slate-200 bg-[#fcfbf8] p-5">
+                  <div className="self-start rounded-[1.3rem] border border-slate-200 bg-[#fcfbf8] p-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Access
                     </p>
