@@ -96,7 +96,7 @@ export default function PortalDashboard() {
     <PortalShell activeMenu="dashboard">
       {/* Header Banner - Editorial Style */}
       <div className="border-b border-slate-200/60 bg-[#f8faf9]/50 px-8 py-10 lg:py-12">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-6xl ">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">

@@ -81,6 +81,7 @@ export default function CourseClassroom() {
   const router = useRouter();
   const { courseId } = useParams();
   const [activeClass, setActiveClass] = useState("c7");
+  const [activeTab, setActiveTab] = useState("Overview");
 
   useEffect(() => {
     if (!localStorage.getItem("portal_auth")) {
@@ -100,6 +101,71 @@ export default function CourseClassroom() {
     courseData.modules.find((module) =>
       module.classes.some((item) => item.id === activeClass),
     ) || courseData.modules[0];
+
+  const resources = [
+    {
+      title: "Class notes PDF",
+      type: "PDF",
+      detail:
+        "Annotated formulas and derivations for revision after the lecture.",
+    },
+    {
+      title: "Worked examples",
+      type: "Practice",
+      detail:
+        "A focused set of solved problems built around the current concept.",
+    },
+    {
+      title: "Assignment sheet",
+      type: "Worksheet",
+      detail:
+        "Independent questions to test concept clarity before moving ahead.",
+    },
+  ];
+
+  const discussionComments = [
+    {
+      author: "Aarav",
+      time: "12 min ago",
+      comment:
+        "Is there a quick way to identify when the parallel axis theorem should be applied directly in problems like this?",
+      replies: [
+        {
+          author: "Faculty",
+          time: "8 min ago",
+          comment:
+            "Yes. First identify whether the axis passes through the center of mass. If it does not, check whether the shifted axis is parallel to the known one.",
+        },
+      ],
+    },
+    {
+      author: "Faculty note",
+      time: "Pinned",
+      comment:
+        "Focus on understanding the body’s rotation axis first. Once the axis is clear, theorem selection becomes much easier.",
+      replies: [],
+    },
+    {
+      author: "Meera",
+      time: "1 hr ago",
+      comment:
+        "The worked examples helped a lot. A short recap on standard moment-of-inertia values would make revision faster too.",
+      replies: [
+        {
+          author: "Rohit",
+          time: "42 min ago",
+          comment:
+            "Agreed. A one-page summary sheet for standard bodies would be really helpful before tests.",
+        },
+        {
+          author: "Faculty",
+          time: "30 min ago",
+          comment:
+            "Good suggestion. We will attach a compact revision sheet in the resources section.",
+        },
+      ],
+    },
+  ];
 
   const courseOutline = (
     <div className="flex h-full flex-col bg-white">
@@ -323,18 +389,19 @@ export default function CourseClassroom() {
             <div className="rounded-[2rem] border border-slate-200 bg-white shadow-sm">
               <div className="border-b border-slate-200 px-5 sm:px-6">
                 <div className="flex flex-wrap gap-6">
-                  {tabs.map((tab, index) => (
+                  {tabs.map((tab) => (
                     <button
                       key={tab}
                       type="button"
+                      onClick={() => setActiveTab(tab)}
                       className={`relative py-4 text-sm font-semibold transition ${
-                        index === 0
+                        activeTab === tab
                           ? "text-slate-950"
                           : "text-slate-400 hover:text-slate-900"
                       }`}
                     >
                       {tab}
-                      {index === 0 ? (
+                      {activeTab === tab ? (
                         <span className="absolute inset-x-0 bottom-0 h-0.5 bg-slate-950" />
                       ) : null}
                     </button>
@@ -342,64 +409,264 @@ export default function CourseClassroom() {
                 </div>
               </div>
 
-              <div className="grid gap-4 px-5 py-5 sm:px-6 sm:py-6 lg:grid-cols-[minmax(0,1fr)_280px]">
-                <div>
-                  <p className="text-sm leading-7 text-slate-600">
-                    In this lecture, we introduce the concept of moment of
-                    inertia as the rotational analog of mass. You will learn how
-                    to calculate it for discrete particle systems and for common
-                    continuous bodies like rods, rings, discs, and spheres.
-                  </p>
+              {activeTab === "Overview" ? (
+                <div className="grid gap-4 px-5 py-5 sm:px-6 sm:py-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+                  <div>
+                    <p className="text-sm leading-7 text-slate-600">
+                      In this lecture, we introduce the concept of moment of
+                      inertia as the rotational analog of mass. You will learn
+                      how to calculate it for discrete particle systems and for
+                      common continuous bodies like rods, rings, discs, and
+                      spheres.
+                    </p>
 
-                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    {[
-                      "Definition of rotational inertia",
-                      "Parallel axis theorem",
-                      "Perpendicular axis theorem",
-                      "Calculations for standard uniform bodies",
-                    ].map((item) => (
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      {[
+                        "Definition of rotational inertia",
+                        "Parallel axis theorem",
+                        "Perpendicular axis theorem",
+                        "Calculations for standard uniform bodies",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="rounded-[1.2rem] bg-[#f8faf9] px-4 py-4 text-sm text-slate-700"
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <aside className="self-start rounded-[1.5rem] border border-slate-200 bg-[#fcfcfb] p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Session snapshot
+                    </p>
+                    <div className="mt-4 space-y-3">
+                      <div className="rounded-[1rem] bg-white px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                          Current item
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                          {currentClass.title}
+                        </p>
+                      </div>
+                      <div className="rounded-[1rem] bg-white px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                          Duration
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                          {currentClass.duration || "Attached resource"}
+                        </p>
+                      </div>
+                      <div className="rounded-[1rem] bg-white px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                          Module
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                          {currentModule.title.replace(/^Module \d+:\s*/, "")}
+                        </p>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              ) : null}
+
+              {activeTab === "Resources" ? (
+                <div className="px-5 py-5 sm:px-6 sm:py-6">
+                  <div className="flex flex-col gap-2 border-b border-slate-100 pb-5 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Learning assets
+                      </p>
+                      <h3 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+                        Resources for this lesson
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                    {resources.map((item) => (
                       <div
-                        key={item}
-                        className="rounded-[1.2rem] bg-[#f8faf9] px-4 py-4 text-sm text-slate-700"
+                        key={item.title}
+                        className="rounded-[1.4rem] border border-slate-200 bg-[#fcfcfb] p-4 shadow-sm"
                       >
-                        {item}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-[1rem] bg-emerald-50 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                            {item.type.slice(0, 2)}
+                          </div>
+                          <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 ring-1 ring-slate-200">
+                            {item.type}
+                          </span>
+                        </div>
+                        <h4 className="mt-4 text-lg font-semibold tracking-tight text-slate-950">
+                          {item.title}
+                        </h4>
+                        <p className="mt-2 text-sm leading-6 text-slate-500">
+                          {item.detail}
+                        </p>
+                        <button
+                          type="button"
+                          className="mt-5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                        >
+                          Open resource
+                        </button>
                       </div>
                     ))}
                   </div>
                 </div>
+              ) : null}
 
-                <aside className="self-start rounded-[1.5rem] border border-slate-200 bg-[#fcfcfb] p-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Session snapshot
-                  </p>
-                  <div className="mt-4 space-y-3">
-                    <div className="rounded-[1rem] bg-white px-4 py-3">
-                      <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                        Current item
+              {activeTab === "Discussion" ? (
+                <div className="px-5 py-5 sm:px-6 sm:py-6">
+                  <div className="flex flex-col gap-2 border-b border-slate-100 pb-5 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Class community
                       </p>
-                      <p className="mt-1 text-sm font-semibold text-slate-900">
-                        {currentClass.title}
-                      </p>
-                    </div>
-                    <div className="rounded-[1rem] bg-white px-4 py-3">
-                      <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                        Duration
-                      </p>
-                      <p className="mt-1 text-sm font-semibold text-slate-900">
-                        {currentClass.duration || "Attached resource"}
-                      </p>
-                    </div>
-                    <div className="rounded-[1rem] bg-white px-4 py-3">
-                      <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                        Module
-                      </p>
-                      <p className="mt-1 text-sm font-semibold text-slate-900">
-                        {currentModule.title.replace(/^Module \d+:\s*/, "")}
-                      </p>
+                      <h3 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+                        Discussion around this topic
+                      </h3>
                     </div>
                   </div>
-                </aside>
-              </div>
+
+                  <div className="mt-6 space-y-5">
+                    <div className="rounded-[1.6rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8faf9] text-sm font-semibold uppercase text-slate-700 ring-1 ring-slate-200">
+                          JD
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            className="w-full border-0 border-b border-slate-200 bg-transparent px-0 py-2 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400"
+                          />
+                          <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+                            <button
+                              type="button"
+                              className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                            >
+                              Comment
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {discussionComments.map((item) => (
+                        <div
+                          key={`${item.author}-${item.time}`}
+                          className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8faf9] text-xs font-semibold uppercase text-slate-700">
+                              {item.author
+                                .split(" ")
+                                .map((part) => part[0])
+                                .slice(0, 2)
+                                .join("")}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="text-sm font-semibold text-slate-950">
+                                  {item.author}
+                                </p>
+                                <span className="text-xs text-slate-400">
+                                  {item.time}
+                                </span>
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-slate-600">
+                                {item.comment}
+                              </p>
+                              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
+                                <button
+                                  type="button"
+                                  className="transition hover:text-slate-900"
+                                >
+                                  Reply
+                                </button>
+                                <button
+                                  type="button"
+                                  className="transition hover:text-slate-900"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="transition hover:text-red-600"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          {item.replies.length > 0 ? (
+                            <div className="mt-4 space-y-3 border-l border-slate-200 pl-4 sm:pl-5">
+                              {item.replies.map((reply) => (
+                                <div
+                                  key={`${reply.author}-${reply.time}`}
+                                  className="rounded-[1.1rem] bg-[#f8faf9] px-4 py-3"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-semibold uppercase text-slate-700 ring-1 ring-slate-200">
+                                      {reply.author
+                                        .split(" ")
+                                        .map((part) => part[0])
+                                        .slice(0, 2)
+                                        .join("")}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <p className="text-sm font-semibold text-slate-950">
+                                          {reply.author}
+                                        </p>
+                                        <span className="text-xs text-slate-400">
+                                          {reply.time}
+                                        </span>
+                                      </div>
+                                      <p className="mt-1.5 text-sm leading-6 text-slate-600">
+                                        {reply.comment}
+                                      </p>
+                                      <div className="mt-2 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
+                                        <button
+                                          type="button"
+                                          className="transition hover:text-slate-900"
+                                        >
+                                          Reply
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="transition hover:text-slate-900"
+                                        >
+                                          Edit
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="transition hover:text-red-600"
+                                        >
+                                          Delete
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
