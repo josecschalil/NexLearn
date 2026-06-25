@@ -23,7 +23,7 @@ const AnalysisPage = () => {
         }
 
         const testResponse = await api.get(
-          `/api/exam-data/filter/?user=${userId}&exam_id=${testId}`
+          `/api/exam-data/filter/?user=${userId}&exam_id=${testId}`,
         );
         if (testResponse.data && testResponse.data.length > 0) {
           console.log(testResponse.data[0]);
@@ -56,7 +56,7 @@ const AnalysisPage = () => {
         const isCorrect = testData.answers?.[index] === question.correct_answer;
         if (!isCorrect) {
           question.concepts.forEach((conceptId) =>
-            incorrectConceptIds.add(conceptId)
+            incorrectConceptIds.add(conceptId),
           );
         }
       });
@@ -70,7 +70,7 @@ const AnalysisPage = () => {
             console.error(`Error fetching concept ${conceptId}:`, error);
             return null;
           }
-        }
+        },
       );
 
       const conceptsFetched = await Promise.all(conceptPromises);
@@ -114,7 +114,7 @@ const AnalysisPage = () => {
           <span>
             {" "}
             <button
-              onClick={() => router.push(`/student-portal`)}
+              onClick={() => router.push(`/mycourses`)}
               className="px-3 py-2 text-black relative -top-1 sm:-top-2 hover:bg-slate-100 rounded-xl border max-xs:text-xs text-sm mr-4  font-bold transition duration-300 shadow bg-gray-50"
             >
               &lt;
@@ -161,8 +161,8 @@ const AnalysisPage = () => {
               const status = question.isCorrect
                 ? "Correct"
                 : question.isAnswered
-                ? "Wrong"
-                : "Not Answered";
+                  ? "Wrong"
+                  : "Not Answered";
 
               return (
                 <div

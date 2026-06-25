@@ -9,7 +9,7 @@ import useAuthentication from "@/hooks/useAuthentication";
 
 const navLinks = [
   ["Home", "/"],
-  ["Portal", "/student-portal"],
+  ["Portal", "/mycourses"],
   ["Courses", "/courses"],
   ["About", "/about"],
   ["Contact", "/contact"],
@@ -23,6 +23,8 @@ const isActiveRoute = (pathname, href) => {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  
+  if (pathname.startsWith('/portal')) return null;
   const { isAuthenticated, userDetails } = useAuthentication();
 
   const [menuOpen, setMenuOpen] = useState(false);

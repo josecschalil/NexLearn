@@ -45,7 +45,7 @@ const CoursePage = () => {
 
           {/* <div className="flex flex-col gap-4  mb-6">
           <div className="flex items-center">
-            <Link href={"/student-portal"}>
+            <Link href={"/mycourses"}>
               {" "}
               <div className="border w-fit h-fit px-2 pb-1 pt-[2px] rounded-lg hover:border-gray-500 mr-3">
                 &lt;

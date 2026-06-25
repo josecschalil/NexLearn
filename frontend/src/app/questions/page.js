@@ -143,7 +143,7 @@ import StudyMaterials from "@/app/components/student/studym";
 import PracticeQuestions from "@/app/components/student/questionsets";
 import QuestionBank from "../components/student/questionbank";
 import Classes from "@/app/components/student/Contents";
-import { courses } from "../student-portal/data";
+import { courses } from "../mycourses/data";
 
 const VideosPage = () => {
   const [examType, setExamType] = useState("jee");

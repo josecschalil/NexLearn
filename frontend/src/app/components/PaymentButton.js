@@ -35,7 +35,7 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
         data,
       );
       console.log("Course added to user successfully:", response.data);
-      router.push(`/student-portal`);
+      router.push(`/mycourses`);
     } catch (error) {
       console.error(
         "Error adding course to user:",
@@ -93,7 +93,10 @@ const PaymentButton = ({ course, userId, userDetails, isAuthenticated }) => {
               },
             );
 
-            console.log("Payment verification successful:", verifyResponse.data);
+            console.log(
+              "Payment verification successful:",
+              verifyResponse.data,
+            );
             toast.success("Payment Successful! Course Enrolled.");
             await addCourseToUser();
           } catch (error) {

@@ -21,7 +21,7 @@ const groups = [
   {
     title: "Student",
     links: [
-      ["Student portal", "/student-portal"],
+      ["Student portal", "/mycourses"],
       ["Featured resources", "/featured"],
       ["Courses", "/courses"],
       ["Create account", "/signup"],
