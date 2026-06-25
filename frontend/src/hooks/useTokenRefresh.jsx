@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { canRefreshDemoToken, refreshDemoAccessToken } from "@/app/services/demoAuth";
 
 let isRefreshing = false;
 
@@ -24,6 +25,10 @@ const useTokenRefresh = () => {
     console.log("Starting token refresh...");
   
     try {
+      if (canRefreshDemoToken()) {
+        return refreshDemoAccessToken();
+      }
+
       const refresh = localStorage.getItem("refresh_token");
       console.log("Refresh token:", refresh);
   

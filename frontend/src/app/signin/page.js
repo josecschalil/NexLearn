@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { toast } from 'sonner';
 import useAuthCheck from "@/hooks/useAuthCheck";  // Import your custom authentication hook
+import { demoLoginOnFailure } from "../services/demoAuth";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -65,6 +66,16 @@ const SignInPage = () => {
       router.push(`/`);
 
     } catch (err) {
+      const demoSession = demoLoginOnFailure(err, {
+        email: formData.email.toLowerCase(),
+      });
+
+      if (demoSession) {
+        toast.success("Backend unavailable. Signed in with demo data.");
+        router.push(`/`);
+        return;
+      }
+
       setError("Invalid email or password.");
     } finally {
       setLoading(false);

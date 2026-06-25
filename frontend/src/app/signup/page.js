@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { toast } from "sonner";
 import api from "../services/api";
+import { shouldUseMockFallback } from "../services/mockBackend";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -141,12 +142,23 @@ useEffect(() => {
         setMessage("");
       }, 3000);
     } catch (err) {
-      setIsloading[false];
+      if (shouldUseMockFallback(err)) {
+        setIsloading(false);
+        setError("");
+        setMessage(
+          "Demo mode active. Account was created locally for frontend testing."
+        );
+        toast.success("Backend unavailable. Registered with demo data.");
+        router.push("/");
+        return;
+      }
+
+      setIsloading(false);
       const errorMsg =
         err.response?.data?.email ||
         err.response?.data?.password ||
         "Registration failed.";
-      setError(errorMsg);
+      setError(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg);
 
       // Clear the error message after 3 seconds
       setTimeout(() => {

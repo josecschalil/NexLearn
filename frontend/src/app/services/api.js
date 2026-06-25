@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  getMockResponse,
+  isDemoToken,
+  shouldUseMockFallback,
+} from "./mockBackend";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -13,7 +18,19 @@ const getRefreshToken = () =>
 const refreshAccessToken = async () => {
   try {
     const refreshToken = getRefreshToken();
-    if (!refreshToken) return null; 
+    if (!refreshToken) return null;
+
+    if (isDemoToken(refreshToken)) {
+      const userId =
+        typeof window !== "undefined"
+          ? localStorage.getItem("user_id") || "demo-user-1"
+          : "demo-user-1";
+      const access = `demo-access-${userId}`;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", access);
+      }
+      return access;
+    }
 
     const response = await axios.post(`${apiUrl}/auth/token/refresh/`, {
       refresh: refreshToken,
@@ -82,6 +99,13 @@ api.interceptors.response.use(
       if (newToken) {
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return axios(originalRequest);
+      }
+    }
+
+    if (shouldUseMockFallback(error)) {
+      const mockResponse = getMockResponse(error.config);
+      if (mockResponse) {
+        return mockResponse;
       }
     }
 
