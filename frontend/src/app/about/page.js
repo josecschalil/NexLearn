@@ -192,8 +192,8 @@ export default function AboutPage() {
             <div className="grid gap-8 lg:grid-cols-[240px_1fr] items-start border-b border-slate-100 pb-12 last:border-0 last:pb-0">
               <div className="relative h-60 w-full sm:w-60 lg:w-full shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
                 <Image
-                  src="/richie1.jpg"
-                  alt="Richie James"
+                  src="/jose.jpg"
+                  alt="Jose C S"
                   fill
                   className="object-cover"
                 />
